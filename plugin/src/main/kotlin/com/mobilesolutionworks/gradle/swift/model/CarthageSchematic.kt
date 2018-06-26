@@ -6,7 +6,7 @@ abstract class CarthageDependency(val name: String) {
 
     abstract val semantic: String
 
-    val romeCache = RomeCache()
+    val romeOptions = RomeOptions()
 }
 
 class CarthageGitHub(name: String, private val repo: String) : CarthageDependency(name) {
@@ -50,8 +50,8 @@ open class CarthageSchematic {
         declaredDependencies.add(it)
     }
 
-    fun github(name: String, repo: String, rome: (RomeCache) -> Unit): CarthageGitHub = CarthageGitHub(name, repo).also {
-        rome(it.romeCache)
+    fun github(name: String, repo: String, rome: (RomeOptions) -> Unit): CarthageGitHub = CarthageGitHub(name, repo).also {
+        rome(it.romeOptions)
         declaredDependencies.add(it)
     }
 
@@ -67,7 +67,7 @@ val Project.carthage: CarthageSchematic
         return extensions.findByName("carthage") as CarthageSchematic
     }
 
-class RomeCache {
+class RomeOptions {
 
     var key: String = ""
     var frameworks = emptyList<String>()
