@@ -20,6 +20,12 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+val sourceSets: SourceSetContainer = java.sourceSets
+sourceSets {
+    "test" {
+        java.srcDir("src/test/kotlinTestKit")
+    }
+}
 dependencies {
     compileOnly(gradleApi())
     implementation(kotlin("stdlib-jdk8"))
@@ -49,5 +55,35 @@ pluginBundle {
             id = "com.mobilesolutionworks.gradle.swift"
             displayName = """""".trimIndent()
         }
+    }
+}
+
+tasks.create("createClasspathManifest") {
+    group = "plugin development"
+
+    val target = file("$buildDir/classpathManifest/manifest.gradle")
+
+    inputs.files(sourceSets.getAt("main").runtimeClasspath)
+    outputs.files(target)
+
+    doFirst {
+        val text = sourceSets["main"].runtimeClasspath
+                .map { "        classpath(files(\"$it\"))" }
+                .joinToString(System.lineSeparator())
+        target.writeText("""
+buildscript {
+    dependencies {
+$text
+    }
+}
+        """.trimIndent())
+    }
+}
+
+tasks.withType<Test> {
+    maxParallelForks = Runtime.getRuntime().availableProcessors().div(2)
+
+    doFirst {
+        logger.quiet("Test with max $maxParallelForks parallel forks")
     }
 }

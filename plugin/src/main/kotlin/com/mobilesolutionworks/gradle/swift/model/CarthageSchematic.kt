@@ -14,25 +14,27 @@ class CarthageGitHub(name: String, private val repo: String) : CarthageDependenc
     private var versioning: String = ""
 
     infix fun compatible(version: String) {
-        versioning = "~> $version"
+        versioning = " ~> $version"
     }
 
     infix fun version(version: String) {
-        versioning = "== $version"
+        versioning = " == $version"
     }
 
     infix fun atLeast(version: String) {
-        versioning = ">= $version"
+        versioning = " >= $version"
     }
 
     override val semantic: String
         get() {
-            return "github \"$repo\" $versioning"
+            return "github \"$repo\"$versioning"
         }
 }
 
 
 open class CarthageSchematic {
+
+    var updates = false
 
     var platforms = emptyList<String>()
 
@@ -52,7 +54,18 @@ open class CarthageSchematic {
         rome(it.romeCache)
         declaredDependencies.add(it)
     }
+
+    internal val hasDeclaredPlatforms: Boolean
+        get() = platforms.isNotEmpty()
+
+    internal val declaredPlatforms: String
+        get() = platforms.joinToString(",")
 }
+
+val Project.carthage: CarthageSchematic
+    get() {
+        return extensions.findByName("carthage") as CarthageSchematic
+    }
 
 class RomeCache {
 
@@ -68,25 +81,4 @@ class RomeCache {
         this.key = key
         this.frameworks = frameworks
     }
-}
-
-fun Project.create() {
-    tasks.create("romeCreate") {
-        val carthage = CarthageSchematic()
-        val repositoryMap = carthage.dependencies.mapNotNull {
-            val romeCache = it.romeCache
-            if (romeCache.frameworks.isNotEmpty()) {
-                "${romeCache.key} = ${romeCache.frameworks.joinToString(", ")}"
-            } else {
-                null
-            }
-        }.let {
-            val repositoryMap = StringBuilder("[RepositoryMap]").append(System.lineSeparator())
-            it.forEach {
-                repositoryMap.append("  $it").append(System.lineSeparator())
-            }
-            repositoryMap.toString()
-        }
-    }
-
 }
