@@ -79,14 +79,15 @@ val org.gradle.api.Project.`carthage`: CarthageSchematic
         (this as org.gradle.api.plugins.ExtensionAware).extensions.getByName("carthage") as CarthageSchematic
 
 carthage {
-    platforms = listOf("iOS")
+    platforms = listOf("iOS", "macOS")
 
-    github("RxSwift", "ReactiveX/RxSwift") { rome ->
-        rome.map("RxSwift", listOf("RxSwift", "RxBlocking", "RxTest"))
-    }
-    github("Moya", "Moya/Moya") { rome ->
-        rome.map("Moya", listOf("Moya", "RxMoya"))
-    }
+//    github("RxSwift", "ReactiveX/RxSwift") { rome ->
+//        rome.map("RxSwift", listOf("RxSwift", "RxBlocking", "RxTest"))
+//    }
+//    github("Moya", "Moya/Moya") { rome ->
+//        rome.map("Moya", listOf("Moya", "RxMoya"))
+//    }
+    github("ReactiveSwift", "ReactiveCocoa/ReactiveSwift")
 }
 
 afterEvaluate {
@@ -150,6 +151,7 @@ afterEvaluate {
                 val repositoryMap = romeCreateRepositoryMap.outputs.files.singleFile.readText()
                 val romeText = """
 [Cache]
+S3-Bucket = ios-dev-bucket
 local = $buildDir/romeCache/
 
 [RepositoryMap]
@@ -291,7 +293,9 @@ $repositoryMap
             }
         })
 
-        standardOutput = file(target).outputStream()
+        doFirst {
+            standardOutput = file(target).outputStream()
+        }
         outputs.file(target)
     }
 
@@ -316,6 +320,11 @@ $repositoryMap
             add("--cache-builds")
             add("--no-use-binaries")
         })
+
+        outputs.files(fileTree(
+                mapOf("dir" to file("$projectDir/Works-Swift/Carthage/Build"),
+                        "include" to "*.version")
+        ))
 
         onlyIf {
             missingFiles.readText().isNotBlank()
@@ -351,129 +360,11 @@ $repositoryMap
             missingFiles.deleteOnExit()
         }
     }
-
-//    tasks.create("carthageResolve", Exec::class.java) {
-//
-//
-//
-//        group = "carthage"
-//        inputs.file(romeCreate.outputs.files)
-//        outputs.file(file("$path/Cartfile.resolved"))
-//
-//        executable = "carthage"
-//        workingDir = file(path)
-//
-//        args(mutableListOf<Any?>().apply {
-//            add("bootstrap")
-//            if (carthage.platforms.isNotEmpty()) {
-//                add("--platform")
-//                add(carthage.platforms.joinToString(","))
-//            }
-//            add("--no-build")
-//            add("--no-checkout")
-//        })
-//
-//        doFirst {
-//            file(path).apply {
-//                mkdirs()
-//                File(this, "Cartfile").writeText(it.semantic)
-//            }
-//        }
-//    }
-//
-//    carthage.dependencies.forEach {
-//
-//
-//
-//        tasks.create("carthageUpdate${it.name}", Exec::class.java) {
-//            val path = "$buildDir/works-swift/${it.name}"
-//
-//            group = "carthage"
-//            description = "Run carthage update for ${it.name}"
-//
-//            dependsOn("carthageResolve${it.name}")
-//            carthageUpdate.dependsOn(this)
-//
-//            outputs.dir(file("$buildDir/${it.name}/Carthage"))
-//            inputs.file("$buildDir/${it.name}/Carthage.resolved")
-//
-//            executable = "carthage"
-//            workingDir = file(path)
-//
-//            args(mutableListOf<Any?>().apply {
-//                add("update")
-//                addAll(listOf<Any?>("--project-directory", file(path)))
-//                if (carthage.platforms.isNotEmpty()) {
-//                    add("--platform")
-//                    add(carthage.platforms.joinToString(","))
-//                }
-//            })
-//        }
-//
-//        val romeDownload = tasks.create("romeDownload${it.name}", Exec::class.java) {
-//            val path = "$buildDir/works-swift/${it.name}"
-//
-//            group = "rome"
-//            dependsOn("carthageResolve${it.name}")
-//
-//            inputs.file(romeCreate.outputs.files)
-//            outputs.files(fileTree(
-//                    mapOf("dir" to file("$buildDir/works-swift/${it.name}/Carthage/Build"),
-//                            "include" to "*.version")
-//            ))
-//
-//            executable = "rome"
-//            workingDir = file(path)
-//            args(mutableListOf<Any?>().apply {
-//                add("download")
-//                if (carthage.platforms.isNotEmpty()) {
-//                    add("--platform")
-//                    add(carthage.platforms.joinToString(","))
-//                }
-//            })
-//
-//            doFirst {
-//                file(path).apply {
-//                    mkdirs()
-//
-//                    val singleFile = romeCreate.outputs.files.singleFile
-//                    File(this, "romefile").delete()
-//                    singleFile.copyTo(File(this, "romefile"))
-//                }
-//            }
-//        }
-//
-//        tasks.create("carthageBootstrap${it.name}", Exec::class.java) {
-//            val path = "$buildDir/works-swift/${it.name}"
-//
-//            group = "carthage"
-//            description = "Run carthage update for ${it.name}"
-//
-//            dependsOn("carthageResolve${it.name}", romeDownload.outputs.files)
-//            carthageUpdate.dependsOn(this)
-////            outputs.files(fileTree(
-////                    mapOf("dir" to file("$buildDir/works-swift/${it.name}/Carthage/Build"),
-////                            "include" to "*.version")
-////            ))
-//
-//            executable = "carthage"
-//            workingDir = file(path)
-//
-//            args(mutableListOf<Any?>().apply {
-//                add("bootstrap")
-//                addAll(listOf<Any?>("--project-directory", file(path)))
-//                if (carthage.platforms.isNotEmpty()) {
-//                    add("--platform")
-//                    add(carthage.platforms.joinToString(","))
-//                }
-//            })
-//        }
-//
-//    }
 }
 
 
 
 tasks.create("clean", Delete::class.java) {
     delete("$buildDir")
+    delete("$projectDir/Works-Swift/Carthage")
 }
