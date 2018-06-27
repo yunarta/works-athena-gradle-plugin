@@ -61,7 +61,6 @@ class SwiftPlugin : Plugin<Project> {
                         }
                     }
                 }
-
             }
         }
     }

@@ -51,7 +51,7 @@ class ListMissingTests {
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeCreateRomefile")?.outcome)
                     val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
-                    assertEquals("NullFramework 1.0.0 : -iOS -Mac -tvOS -watchOS", missing.readText().trimMargin())
+                    assertEquals("NullFramework 1.0.0 : -iOS", missing.readText().trimMargin())
                 }
     }
 

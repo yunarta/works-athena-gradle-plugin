@@ -1,6 +1,5 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
-import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -25,8 +24,6 @@ class CreateRomefileTests {
 
     @Test
     fun execution() {
-        val project = ProjectBuilder().withProjectDir(temporaryFolder.root).build()
-
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 

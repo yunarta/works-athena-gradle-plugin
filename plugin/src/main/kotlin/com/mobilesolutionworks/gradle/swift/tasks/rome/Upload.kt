@@ -23,9 +23,22 @@ internal open class Upload : Exec() {
                 }
             })
 
+            // conditions
+            onlyIf {
+                tasks.withType(ListMissing::class.java).map {
+                    it.outputs.files.singleFile.readText().isNotBlank()
+                }.reduce { a, b -> a && b }
+            }
+
             // dependencies
             tasks.withType<CreateRomefile> {
                 this@Upload.dependsOn(this)
+            }
+
+            doLast {
+                tasks.withType(ListMissing::class.java).map {
+                    it.outputs.files.forEach { it.delete() }
+                }
             }
         }
     }

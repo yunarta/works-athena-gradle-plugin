@@ -12,6 +12,9 @@ internal open class CarthageBootstrap : Exec() {
         description = Strings["CartfileResolve_description"]
 
         with(project) {
+            // inputs outputs
+            outputs.dir("$rootDir/Carthage")
+
             // task properties
             executable = "carthage"
             workingDir = file(rootDir)

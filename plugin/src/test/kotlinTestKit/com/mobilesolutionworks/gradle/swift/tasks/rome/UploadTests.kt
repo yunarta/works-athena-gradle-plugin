@@ -44,7 +44,7 @@ class UploadTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "-i")
+        gradle.runner.withArguments("carthageBootstrap")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
@@ -80,7 +80,8 @@ class UploadTests {
 
         gradle.runner.withArguments("carthageBootstrap")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":romeUpload")?.outcome)
+                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageBootstrap")?.outcome)
+                    assertEquals(TaskOutcome.SKIPPED, it.task(":romeUpload")?.outcome)
                 }
     }
 

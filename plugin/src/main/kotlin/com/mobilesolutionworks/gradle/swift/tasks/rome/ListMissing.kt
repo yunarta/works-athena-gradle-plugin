@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
+import com.mobilesolutionworks.gradle.swift.model.xcode
 import com.mobilesolutionworks.gradle.swift.util.withType
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.options.Option
@@ -21,6 +22,11 @@ internal open class ListMissing : Exec() {
             args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("list")
                 add("--missing")
+
+                if (xcode.hasDeclaredPlatforms) {
+                    add("--platform")
+                    add(xcode.declaredPlatforms)
+                }
             })
 
             // dependencies
