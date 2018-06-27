@@ -197,17 +197,14 @@ pipeline {
 //        }
         changed {
             slackSend """
-                ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)
+                JOB: ${GIT_URL} 
+                BRANCH: ${env.GIT_BRANCH} 
+                BUILD ${env.BUILD_DISPLAY_NAME}(<${env.BUILD_URL}|Open>)
                 ---
+                Running on: ${NODE_NAME}
                 Build state: ${currentBuild.result}
-            """.stripIndent()
-        }
 
-        unstable {
-            slackSend """
-                ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)
-                ---
-                Build unstable
+                Commit#: ${GIT_COMMIT} by ${GIT_AUTHOR_NAME}
             """.stripIndent()
         }
     }
