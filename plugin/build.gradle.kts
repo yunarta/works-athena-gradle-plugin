@@ -63,6 +63,25 @@ pluginBundle {
     }
 }
 
+tasks.withType<JacocoReport> {
+
+    reports {
+        xml.isEnabled = true
+        html.isEnabled = true
+    }
+
+    // generated classes
+    classDirectories = fileTree(mapOf(
+            "dir" to "$buildDir/classes/java/main")
+    ) + fileTree(mapOf(
+            "dir" to "$buildDir/classes/kotlin/main")
+    )
+
+    // sources
+    sourceDirectories = files(listOf("src/main/kotlin", "src/main/java"))
+    executionData = fileTree(mapOf("dir" to project.rootDir.absolutePath, "include" to "**/build/jacoco/*.exec"))
+}
+
 tasks.create("createClasspathManifest") {
     group = "plugin development"
 
