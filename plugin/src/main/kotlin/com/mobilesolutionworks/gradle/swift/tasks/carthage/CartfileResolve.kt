@@ -35,11 +35,11 @@ internal open class CartfileResolve : Exec() {
             outputs.files(workCartfileResolved)
             outputs.upToDateWhen {
                 val b = if (carthage.updates) {
-                    true
+                    false
                 } else {
                     cartfileResolved.exists()
                 }
-                println("resolve is utd? ${b}")
+                println("resolve is utd? ${b}, cartfileResolved.exists() = ${cartfileResolved.exists()}")
                 b
             }
 

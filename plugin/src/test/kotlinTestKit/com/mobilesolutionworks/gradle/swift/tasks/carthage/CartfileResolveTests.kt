@@ -50,7 +50,7 @@ class CartfileResolveTests {
     }
 
     @Test
-    fun incremental() {
+    fun `incremental will always run because Cartfile-dot-resolved is not created yet`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -76,7 +76,7 @@ class CartfileResolveTests {
 
         gradle.runner.withArguments("carthageCartfileResolve")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageCartfileResolve")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
                 }
     }
 
@@ -211,41 +211,6 @@ class CartfileResolveTests {
                 }
 
         gradle.runner.withArguments("carthageCartfileResolve")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
-                }
-    }
-
-    @Test
-    fun `deleting Cartfile-dot-resolved will redo resolve`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
-        """.trimIndent())
-
-        val build = temporaryFolder.newFile("build.gradle.kts")
-        build.writeText("""
-            plugins {
-                id("com.mobilesolutionworks.gradle.swift")
-            }
-
-            rome {
-                enabled = false
-            }
-
-            carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
-                    rome.map("NullFramework", listOf("NullFramework"))
-                } version "1.0.0"
-            }
-        """.trimIndent())
-
-        gradle.runner.withArguments("carthageCartfileResolve")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
-                }
-
-        File(temporaryFolder.root, "Cartfile.resolved").delete()
-
-        gradle.runner.withArguments("carthageCartfileResolve", "-d")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
                 }
