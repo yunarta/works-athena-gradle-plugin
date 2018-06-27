@@ -49,7 +49,7 @@ class ListMissingTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeListMissing", "--skipLocalCache", "-i")
+        gradle.runner.withArguments("romeListMissing", "--skipLocalCache")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeCreateRomefile")?.outcome)
                     val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
@@ -92,7 +92,7 @@ class ListMissingTests {
     }
 
     @Test
-    fun modification() {
+    fun `DSL modification will redo list missing`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 

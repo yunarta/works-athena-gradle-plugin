@@ -88,7 +88,7 @@ class CarthageBootstrapTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "-i")
+        gradle.runner.withArguments("carthageBootstrap")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageBootstrap")?.outcome)
                 }

@@ -26,8 +26,6 @@ class DownloadTests {
 
     @Test
     fun execution() {
-        val project = ProjectBuilder().withProjectDir(temporaryFolder.root).build()
-
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -53,4 +51,38 @@ class DownloadTests {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeDownload")?.outcome)
                 }
     }
+
+    @Test
+    fun incremental() {
+        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = temporaryFolder.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            rome {
+                enabled = true
+            }
+
+            carthage {
+                github("NullFramework", "yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.0.0"
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("romeDownload")
+                .build().let {
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeDownload")?.outcome)
+                }
+
+        gradle.runner.withArguments("romeDownload")
+                .build().let {
+                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":romeDownload")?.outcome)
+                }
+    }
+
 }

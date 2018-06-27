@@ -90,7 +90,7 @@ class CarthageUpdateTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageUpdate", "-i")
+        gradle.runner.withArguments("carthageUpdate")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageUpdate")?.outcome)
                 }
