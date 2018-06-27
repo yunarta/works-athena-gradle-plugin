@@ -191,11 +191,26 @@ pipeline {
 //        }
     }
 
-//    post {
+    post {
 //        success {
 //            notifyDownstream()
 //        }
-//    }
+        changed {
+            slackSend """
+                ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)
+                ---
+                Build state: ${currentBuild.result}
+            """.stripIndent()
+        }
+
+        unstable {
+            slackSend """
+                ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)
+                ---
+                Build unstable
+            """.stripIndent()
+        }
+    }
 }
 
 def updateVersion() {
