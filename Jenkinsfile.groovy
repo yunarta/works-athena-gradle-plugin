@@ -59,7 +59,7 @@ pipeline {
 
                 echo "Build for test and analyze"
                 sh """echo "Execute test"
-                        ./gradlew cleanTest test -continue
+                        ./gradlew cleanTest test --continue
                         ./gradlew worksGatherReport"""
             }
         }
