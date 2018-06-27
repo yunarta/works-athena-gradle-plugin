@@ -30,12 +30,17 @@ internal open class CartfileResolve : Exec() {
 
 
         with(project) {
-
             // inputs outputs
             inputs.files(cartfile)
             outputs.files(workCartfileResolved)
             outputs.upToDateWhen {
-                !carthage.updates
+                val b = if (carthage.updates) {
+                    true
+                } else {
+                    cartfileResolved.exists()
+                }
+                println("resolve is utd? ${b}")
+                b
             }
 
             executable = "carthage"
@@ -56,18 +61,6 @@ internal open class CartfileResolve : Exec() {
             // dependencies
             tasks.withType<CartfileCreate> {
                 this@CartfileResolve.dependsOn(this)
-            }
-
-            // conditions
-            onlyIf {
-                if (workCartfile.exists()) {
-                    val previousCartfile = workCartfile.readText()
-                    return@onlyIf !tasks.withType(CartfileCreate::class.java).map {
-                        it.content
-                    }.contains(previousCartfile)
-                } else {
-                    carthage.updates || !cartfileResolved.exists()
-                }
             }
         }
     }

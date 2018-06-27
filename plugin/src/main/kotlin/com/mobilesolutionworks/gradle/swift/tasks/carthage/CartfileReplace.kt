@@ -29,14 +29,37 @@ internal open class CartfileReplace : DefaultTask() {
                 this@CartfileReplace.dependsOn(this)
             }
 
-            // conditions
-            onlyIf {
-                if (cartfileResolved.exists()) {
-                    carthage.updates || !workCartfileResolved.exists() || cartfileResolved.readText() != workCartfileResolved.readText()
-                } else {
-                    true
-                }
-            }
+//            // conditions
+//            onlyIf {
+//                // always run Cartfile.resolved is not exist
+//                if (!cartfileResolved.exists()) {
+//                    true
+//                } else {
+//                    // at this phase we would expect that CartfileResolve always produce its output
+//                    if (workCartfile.exists()) {
+//                        cartfileResolved.readText() != workCartfile.readText()
+//                    } else {
+//                        // always run when workCartfile is not exists
+//                        true
+//                    } || carthage.updates
+//                }
+//
+//                when {
+//                    carthage.updates -> true
+//                    cartfileResolved.exists() && workCartfileResolved.exists() -> {
+//
+//                    }
+//                    else -> {
+//
+//                    }
+//                }
+//                if (cartfileResolved.exists()) {
+//
+//                    carthage.updates || !workCartfileResolved.exists() || cartfileResolved.readText() != workCartfileResolved.readText()
+//                } else {
+//                    true
+//                }
+//            }
         }
     }
 

@@ -9,6 +9,7 @@ import org.junit.rules.RuleChain
 import org.junit.rules.TemporaryFolder
 import testKit.DefaultGradleRunner
 import testKit.TestWithCoverage
+import java.io.File
 
 class CartfileResolveTests {
 
@@ -75,14 +76,12 @@ class CartfileResolveTests {
 
         gradle.runner.withArguments("carthageCartfileResolve")
                 .build().let {
-                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageCartfileResolve")?.outcome)
+                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageCartfileResolve")?.outcome)
                 }
     }
 
     @Test
-    fun modification() {
-        val project = ProjectBuilder().withProjectDir(temporaryFolder.root).build()
-
+    fun `DSL change should redo resolve`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -128,36 +127,10 @@ class CartfileResolveTests {
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
                 }
-
-        with(project.file("${project.buildDir}/works-swift/carthage/latest/Cartfile.resolved")) {
-            org.junit.Assert.assertTrue(exists())
-            delete()
-        }
-
-        build.writeText("""
-            plugins {
-                id("com.mobilesolutionworks.gradle.swift")
-            }
-
-            rome {
-                enabled = false
-            }
-
-            carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
-                    rome.map("NullFramework", listOf("NullFramework"))
-                } version "1.1.0"
-            }
-        """.trimIndent())
-
-        gradle.runner.withArguments("carthageCartfileResolve")
-                .build().let {
-                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageCartfileResolve")?.outcome)
-                }
     }
 
     @Test
-    fun `task resolve will be skipped due to Cartfile-dot-resolve exists and update = false`() {
+    fun `deletion of build dir should redo resolve`() {
         val project = ProjectBuilder().withProjectDir(temporaryFolder.root).build()
 
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
@@ -185,10 +158,7 @@ class CartfileResolveTests {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
                 }
 
-        with(project.file("${project.buildDir}/works-swift/carthage/latest/Cartfile.resolved")) {
-            org.junit.Assert.assertTrue(exists())
-            delete()
-        }
+        project.buildDir.deleteRecursively()
 
         build.writeText("""
             plugins {
@@ -208,7 +178,76 @@ class CartfileResolveTests {
 
         gradle.runner.withArguments("carthageCartfileResolve")
                 .build().let {
-                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageCartfileResolve")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
+                }
+    }
+
+    @Test
+    fun `resolve always runs when update = true`() {
+        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = temporaryFolder.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            rome {
+                enabled = false
+            }
+
+            carthage {
+                updates = true
+                github("NullFramework", "yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.0.0"
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("carthageCartfileResolve")
+                .build().let {
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
+                }
+
+        gradle.runner.withArguments("carthageCartfileResolve")
+                .build().let {
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
+                }
+    }
+
+    @Test
+    fun `deleting Cartfile-dot-resolved will redo resolve`() {
+        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = temporaryFolder.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            rome {
+                enabled = false
+            }
+
+            carthage {
+                github("NullFramework", "yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.0.0"
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("carthageCartfileResolve")
+                .build().let {
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
+                }
+
+        File(temporaryFolder.root, "Cartfile.resolved").delete()
+
+        gradle.runner.withArguments("carthageCartfileResolve", "-d")
+                .build().let {
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
                 }
     }
 }

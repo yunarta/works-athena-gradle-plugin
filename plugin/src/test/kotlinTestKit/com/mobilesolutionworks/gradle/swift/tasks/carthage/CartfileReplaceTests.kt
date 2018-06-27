@@ -1,6 +1,5 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
-import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -39,7 +38,6 @@ class CartfileReplaceTests {
             }
 
             carthage {
-                updates = true
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -67,7 +65,6 @@ class CartfileReplaceTests {
             }
 
             carthage {
-                updates = true
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -84,7 +81,48 @@ class CartfileReplaceTests {
     }
 
     @Test
-    fun modification() {
+    fun `DSL change always redo replace`() {
+        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = temporaryFolder.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            rome {
+                enabled = false
+            }
+
+            carthage {
+                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("carthageCartfileReplace")
+                .build().let {
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
+                }
+
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            carthage {
+                github("NullFramework", "yunarta/NullFramework") version "1.1.0"
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("carthageCartfileReplace")
+                .build().let {
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
+                }
+    }
+
+    @Test
+    fun `deleting Cartfile-dot-resolved will redo replace`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -101,22 +139,6 @@ class CartfileReplaceTests {
             carthage {
                 updates = true
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
-            }
-        """.trimIndent())
-
-        gradle.runner.withArguments("carthageCartfileReplace")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
-                }
-
-        build.writeText("""
-            plugins {
-                id("com.mobilesolutionworks.gradle.swift")
-            }
-
-            carthage {
-                updates = true
-                github("NullFramework", "yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())
 
@@ -138,11 +160,11 @@ class CartfileReplaceTests {
 
             carthage {
                 updates = true
-                github("NullFramework", "yunarta/NullFramework") version "1.1.0"
+                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace", "-i")
+        gradle.runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     // this task is up to date because this just check whether should it resolve
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
@@ -150,7 +172,7 @@ class CartfileReplaceTests {
     }
 
     @Test
-    fun `replacing task should be skipped due to no update`() {
+    fun `replace does not execute when no update found (updates = true, build = deleted)`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -177,14 +199,14 @@ class CartfileReplaceTests {
 
         File(temporaryFolder.root, "build").deleteRecursively()
 
-        gradle.runner.withArguments("carthageCartfileReplace", "-i")
+        gradle.runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageCartfileReplace")?.outcome)
                 }
     }
 
     @Test
-    fun `replacing task should be executed due to update`() {
+    fun `replace executed when update found (update = true, build = deleted)`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -226,14 +248,14 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace", "-i")
+        gradle.runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
                 }
     }
 
-    @Test
-    fun `replacing task should be skipped due to updates = false`() {
+    //    @Test
+    fun `replacing executed due to DSL changes, even if updates = false`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -275,12 +297,12 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace", "-i")
+        gradle.runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     File(temporaryFolder.root, "Cartfile.resolved").readText().also {
                         println(it)
                     }
-                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageCartfileReplace")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
 
                 }
     }
