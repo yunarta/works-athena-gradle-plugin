@@ -24,10 +24,13 @@ internal open class CartfileCreate : DefaultTask() {
         description = Strings["CartfileCreate_description"]
 
         with(project) {
-            outputs.file(cartfile)
+
             content = carthage.dependencies.joinToString(System.lineSeparator()) {
                 it.semantic
             }
+
+            // inputs outputs
+            outputs.file(cartfile)
         }
     }
 

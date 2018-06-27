@@ -3,14 +3,16 @@ package com.mobilesolutionworks.gradle.swift.tasks.rome
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert
+import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
 import org.junit.rules.TemporaryFolder
 import testKit.DefaultGradleRunner
 import testKit.TestWithCoverage
+import java.io.File
 
-class CreateRepositoryMapTests {
+class DownloadTests {
 
     val temporaryFolder = TemporaryFolder()
 
@@ -46,14 +48,9 @@ class CreateRepositoryMapTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeCreateRepositoryMap")
+        gradle.runner.withArguments("romeDownload")
                 .build().let {
-                    Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeCreateRepositoryMap")?.outcome)
-
-                    val mapFile = project.file("${project.buildDir}/works-swift/rome/map/NullFramework.txt")
-                    Assert.assertEquals("""
-                        NullFramework = NullFramework
-                    """.trimIndent(), mapFile.readText())
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeDownload")?.outcome)
                 }
     }
 }

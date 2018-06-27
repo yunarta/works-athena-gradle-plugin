@@ -33,9 +33,11 @@ class CarthageUpdateTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
-                updates = false
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -57,8 +59,11 @@ class CarthageUpdateTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -75,9 +80,12 @@ class CarthageUpdateTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
                 updates = false
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())

@@ -34,9 +34,12 @@ class CartfileReplaceTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
                 updates = true
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -59,9 +62,12 @@ class CartfileReplaceTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
                 updates = true
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -73,7 +79,7 @@ class CartfileReplaceTests {
 
         gradle.runner.withArguments("carthageCartfileReplace")
                 .build().let {
-                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageCartfileReplace")?.outcome)
+                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageCartfileReplace")?.outcome)
                 }
     }
 
@@ -88,9 +94,12 @@ class CartfileReplaceTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
                 updates = true
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -107,14 +116,13 @@ class CartfileReplaceTests {
 
             carthage {
                 updates = true
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())
 
         gradle.runner.withArguments("carthageCartfileReplace")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
                 }
 
         File(temporaryFolder.root, "Cartfile.resolved").delete()
@@ -124,17 +132,20 @@ class CartfileReplaceTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
                 updates = true
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileResolve")
+        gradle.runner.withArguments("carthageCartfileReplace", "-i")
                 .build().let {
                     // this task is up to date because this just check whether should it resolve
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
                 }
     }
 
@@ -149,9 +160,12 @@ class CartfileReplaceTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
                 updates = true
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -165,7 +179,7 @@ class CartfileReplaceTests {
 
         gradle.runner.withArguments("carthageCartfileReplace", "-i")
                 .build().let {
-                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageCartfileReplace")?.outcome)
+                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageCartfileReplace")?.outcome)
                 }
     }
 
@@ -180,9 +194,12 @@ class CartfileReplaceTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
                 updates = true
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -199,9 +216,12 @@ class CartfileReplaceTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
                 updates = true
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())
@@ -223,9 +243,12 @@ class CartfileReplaceTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
                 updates = false
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -242,9 +265,12 @@ class CartfileReplaceTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
                 updates = false
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())

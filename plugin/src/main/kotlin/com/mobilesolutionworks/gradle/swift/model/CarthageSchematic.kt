@@ -36,7 +36,7 @@ open class CarthageSchematic {
 
     var updates = false
 
-    var platforms = emptyList<String>()
+//    var platforms = emptyList<String>()
 
     private val declaredDependencies = mutableListOf<CarthageDependency>()
     private val declaredDependencies2 = mutableListOf<CarthageDependency>()
@@ -54,12 +54,12 @@ open class CarthageSchematic {
         rome(it.romeOptions)
         declaredDependencies.add(it)
     }
-
-    internal val hasDeclaredPlatforms: Boolean
-        get() = platforms.isNotEmpty()
-
-    internal val declaredPlatforms: String
-        get() = platforms.joinToString(",")
+//
+//    internal val hasDeclaredPlatforms: Boolean
+//        get() = platforms.isNotEmpty()
+//
+//    internal val declaredPlatforms: String
+//        get() = platforms.joinToString(",")
 }
 
 val Project.carthage: CarthageSchematic

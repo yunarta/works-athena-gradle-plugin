@@ -33,8 +33,11 @@ class CartfileResolveTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -56,8 +59,11 @@ class CartfileResolveTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -69,7 +75,7 @@ class CartfileResolveTests {
 
         gradle.runner.withArguments("carthageCartfileResolve")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageCartfileResolve")?.outcome)
+                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageCartfileResolve")?.outcome)
                 }
     }
 
@@ -86,9 +92,14 @@ class CartfileResolveTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
-                platforms = listOf("iOS")
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("NullFramework", "yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.0.0"
             }
         """.trimIndent())
 
@@ -102,9 +113,14 @@ class CartfileResolveTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
-                platforms = listOf("iOS")
-                github("NullFramework", "yunarta/NullFramework") version "1.1.0"
+                github("NullFramework", "yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.1.0"
             }
         """.trimIndent())
 
@@ -117,20 +133,82 @@ class CartfileResolveTests {
             org.junit.Assert.assertTrue(exists())
             delete()
         }
+
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
-                platforms = listOf("iOS")
-                github("NullFramework", "yunarta/NullFramework") version "1.1.0"
+                github("NullFramework", "yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.1.0"
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("carthageCartfileResolve")
+                .build().let {
+                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageCartfileResolve")?.outcome)
+                }
+    }
+
+    @Test
+    fun `task resolve will be skipped due to Cartfile-dot-resolve exists and update = false`() {
+        val project = ProjectBuilder().withProjectDir(temporaryFolder.root).build()
+
+        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = temporaryFolder.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            rome {
+                enabled = false
+            }
+
+            carthage {
+                github("NullFramework", "yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.0.0"
             }
         """.trimIndent())
 
         gradle.runner.withArguments("carthageCartfileResolve")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileResolve")?.outcome)
+                }
+
+        with(project.file("${project.buildDir}/works-swift/carthage/latest/Cartfile.resolved")) {
+            org.junit.Assert.assertTrue(exists())
+            delete()
+        }
+
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            rome {
+                enabled = false
+            }
+
+            carthage {
+                github("NullFramework", "yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.0.0"
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("carthageCartfileResolve")
+                .build().let {
+                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageCartfileResolve")?.outcome)
                 }
     }
 }

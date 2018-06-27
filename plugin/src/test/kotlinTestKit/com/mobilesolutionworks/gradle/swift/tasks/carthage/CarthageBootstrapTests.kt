@@ -33,9 +33,12 @@ class CarthageBootstrapTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
                 updates = false
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -57,8 +60,11 @@ class CarthageBootstrapTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
@@ -75,16 +81,18 @@ class CarthageBootstrapTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = false
+            }
+
             carthage {
-                updates = false
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())
 
         gradle.runner.withArguments("carthageBootstrap", "-i")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageBootstrap")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageBootstrap")?.outcome)
                     assertEquals(resolved100, File(temporaryFolder.root, "Cartfile.resolved").readText())
                 }
     }

@@ -2,6 +2,7 @@ package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
 import com.mobilesolutionworks.gradle.swift.i18n.Strings
 import com.mobilesolutionworks.gradle.swift.model.carthage
+import com.mobilesolutionworks.gradle.swift.model.xcode
 import com.mobilesolutionworks.gradle.swift.util.withType
 import org.gradle.api.tasks.Exec
 
@@ -29,34 +30,44 @@ internal open class CartfileResolve : Exec() {
 
 
         with(project) {
+
+            // inputs outputs
+            inputs.files(cartfile)
+            outputs.files(workCartfileResolved)
+            outputs.upToDateWhen {
+                !carthage.updates
+            }
+
             executable = "carthage"
             workingDir = file(workPath)
 
+            // task properties
             args(mutableListOf<Any?>().apply {
                 add("update")
                 add("--no-build")
                 add("--no-checkout")
 
-                if (carthage.hasDeclaredPlatforms) {
+                if (xcode.hasDeclaredPlatforms) {
                     add("--platform")
-                    add(carthage.declaredPlatforms)
+                    add(xcode.declaredPlatforms)
                 }
             })
 
+            // dependencies
             tasks.withType<CartfileCreate> {
                 this@CartfileResolve.dependsOn(this)
             }
 
-            inputs.files(cartfile)
-            outputs.files(workCartfileResolved)
-
-            // execution conditions
+            // conditions
             onlyIf {
-                carthage.updates || !cartfileResolved.exists()
-            }
-
-            outputs.upToDateWhen {
-                !carthage.updates
+                if (workCartfile.exists()) {
+                    val previousCartfile = workCartfile.readText()
+                    return@onlyIf !tasks.withType(CartfileCreate::class.java).map {
+                        it.content
+                    }.contains(previousCartfile)
+                } else {
+                    carthage.updates || !cartfileResolved.exists()
+                }
             }
         }
     }

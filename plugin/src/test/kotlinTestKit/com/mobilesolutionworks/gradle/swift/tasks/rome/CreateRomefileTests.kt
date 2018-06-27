@@ -37,8 +37,11 @@ class CreateRomefileTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
+            rome {
+                enabled = true
+            }
+
             carthage {
-                platforms = listOf("iOS")
                 github("NullFramework", "yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"

@@ -1,14 +1,22 @@
 package com.mobilesolutionworks.gradle.swift
 
 import com.mobilesolutionworks.gradle.swift.model.CarthageSchematic
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileCreate
+import com.mobilesolutionworks.gradle.swift.model.RomeSchematic
+import com.mobilesolutionworks.gradle.swift.model.XcodeSchematic
+import com.mobilesolutionworks.gradle.swift.model.rome
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.ActivateUpdate
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileCreate
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileReplace
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileResolve
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.Carthage
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageBootstrap
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageUpdate
 import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRepositoryMap
 import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRomefile
+import com.mobilesolutionworks.gradle.swift.tasks.rome.Download
+import com.mobilesolutionworks.gradle.swift.tasks.rome.ListMissing
+import com.mobilesolutionworks.gradle.swift.tasks.rome.Rome
+import com.mobilesolutionworks.gradle.swift.tasks.rome.Upload
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -16,21 +24,42 @@ class SwiftPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         project.extensions.create("carthage", CarthageSchematic::class.java)
+        project.extensions.create("rome", RomeSchematic::class.java)
+        project.extensions.create("xcode", XcodeSchematic::class.java)
+
         project.afterEvaluate {
             with(it) {
                 file("${project.buildDir}/works-swift/rome/cache").mkdirs()
 
-                tasks.create("carthageCartfileCreate", CartfileCreate::class.java)
-                tasks.create("carthageCartfileResolve", CartfileResolve::class.java)
-                tasks.create("carthageCartfileReplace", CartfileReplace::class.java)
+                tasks.create(Rome.Tasks.RomeCreateRepositoryMap.value, CreateRepositoryMap::class.java)
+                tasks.create(Rome.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
 
-                tasks.create("carthageActivateUpdate", ActivateUpdate::class.java)
+                val list = tasks.create(Rome.Tasks.RomeListMissing.value, ListMissing::class.java)
+                val download = tasks.create(Rome.Tasks.RomeDownload.value, Download::class.java)
+                val upload = tasks.create(Rome.Tasks.RomeUpload.value, Upload::class.java)
 
-                tasks.create("carthageBootstrap", CarthageBootstrap::class.java)
-                tasks.create("carthageUpdate", CarthageUpdate::class.java)
+                tasks.create(Carthage.Tasks.CarthageCartfileCreate.value, CartfileCreate::class.java)
+                tasks.create(Carthage.Tasks.CarthageCartfileResolve.value, CartfileResolve::class.java)
 
-                tasks.create("romeCreateRepositoryMap", CreateRepositoryMap::class.java)
-                tasks.create("romeCreateRomefile", CreateRomefile::class.java)
+                val replace = tasks.create(Carthage.Tasks.CarthageCartfileReplace.value, CartfileReplace::class.java)
+                val activate = tasks.create(Carthage.Tasks.CarthageActivateUpdate.value, ActivateUpdate::class.java)
+                val bootstrap = tasks.create(Carthage.Tasks.CarthageBootstrap.value, CarthageBootstrap::class.java)
+                val update = tasks.create(Carthage.Tasks.CarthageUpdate.value, CarthageUpdate::class.java)
+
+                download.dependsOn(replace)
+                list.dependsOn(replace)
+
+                if (rome.enabled) {
+                    arrayOf(bootstrap, update).forEach {
+                        it.dependsOn(download)
+                        it.finalizedBy(upload)
+
+                        it.onlyIf {
+                            upload.outputs.files.singleFile.readText().isNotBlank()
+                        }
+                    }
+                }
+
             }
         }
     }
