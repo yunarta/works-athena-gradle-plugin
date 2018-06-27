@@ -202,7 +202,7 @@ pipeline {
                 Build ${env.BUILD_DISPLAY_NAME} (<${env.BUILD_URL}|Open>)
                 ---
                 Running on: ${NODE_NAME}
-                Build state: ${currentBuild.result}
+                Build state: ${currentBuild.result == null ? "Success": currentBuild.result}
 
                 Commit#: ${GIT_COMMIT} by ${GIT_AUTHOR_NAME}
             """.stripIndent()
