@@ -35,7 +35,7 @@ class UploadTests {
 
             rome {
                 enabled = true
-                cachePath = file("${"$"}{project.buildDir}/romeCache")
+                cachePath = file("${"$"}{project.rootDir}/romeCache")
             }
 
             carthage {
@@ -64,7 +64,7 @@ class UploadTests {
 
             rome {
                 enabled = true
-                cachePath = file("${"$"}{project.buildDir}/romeCache")
+                cachePath = file("${"$"}{project.rootDir}/romeCache")
             }
 
             carthage {
@@ -99,7 +99,7 @@ class UploadTests {
 
             rome {
                 enabled = true
-                cachePath = file("${"$"}{project.buildDir}/romeCache")
+                cachePath = file("${"$"}{project.rootDir}/romeCache")
             }
 
             carthage {
