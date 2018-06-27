@@ -13,6 +13,7 @@ internal open class CarthageBootstrap : Exec() {
 
         with(project) {
             // inputs outputs
+            inputs.file(project.file("${project.rootDir}/Cartfile.resolved"))
             outputs.dir("$rootDir/Carthage")
 
             // task properties

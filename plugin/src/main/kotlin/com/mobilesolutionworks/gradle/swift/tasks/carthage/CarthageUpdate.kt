@@ -15,6 +15,10 @@ internal open class CarthageUpdate : Exec() {
         description = Strings["CartfileResolve_description"]
 
         with(project) {
+            // inputs outputs
+            inputs.file(project.file("${project.rootDir}/Cartfile.resolved"))
+            outputs.dir("$rootDir/Carthage")
+
             // task properties
             executable = "carthage"
             workingDir = file(rootDir)
