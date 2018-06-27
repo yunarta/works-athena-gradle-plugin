@@ -9,7 +9,7 @@ import org.junit.rules.TemporaryFolder
 import testKit.DefaultGradleRunner
 import testKit.TestWithCoverage
 
-class DownloadTests {
+class RomeDownloadTests {
 
     val temporaryFolder = TemporaryFolder()
 

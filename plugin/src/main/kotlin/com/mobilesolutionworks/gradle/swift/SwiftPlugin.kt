@@ -13,10 +13,10 @@ import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageBootstrap
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageUpdate
 import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRepositoryMap
 import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRomefile
-import com.mobilesolutionworks.gradle.swift.tasks.rome.Download
+import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeDownload
 import com.mobilesolutionworks.gradle.swift.tasks.rome.ListMissing
 import com.mobilesolutionworks.gradle.swift.tasks.rome.Rome
-import com.mobilesolutionworks.gradle.swift.tasks.rome.Upload
+import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeUpload
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -35,8 +35,8 @@ class SwiftPlugin : Plugin<Project> {
                 tasks.create(Rome.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
 
                 val list = tasks.create(Rome.Tasks.RomeListMissing.value, ListMissing::class.java)
-                val download = tasks.create(Rome.Tasks.RomeDownload.value, Download::class.java)
-                val upload = tasks.create(Rome.Tasks.RomeUpload.value, Upload::class.java)
+                val download = tasks.create(Rome.Tasks.RomeDownload.value, RomeDownload::class.java)
+                val upload = tasks.create(Rome.Tasks.RomeUpload.value, RomeUpload::class.java)
 
                 tasks.create(Carthage.Tasks.CarthageCartfileCreate.value, CartfileCreate::class.java)
                 tasks.create(Carthage.Tasks.CarthageCartfileResolve.value, CartfileResolve::class.java)

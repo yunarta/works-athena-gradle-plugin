@@ -10,7 +10,7 @@ import testKit.DefaultGradleRunner
 import testKit.TestWithCoverage
 import java.io.File
 
-class UploadTests {
+class RomeUploadTests {
 
     val temporaryFolder = TemporaryFolder()
 
