@@ -11,7 +11,6 @@ internal open class CarthageBootstrap : Exec() {
         group = Carthage.group
         description = Strings["CartfileResolve_description"]
 
-
         with(project) {
             // task properties
             executable = "carthage"

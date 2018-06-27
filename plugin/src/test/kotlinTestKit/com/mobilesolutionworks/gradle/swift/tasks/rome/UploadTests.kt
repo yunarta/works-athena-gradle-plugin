@@ -1,4 +1,4 @@
-package com.mobilesolutionworks.gradle.swift.tasks.carthage
+package com.mobilesolutionworks.gradle.swift.tasks.rome
 
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
@@ -9,7 +9,7 @@ import org.junit.rules.TemporaryFolder
 import testKit.DefaultGradleRunner
 import testKit.TestWithCoverage
 
-class CarthageBootstrapTests {
+class UploadTests {
 
     val temporaryFolder = TemporaryFolder()
 
@@ -33,23 +33,25 @@ class CarthageBootstrapTests {
             }
 
             rome {
-                enabled = false
+                enabled = true
+                cachePath = file("${"$"}{project.buildDir}/romeCache")
             }
 
             carthage {
-                updates = false
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("NullFramework", "yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.0.0"
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap")
+        gradle.runner.withArguments("carthageBootstrap", "-i")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageBootstrap")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
     }
 
     @Test
-    fun `DSL change should always run bootstrap (updates = false)`() {
+    fun incremental() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -60,36 +62,26 @@ class CarthageBootstrapTests {
             }
 
             rome {
-                enabled = false
+                enabled = true
+                cachePath = file("${"$"}{project.buildDir}/romeCache")
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("NullFramework", "yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.0.0"
             }
         """.trimIndent())
 
         gradle.runner.withArguments("carthageBootstrap")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageBootstrap")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
 
-        build.writeText("""
-            plugins {
-                id("com.mobilesolutionworks.gradle.swift")
-            }
-
-            rome {
-                enabled = false
-            }
-
-            carthage {
-                github("NullFramework", "yunarta/NullFramework") version "1.1.0"
-            }
-        """.trimIndent())
-
         gradle.runner.withArguments("carthageBootstrap")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageBootstrap")?.outcome)
+                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":romeUpload")?.outcome)
                 }
     }
+
 }

@@ -9,7 +9,6 @@ import org.junit.rules.RuleChain
 import org.junit.rules.TemporaryFolder
 import testKit.DefaultGradleRunner
 import testKit.TestWithCoverage
-import java.io.File
 
 class CartfileResolveTests {
 

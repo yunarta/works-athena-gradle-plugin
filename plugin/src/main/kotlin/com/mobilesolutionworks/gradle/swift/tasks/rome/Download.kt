@@ -10,6 +10,7 @@ internal open class Download : Exec() {
         group = Rome.group
 
         with(project) {
+            outputs.dir("$rootDir/Carthage")
 
             // task properties
             executable = "rome"

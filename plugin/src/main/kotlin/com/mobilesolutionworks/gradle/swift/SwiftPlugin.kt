@@ -47,15 +47,17 @@ class SwiftPlugin : Plugin<Project> {
                 val update = tasks.create(Carthage.Tasks.CarthageUpdate.value, CarthageUpdate::class.java)
 
                 download.dependsOn(replace)
+
                 list.dependsOn(replace)
+                list.shouldRunAfter(download)
 
                 if (rome.enabled) {
                     arrayOf(bootstrap, update).forEach {
-                        it.dependsOn(download)
+                        it.dependsOn(download, list)
                         it.finalizedBy(upload)
 
                         it.onlyIf {
-                            upload.outputs.files.singleFile.readText().isNotBlank()
+                            list.outputs.files.singleFile.readText().isNotBlank()
                         }
                     }
                 }

@@ -9,7 +9,7 @@ pipeline {
 
     options {
         buildDiscarder(logRotator(numToKeepStr: buildCount))
-        // disableConcurrentBuilds()
+        disableConcurrentBuilds()
     }
 
     stages {
@@ -75,10 +75,10 @@ pipeline {
                 echo "Publishing test and analyze result"
 
                 jacoco execPattern: 'build/reports/jacoco/exec/root/*.exec', classPattern: 'plugin/build/classes/kotlin/main', sourcePattern: ''
-                junit allowEmptyResults: true, testResults: 'build/reports/junit/xml/**/*.xml',  healthScaleFactor: 100.0
+                junit allowEmptyResults: true, testResults: 'build/reports/junit/xml/**/*.xml', healthScaleFactor: 100.0
                 checkstyle canComputeNew: false, defaultEncoding: '', healthy: '', pattern: 'build/reports/checkstyle/**/*.xml', unHealthy: ''
 
-//                codeCoverage()
+                codeCoverage()
             }
         }
 
@@ -197,9 +197,9 @@ pipeline {
 //        }
         changed {
             slackSend """
-                JOB: ${GIT_URL} 
-                BRANCH: ${env.GIT_BRANCH} 
-                BUILD ${env.BUILD_DISPLAY_NAME}(<${env.BUILD_URL}|Open>)
+                Job: ${GIT_URL} 
+                Branch: ${env.GIT_BRANCH} 
+                Build ${env.BUILD_DISPLAY_NAME} (<${env.BUILD_URL}|Open>)
                 ---
                 Running on: ${NODE_NAME}
                 Build state: ${currentBuild.result}

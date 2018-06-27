@@ -8,13 +8,6 @@ internal open class ListMissing : Exec() {
 
     private val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
 
-    // Specify outputFile property as
-    // command line option.
-    // Use as --outputFile filename.
-    @Option(option = "skipLocalCache",
-            description = "Skip local cache during list check")
-    var skipLocalCache = false
-
     init {
         group = Rome.group
         with(project) {
