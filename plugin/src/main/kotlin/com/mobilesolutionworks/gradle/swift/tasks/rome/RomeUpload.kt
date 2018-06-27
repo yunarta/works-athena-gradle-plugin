@@ -1,7 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
 import com.mobilesolutionworks.gradle.swift.model.xcode
-import com.mobilesolutionworks.gradle.swift.util.withType
 import org.gradle.api.tasks.Exec
 
 internal open class RomeUpload : Exec() {
@@ -31,8 +30,8 @@ internal open class RomeUpload : Exec() {
             }
 
             // dependencies
-            tasks.withType<CreateRomefile> {
-                this@RomeUpload.dependsOn(this)
+            tasks.withType(CreateRomefile::class.java).forEach {
+                this@RomeUpload.dependsOn(it)
             }
 
             doLast {

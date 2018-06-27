@@ -2,7 +2,6 @@ package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
 import com.mobilesolutionworks.gradle.swift.i18n.Strings
 import com.mobilesolutionworks.gradle.swift.model.xcode
-import com.mobilesolutionworks.gradle.swift.util.withType
 import org.gradle.api.tasks.Exec
 
 /**
@@ -32,12 +31,12 @@ internal open class CarthageUpdate : Exec() {
             })
 
             // dependencies
-            tasks.withType<ActivateUpdate> {
-                this@CarthageUpdate.dependsOn(this)
+            tasks.withType(ActivateUpdate::class.java).forEach {
+                this@CarthageUpdate.dependsOn(it)
             }
 
-            tasks.withType<CartfileResolve> {
-                this@CarthageUpdate.dependsOn(this)
+            tasks.withType(CartfileResolve::class.java).forEach {
+                this@CarthageUpdate.dependsOn(it)
             }
         }
     }

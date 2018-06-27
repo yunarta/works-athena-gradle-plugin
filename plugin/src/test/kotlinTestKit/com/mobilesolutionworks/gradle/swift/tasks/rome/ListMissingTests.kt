@@ -49,9 +49,37 @@ class ListMissingTests {
 
         gradle.runner.withArguments("romeListMissing")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeCreateRomefile")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
                     val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
                     assertEquals("NullFramework 1.0.0 : -iOS", missing.readText().trimMargin())
+                }
+
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            xcode {
+                platforms = listOf("ios", "macos")
+            }
+
+            rome {
+                enabled = true
+                cachePath = file("${"$"}{project.buildDir}/romeCache")
+            }
+
+            carthage {
+                github("NullFramework", "yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.0.0"
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("romeListMissing")
+                .build().let {
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
+                    val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
+                    assertEquals("NullFramework 1.0.0 : -iOS -Mac", missing.readText().trimMargin())
                 }
     }
 
@@ -80,12 +108,12 @@ class ListMissingTests {
 
         gradle.runner.withArguments("romeListMissing")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeCreateRomefile")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
                 }
 
         gradle.runner.withArguments("romeListMissing")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":romeCreateRomefile")?.outcome)
+                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":romeListMissing")?.outcome)
                 }
     }
 

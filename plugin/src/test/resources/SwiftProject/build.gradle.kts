@@ -42,9 +42,9 @@ carthage {
 //        val target = file("$buildDir/works-swift/rome/localRepositoryMap.txt")
 //
 //        val repositoryMap = carthage.dependencies.mapNotNull {
-//            val romeOptions = it.romeOptions
-//            if (romeOptions.frameworks.isNotEmpty()) {
-//                "${romeOptions.key} = ${romeOptions.frameworks.joinToString(", ")}"
+//            val options = it.options
+//            if (options.frameworks.isNotEmpty()) {
+//                "${options.key} = ${options.frameworks.joinToString(", ")}"
 //            } else {
 //                null
 //            }
@@ -81,7 +81,7 @@ carthage {
 //                val romeText = """
 //[Cache]
 //S3-Bucket = ios-dev-bucket
-//local = $buildDir/romeOptions/
+//local = $buildDir/options/
 //
 //[RepositoryMap]
 //$repositoryMap

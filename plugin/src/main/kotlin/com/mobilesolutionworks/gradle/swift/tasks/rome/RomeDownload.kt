@@ -1,7 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
 import com.mobilesolutionworks.gradle.swift.model.xcode
-import com.mobilesolutionworks.gradle.swift.util.withType
 import org.gradle.api.tasks.Exec
 
 internal open class RomeDownload : Exec() {
@@ -26,8 +25,8 @@ internal open class RomeDownload : Exec() {
             })
 
             // dependencies
-            tasks.withType<CreateRomefile> {
-                this@RomeDownload.dependsOn(this)
+            tasks.withType(CreateRomefile::class.java).forEach {
+                this@RomeDownload.dependsOn(it)
             }
         }
     }

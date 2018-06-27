@@ -22,7 +22,7 @@ open class XcodeSchematic {
         }
 
     internal val hasDeclaredPlatforms: Boolean
-        get() = platforms.isNotEmpty()
+        get() = !platforms.isEmpty()
 
     internal val declaredPlatforms: String
         get() = platforms.joinToString(",")

@@ -1,7 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
 import com.mobilesolutionworks.gradle.swift.model.rome
-import com.mobilesolutionworks.gradle.swift.util.withType
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -14,9 +13,9 @@ internal open class CreateRomefile : DefaultTask() {
         group = Rome.group
 
         with(project) {
-            tasks.withType<CreateRepositoryMap> {
-                this@CreateRomefile.dependsOn(this)
-                this@CreateRomefile.inputs.files(this.outputs)
+            tasks.withType(CreateRepositoryMap::class.java).forEach {
+                this@CreateRomefile.dependsOn(it)
+                this@CreateRomefile.inputs.files(it.outputs)
             }
             outputs.file(romefile)
         }

@@ -3,7 +3,6 @@ package com.mobilesolutionworks.gradle.swift.tasks.carthage
 import com.mobilesolutionworks.gradle.swift.i18n.Strings
 import com.mobilesolutionworks.gradle.swift.model.carthage
 import com.mobilesolutionworks.gradle.swift.model.xcode
-import com.mobilesolutionworks.gradle.swift.util.withType
 import org.gradle.api.tasks.Exec
 
 /**
@@ -57,8 +56,8 @@ internal open class CartfileResolve : Exec() {
             })
 
             // dependencies
-            tasks.withType<CartfileCreate> {
-                this@CartfileResolve.dependsOn(this)
+            tasks.withType(CartfileCreate::class.java).forEach {
+                this@CartfileResolve.dependsOn(it)
             }
         }
     }

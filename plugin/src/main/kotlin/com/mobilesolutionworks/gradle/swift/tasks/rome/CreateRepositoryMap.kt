@@ -14,7 +14,7 @@ internal open class CreateRepositoryMap : DefaultTask() {
     init {
         with(project) {
             repositoriesMap = carthage.dependencies.mapNotNull {
-                val options = it.romeOptions
+                val options = it.options
                 if (options.frameworks.isNotEmpty()) {
                     RomeMap(options.key, "${options.key} = ${options.frameworks.joinToString(", ")}")
                 } else {

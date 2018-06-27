@@ -1,8 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
 import com.mobilesolutionworks.gradle.swift.i18n.Strings
-import com.mobilesolutionworks.gradle.swift.model.carthage
-import com.mobilesolutionworks.gradle.swift.util.withType
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -25,8 +23,8 @@ internal open class CartfileReplace : DefaultTask() {
             outputs.files(cartfileResolved)
 
             // dependencies
-            tasks.withType<CartfileResolve> {
-                this@CartfileReplace.dependsOn(this)
+            tasks.withType(CartfileResolve::class.java).forEach {
+                this@CartfileReplace.dependsOn(it)
             }
 
 //            // conditions

@@ -2,7 +2,6 @@ package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
 import com.mobilesolutionworks.gradle.swift.i18n.Strings
 import com.mobilesolutionworks.gradle.swift.model.xcode
-import com.mobilesolutionworks.gradle.swift.util.withType
 import org.gradle.api.tasks.Exec
 
 internal open class CarthageBootstrap : Exec() {
@@ -29,8 +28,8 @@ internal open class CarthageBootstrap : Exec() {
             })
 
             // dependencies
-            tasks.withType<CartfileReplace> {
-                this@CarthageBootstrap.dependsOn(this)
+            tasks.withType(CartfileReplace::class.java).forEach {
+                this@CarthageBootstrap.dependsOn(it)
             }
         }
     }
