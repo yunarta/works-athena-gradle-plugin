@@ -16,6 +16,10 @@ repositories {
     mavenCentral()
 }
 
+worksJacoco {
+    hasTestKit = true
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
@@ -26,6 +30,7 @@ sourceSets {
         java.srcDir("src/test/kotlinTestKit")
     }
 }
+
 dependencies {
     compileOnly(gradleApi())
     implementation(kotlin("stdlib-jdk8"))
