@@ -47,7 +47,7 @@ class ListMissingTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeListMissing", "--skipLocalCache")
+        gradle.runner.withArguments("romeListMissing")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeCreateRomefile")?.outcome)
                     val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
@@ -78,12 +78,12 @@ class ListMissingTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeListMissing", "--skipLocalCache")
+        gradle.runner.withArguments("romeListMissing")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeCreateRomefile")?.outcome)
                 }
 
-        gradle.runner.withArguments("romeListMissing", "--skipLocalCache")
+        gradle.runner.withArguments("romeListMissing")
                 .build().let {
                     assertEquals(TaskOutcome.UP_TO_DATE, it.task(":romeCreateRomefile")?.outcome)
                 }
@@ -112,7 +112,7 @@ class ListMissingTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeListMissing", "--skipLocalCache")
+        gradle.runner.withArguments("romeListMissing")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
                 }
@@ -135,7 +135,7 @@ class ListMissingTests {
         """.trimIndent())
 
 
-        gradle.runner.withArguments("romeListMissing", "--skipLocalCache", "-i")
+        gradle.runner.withArguments("romeListMissing", "-i")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
                 }
