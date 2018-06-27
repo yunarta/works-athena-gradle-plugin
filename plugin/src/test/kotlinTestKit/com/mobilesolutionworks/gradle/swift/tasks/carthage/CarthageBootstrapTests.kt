@@ -50,7 +50,7 @@ class CarthageBootstrapTests {
     }
 
     @Test
-    fun `replacing task should be executed even if updates = false`() {
+    fun `DSL change should always run bootstrap (updates = false)`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -73,8 +73,6 @@ class CarthageBootstrapTests {
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageBootstrap")?.outcome)
                 }
-        val resolved100 = File(temporaryFolder.root, "Cartfile.resolved").readText()
-        File(temporaryFolder.root, "build").deleteRecursively()
 
         build.writeText("""
             plugins {
@@ -93,7 +91,6 @@ class CarthageBootstrapTests {
         gradle.runner.withArguments("carthageBootstrap", "-i")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageBootstrap")?.outcome)
-                    assertEquals(resolved100, File(temporaryFolder.root, "Cartfile.resolved").readText())
                 }
     }
 }

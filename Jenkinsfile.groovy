@@ -78,7 +78,7 @@ pipeline {
                 junit allowEmptyResults: true, testResults: 'build/reports/junit/xml/**/*.xml',  healthScaleFactor: 100.0
                 checkstyle canComputeNew: false, defaultEncoding: '', healthy: '', pattern: 'build/reports/checkstyle/**/*.xml', unHealthy: ''
 
-                codeCoverage()
+//                codeCoverage()
             }
         }
 
