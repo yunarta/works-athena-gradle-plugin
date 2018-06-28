@@ -59,7 +59,9 @@ pipeline {
 
                 echo "Build for test and analyze"
                 sh """echo "Execute test"
-                        ./gradlew ${seedEval("test", [1: "cleanTest", "else": "clean"])} test -PignoreFailures=${seedEval("test", [1: "false", "else": "true"])} ${seedEval("test", [1: "--fail-fast", "else": ""])}
+                        ./gradlew ${seedEval("test", [1: "cleanTest", "else": "clean"])} test -PignoreFailures=${
+                    seedEval("test", [1: "false", "else": "true"])
+                } ${seedEval("test", [1: "--fail-fast", "else": ""])}
                         ./gradlew worksGatherReport"""
             }
         }
@@ -204,7 +206,7 @@ pipeline {
                 Build ${env.BUILD_DISPLAY_NAME} (<${env.BUILD_URL}|Open>)
                 ---
                 Running on: ${NODE_NAME}
-                Build state: ${currentBuild.result == null ? "Success": currentBuild.result}
+                Build state: ${currentBuild.result == null ? "Success" : currentBuild.result}
 
                 Commit#: ${GIT_COMMIT} by ${GIT_AUTHOR_NAME}
             """.stripIndent()
@@ -280,7 +282,10 @@ def publish(String repo) {
 }
 
 def codeCoverage() {
-    withCredentials([[$class: 'StringBinding', credentialsId: "codecov-token", variable: "CODECOV_TOKEN"]]) {
-        sh "curl -s https://codecov.io/bash | bash -s - -f build/reports/jacoco/xml/root/coverage.xml"
+    echo currentBuild.result
+    if (currentBuild.result == null) {
+        withCredentials([[$class: 'StringBinding', credentialsId: "codecov-token", variable: "CODECOV_TOKEN"]]) {
+            sh "curl -s https://codecov.io/bash | bash -s - -f build/reports/jacoco/xml/root/coverage.xml"
+        }
     }
 }
