@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
+import com.mobilesolutionworks.gradle.swift.model.rome
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -52,4 +53,38 @@ class CreateRomefileTests {
                     assertEquals(true, text.contains("NullFramework = NullFramework"))
                 }
     }
+
+    @Test
+    fun `test s3Bucket`() {
+        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = temporaryFolder.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            rome {
+                enabled = true
+                s3Bucket = "s3Bucket"
+            }
+
+            carthage {
+                github("yunarta/NullFramework") { rome ->
+                    rome.map("NullFramework", listOf("NullFramework"))
+                } version "1.0.0"
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("romeCreateRomefile")
+                .build().let {
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeCreateRomefile")?.outcome)
+
+                    val text = File(temporaryFolder.root, "romefile").readText()
+                    assertEquals(true, text.contains("S3-Bucket = s3Bucket"))
+                    assertEquals(true, text.contains("NullFramework = NullFramework"))
+                }
+    }
+
 }

@@ -21,6 +21,7 @@ import com.mobilesolutionworks.gradle.swift.tasks.xcode.Xcode
 import com.mobilesolutionworks.gradle.swift.tasks.xcode.XcodeBuildInfo
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.jfrog.gradle.plugin.artifactory.ArtifactoryPlugin
 
 class SwiftPlugin : Plugin<Project> {
 
@@ -28,6 +29,8 @@ class SwiftPlugin : Plugin<Project> {
         project.extensions.create("carthage", CarthageSchematic::class.java)
         project.extensions.create("rome", RomeSchematic::class.java)
         project.extensions.create("xcode", XcodeSchematic::class.java)
+
+        project.pluginManager.apply(ArtifactoryPlugin::class.java)
 
         project.afterEvaluate {
             with(it) {
@@ -45,7 +48,8 @@ class SwiftPlugin : Plugin<Project> {
                 tasks.create(Carthage.Tasks.CarthageCartfileResolve.value, CartfileResolve::class.java)
 
                 val replace = tasks.create(Carthage.Tasks.CarthageCartfileReplace.value, CartfileReplace::class.java)
-                val activate = tasks.create(Carthage.Tasks.CarthageActivateUpdate.value, ActivateUpdate::class.java)
+
+                tasks.create(Carthage.Tasks.CarthageActivateUpdate.value, ActivateUpdate::class.java)
                 val bootstrap = tasks.create(Carthage.Tasks.CarthageBootstrap.value, CarthageBootstrap::class.java)
                 val update = tasks.create(Carthage.Tasks.CarthageUpdate.value, CarthageUpdate::class.java)
 

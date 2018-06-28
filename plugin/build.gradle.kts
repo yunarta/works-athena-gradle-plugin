@@ -28,6 +28,7 @@ val sourceSets: SourceSetContainer = java.sourceSets
 sourceSets {
     "test" {
         java.srcDir("src/test/kotlinTestKit")
+        java.srcDir("src/test/kotlinCoverage")
     }
 }
 
@@ -36,6 +37,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
     implementation("commons-io:commons-io:2.6")
+    implementation("org.jfrog.buildinfo:build-info-extractor-gradle:4.7.4")
 
     testImplementation(gradleTestKit())
     testImplementation("junit:junit:4.12")
