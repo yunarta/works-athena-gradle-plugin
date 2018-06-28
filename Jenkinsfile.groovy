@@ -193,6 +193,10 @@ pipeline {
 //        success {
 //            notifyDownstream()
 //        }
+        failure {
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'plugin/build/reports/tests/test', reportFiles: 'index.html', reportName: 'Failure Report', reportTitles: ''])
+        }
+        
         changed {
             slackSend """
                 Job: ${GIT_URL} 
