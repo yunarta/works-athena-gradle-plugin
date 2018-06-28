@@ -35,6 +35,6 @@ class XcodeSchematicTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("xcodeBuildInfo")
+        gradle.runner.withArguments("xcodeBuildInfo").buildAndFail()
     }
 }
