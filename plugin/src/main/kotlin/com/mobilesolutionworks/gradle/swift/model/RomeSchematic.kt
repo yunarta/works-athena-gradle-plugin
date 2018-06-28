@@ -6,7 +6,7 @@ import java.io.File
 
 open class RomeSchematic {
 
-    var enabled = true
+    var enabled = false
 
     var s3Bucket: String? = null
 
