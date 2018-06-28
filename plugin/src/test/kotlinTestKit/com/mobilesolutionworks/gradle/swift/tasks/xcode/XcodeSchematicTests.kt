@@ -20,7 +20,7 @@ class XcodeSchematicTests {
             .around(gradle)
 
     @Test
-    fun `gradle should fail if xcode platform is empty`() {
+    fun `gradle should fail if xcode platforms is empty`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 

@@ -1,8 +1,5 @@
-package com.mobilesolutionworks.gradle.swift.tasks.rome
+package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import org.gradle.testfixtures.ProjectBuilder
-import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
@@ -10,7 +7,7 @@ import org.junit.rules.TemporaryFolder
 import testKit.DefaultGradleRunner
 import testKit.TestWithCoverage
 
-class CreateRepositoryMapTests {
+class AthenaUploadTests {
 
     val temporaryFolder = TemporaryFolder()
 
@@ -24,8 +21,6 @@ class CreateRepositoryMapTests {
 
     @Test
     fun execution() {
-        val project = ProjectBuilder().withProjectDir(temporaryFolder.root).build()
-
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -35,25 +30,25 @@ class CreateRepositoryMapTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
-            rome {
+            xcode {
+                platforms = listOf("iOS")
+            }
+
+            athena {
                 enabled = true
             }
 
             carthage {
-                github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
-                } version "1.0.0"
+                github("yunarta/FrameworkA")
+                github("yunarta/NameOnly") { options ->
+                    options.map("NameOnly", listOf("FrameworkB", "FrameworkC"))
+                }
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeCreateRepositoryMap")
+        gradle.runner.withArguments("athenaUpload", "--parallel")
                 .build().let {
-                    Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeCreateRepositoryMap")?.outcome)
-
-                    val mapFile = project.file("${project.buildDir}/works-swift/rome/map/NullFramework.txt")
-                    Assert.assertEquals("""
-                        NullFramework = NullFramework
-                    """.trimIndent(), mapFile.readText())
+                    // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
     }
 }

@@ -2,14 +2,17 @@ package com.mobilesolutionworks.gradle.swift.model
 
 import org.gradle.api.Project
 
-abstract class CarthageDependency() {
+abstract class CarthageDependency {
+
+    abstract val org: String
+    abstract val module: String
 
     abstract val semantic: String
 
     val options = FrameworkOptions()
 }
 
-class CarthageGitHub(private val repo: String) : CarthageDependency() {
+class CarthageGitHub(val repo: String) : CarthageDependency() {
 
     private var versioning: String = ""
 
@@ -28,6 +31,16 @@ class CarthageGitHub(private val repo: String) : CarthageDependency() {
     override val semantic: String
         get() {
             return "github \"$repo\"$versioning"
+        }
+
+    override val org: String
+        get() {
+            return repo.substringBefore("/")
+        }
+
+    override val module: String
+        get() {
+            return repo.substringAfter("/")
         }
 }
 

@@ -1,6 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.model
 
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class XcodeSchematicCoverage {

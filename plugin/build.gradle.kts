@@ -17,6 +17,7 @@ repositories {
 }
 
 worksJacoco {
+    onlyRunCoverageWhenReporting = true
     hasTestKit = true
 }
 
@@ -37,7 +38,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
     implementation("commons-io:commons-io:2.6")
-    implementation("org.jfrog.buildinfo:build-info-extractor-gradle:4.7.4")
+    implementation("commons-io:commons-io:2.6")
 
     testImplementation(gradleTestKit())
     testImplementation("junit:junit:4.12")

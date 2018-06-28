@@ -41,8 +41,8 @@ class ListMissingTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") { rome ->
-                    rome.map("NullFramework", listOf("NullFramework"))
+                github("yunarta/NullFramework") { options ->
+                    options.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -69,8 +69,8 @@ class ListMissingTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") { rome ->
-                    rome.map("NullFramework", listOf("NullFramework"))
+                github("yunarta/NullFramework") { options ->
+                    options.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -100,8 +100,8 @@ class ListMissingTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") { rome ->
-                    rome.map("NullFramework", listOf("NullFramework"))
+                github("yunarta/NullFramework") { options ->
+                    options.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -134,8 +134,8 @@ class ListMissingTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") { rome ->
-                    rome.map("NullFramework", listOf("NullFramework"))
+                github("yunarta/NullFramework") { options ->
+                    options.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -156,8 +156,8 @@ class ListMissingTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") { rome ->
-                    rome.map("NullFramework", listOf("NullFramework"))
+                github("yunarta/NullFramework") { options ->
+                    options.map("NullFramework", listOf("NullFramework"))
                 } version "1.1.0"
             }
         """.trimIndent())

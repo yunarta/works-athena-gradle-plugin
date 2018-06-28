@@ -1,9 +1,13 @@
 package com.mobilesolutionworks.gradle.swift
 
+import com.mobilesolutionworks.gradle.swift.model.AthenaSchematic
 import com.mobilesolutionworks.gradle.swift.model.CarthageSchematic
 import com.mobilesolutionworks.gradle.swift.model.RomeSchematic
 import com.mobilesolutionworks.gradle.swift.model.XcodeSchematic
+import com.mobilesolutionworks.gradle.swift.model.athena
 import com.mobilesolutionworks.gradle.swift.model.rome
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaCreatePackage
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaUpload
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.ActivateUpdate
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileCreate
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileReplace
@@ -21,7 +25,6 @@ import com.mobilesolutionworks.gradle.swift.tasks.xcode.Xcode
 import com.mobilesolutionworks.gradle.swift.tasks.xcode.XcodeBuildInfo
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.jfrog.gradle.plugin.artifactory.ArtifactoryPlugin
 
 class SwiftPlugin : Plugin<Project> {
 
@@ -29,21 +32,13 @@ class SwiftPlugin : Plugin<Project> {
         project.extensions.create("carthage", CarthageSchematic::class.java)
         project.extensions.create("rome", RomeSchematic::class.java)
         project.extensions.create("xcode", XcodeSchematic::class.java)
-
-        project.pluginManager.apply(ArtifactoryPlugin::class.java)
+        project.extensions.create("athena", AthenaSchematic::class.java)
 
         project.afterEvaluate {
             with(it) {
                 file("${project.buildDir}/works-swift/rome/cache").mkdirs()
 
                 tasks.create(Xcode.Tasks.XcodeBuildInfo.value, XcodeBuildInfo::class.java)
-                tasks.create(Rome.Tasks.RomeCreateRepositoryMap.value, CreateRepositoryMap::class.java)
-                tasks.create(Rome.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
-
-                val list = tasks.create(Rome.Tasks.RomeListMissing.value, ListMissing::class.java)
-                val download = tasks.create(Rome.Tasks.RomeDownload.value, RomeDownload::class.java)
-                val upload = tasks.create(Rome.Tasks.RomeUpload.value, RomeUpload::class.java)
-
                 tasks.create(Carthage.Tasks.CarthageCartfileCreate.value, CartfileCreate::class.java)
                 tasks.create(Carthage.Tasks.CarthageCartfileResolve.value, CartfileResolve::class.java)
 
@@ -53,12 +48,21 @@ class SwiftPlugin : Plugin<Project> {
                 val bootstrap = tasks.create(Carthage.Tasks.CarthageBootstrap.value, CarthageBootstrap::class.java)
                 val update = tasks.create(Carthage.Tasks.CarthageUpdate.value, CarthageUpdate::class.java)
 
-                download.dependsOn(replace)
 
-                list.dependsOn(replace)
-                list.shouldRunAfter(download)
 
                 if (rome.enabled) {
+                    tasks.create(Rome.Tasks.RomeCreateRepositoryMap.value, CreateRepositoryMap::class.java)
+                    tasks.create(Rome.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
+
+                    val list = tasks.create(Rome.Tasks.RomeListMissing.value, ListMissing::class.java)
+                    val download = tasks.create(Rome.Tasks.RomeDownload.value, RomeDownload::class.java)
+                    val upload = tasks.create(Rome.Tasks.RomeUpload.value, RomeUpload::class.java)
+
+                    download.dependsOn(replace)
+
+                    list.dependsOn(replace)
+                    list.shouldRunAfter(download)
+
                     arrayOf(bootstrap, update).forEach {
                         it.dependsOn(download, list)
                         it.finalizedBy(upload)
@@ -67,6 +71,32 @@ class SwiftPlugin : Plugin<Project> {
                             list.outputs.files.singleFile.readText().isNotBlank()
                         }
                     }
+                }
+
+                if (athena.enabled) {
+                    val upload = tasks.create("athenaUpload", AthenaUpload::class.java)
+                    tasks.create("athenaCreatePackage", AthenaCreatePackage::class.java)
+
+//                    tasks.create(Rome.Tasks.RomeCreateRepositoryMap.value, CreateRepositoryMap::class.java)
+//                    tasks.create(Rome.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
+//
+//                    val list = tasks.create(Rome.Tasks.RomeListMissing.value, ListMissing::class.java)
+//                    val download = tasks.create(Rome.Tasks.RomeDownload.value, RomeDownload::class.java)
+////                    val upload = tasks.create(Rome.Tasks.RomeUpload.value, RomeUpload::class.java)
+//
+//                    download.dependsOn(replace)
+//
+//                    list.dependsOn(replace)
+//                    list.shouldRunAfter(download)
+//
+//                    arrayOf(bootstrap, update).forEach {
+//                        it.dependsOn(download, list)
+//                        it.finalizedBy(upload)
+//
+//                        it.onlyIf {
+//                            list.outputs.files.singleFile.readText().isNotBlank()
+//                        }
+//                    }
                 }
             }
         }

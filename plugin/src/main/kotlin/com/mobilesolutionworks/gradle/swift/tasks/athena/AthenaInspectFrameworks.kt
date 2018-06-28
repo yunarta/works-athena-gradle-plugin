@@ -2,15 +2,13 @@ package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import org.gradle.api.DefaultTask
 
-internal open class AthenaUpload : DefaultTask() {
+class AthenaInspectFrameworks : DefaultTask() {
 
     init {
         group = Athena.group
 
         with(project) {
-            tasks.withType(AthenaCreatePackage::class.java).whenTaskAdded {
-                dependsOn(it)
-            }
+
         }
     }
 }
