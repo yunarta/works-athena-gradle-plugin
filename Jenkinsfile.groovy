@@ -50,13 +50,9 @@ pipeline {
                 }
             }
 
-            options {
-                retry(2)
-            }
-
             steps {
                 seedGrow("test")
-
+                currentBuild.result = "SUCCESS"
                 echo "Build for test and analyze"
                 sh """echo "Execute test"
                         ./gradlew cleanTest test --fail-fast
@@ -281,7 +277,9 @@ def publish(String repo) {
 
 def codeCoverage() {
     echo currentBuild.result
-    withCredentials([[$class: 'StringBinding', credentialsId: "codecov-token", variable: "CODECOV_TOKEN"]]) {
-        sh "curl -s https://codecov.io/bash | bash -s - -f build/reports/jacoco/xml/root/coverage.xml"
+    if (currentBuild.result != "FAILED") {
+        withCredentials([[$class: 'StringBinding', credentialsId: "codecov-token", variable: "CODECOV_TOKEN"]]) {
+            sh "curl -s https://codecov.io/bash | bash -s - -f build/reports/jacoco/xml/root/coverage.xml"
+        }
     }
 }
