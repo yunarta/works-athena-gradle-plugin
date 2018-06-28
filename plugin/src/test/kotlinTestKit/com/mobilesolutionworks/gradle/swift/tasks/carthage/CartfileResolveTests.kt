@@ -38,7 +38,7 @@ class CartfileResolveTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -64,7 +64,7 @@ class CartfileResolveTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -95,7 +95,7 @@ class CartfileResolveTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
+                github("yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }
@@ -116,7 +116,7 @@ class CartfileResolveTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
+                github("yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.1.0"
             }
@@ -146,7 +146,7 @@ class CartfileResolveTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
+                github("yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }
@@ -169,7 +169,7 @@ class CartfileResolveTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
+                github("yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }
@@ -198,7 +198,7 @@ class CartfileResolveTests {
 
             carthage {
                 updates = true
-                github("NullFramework", "yunarta/NullFramework") { rome ->
+                github("yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }

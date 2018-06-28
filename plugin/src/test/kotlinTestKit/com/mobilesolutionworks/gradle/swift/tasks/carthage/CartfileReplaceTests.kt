@@ -38,7 +38,7 @@ class CartfileReplaceTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -65,7 +65,7 @@ class CartfileReplaceTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -96,7 +96,7 @@ class CartfileReplaceTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -111,7 +111,7 @@ class CartfileReplaceTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") version "1.1.0"
+                github("yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())
 
@@ -138,7 +138,7 @@ class CartfileReplaceTests {
 
             carthage {
                 updates = true
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -160,7 +160,7 @@ class CartfileReplaceTests {
 
             carthage {
                 updates = true
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -188,7 +188,7 @@ class CartfileReplaceTests {
 
             carthage {
                 updates = true
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -222,7 +222,7 @@ class CartfileReplaceTests {
 
             carthage {
                 updates = true
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -244,7 +244,7 @@ class CartfileReplaceTests {
 
             carthage {
                 updates = true
-                github("NullFramework", "yunarta/NullFramework") version "1.1.0"
+                github("yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())
 
@@ -271,7 +271,7 @@ class CartfileReplaceTests {
 
             carthage {
                 updates = false
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -293,7 +293,7 @@ class CartfileReplaceTests {
 
             carthage {
                 updates = false
-                github("NullFramework", "yunarta/NullFramework") version "1.1.0"
+                github("yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())
 

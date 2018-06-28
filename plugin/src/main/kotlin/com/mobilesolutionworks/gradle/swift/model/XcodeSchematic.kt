@@ -11,14 +11,20 @@ enum class Platform(val value: String) {
 
 open class XcodeSchematic {
 
-    var platforms: List<String> = listOf("ios")
+    var platforms: List<String> = listOf("ios", "macOS", "tvOS", "watchOS")
         set(value) {
             val lowerCaseValues = value.map { it.toLowerCase() }
-            field = Platform.values().filter {
+            val platforms = Platform.values().filter {
                 lowerCaseValues.contains(it.name)
             }.map {
                 it.value
             }
+
+            if (platforms.isEmpty()) {
+                throw IllegalStateException("Failure in xcode.platforms, at least one of available platforms must be provided")
+            }
+
+            field = platforms
         }
 
     internal val hasDeclaredPlatforms: Boolean
@@ -30,5 +36,5 @@ open class XcodeSchematic {
 
 val Project.xcode: XcodeSchematic
     get() {
-        return extensions.findByName("xcode") as XcodeSchematic
+        return extensions.getByType(XcodeSchematic::class.java)
     }

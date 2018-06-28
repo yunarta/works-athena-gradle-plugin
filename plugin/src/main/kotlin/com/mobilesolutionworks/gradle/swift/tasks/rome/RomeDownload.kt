@@ -18,10 +18,8 @@ internal open class RomeDownload : Exec() {
             args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("download")
 
-                if (xcode.hasDeclaredPlatforms) {
-                    add("--platform")
-                    add(xcode.declaredPlatforms)
-                }
+                add("--platform")
+                add(xcode.declaredPlatforms)
             })
 
             // dependencies

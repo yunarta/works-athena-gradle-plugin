@@ -16,10 +16,8 @@ internal open class RomeUpload : Exec() {
             args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("upload")
 
-                if (xcode.hasDeclaredPlatforms) {
-                    add("--platform")
-                    add(xcode.declaredPlatforms)
-                }
+                add("--platform")
+                add(xcode.declaredPlatforms)
             })
 
             // conditions

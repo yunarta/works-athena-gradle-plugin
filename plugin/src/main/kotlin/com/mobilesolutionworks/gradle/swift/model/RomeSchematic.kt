@@ -15,5 +15,5 @@ open class RomeSchematic {
 
 val Project.rome: RomeSchematic
     get() {
-        return extensions.findByName("rome") as RomeSchematic
+        return extensions.getByType(RomeSchematic::class.java)
     }

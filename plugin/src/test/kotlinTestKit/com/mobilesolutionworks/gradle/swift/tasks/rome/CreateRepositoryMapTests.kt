@@ -40,7 +40,7 @@ class CreateRepositoryMapTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
+                github("yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }

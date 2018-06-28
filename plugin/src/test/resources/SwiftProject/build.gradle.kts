@@ -16,7 +16,7 @@ carthage {
 //    github("Moya", "Moya/Moya") { rome ->
 //        rome.map("Moya", listOf("Moya", "RxMoya"))
 //    }
-    github("NullFramework", "yunarta/NullFramework")
+    github("yunarta/NullFramework")
 }
 
 //afterEvaluate {

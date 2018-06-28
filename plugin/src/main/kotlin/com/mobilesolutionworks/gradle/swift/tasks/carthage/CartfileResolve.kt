@@ -49,10 +49,8 @@ internal open class CartfileResolve : Exec() {
                 add("--no-build")
                 add("--no-checkout")
 
-                if (xcode.hasDeclaredPlatforms) {
-                    add("--platform")
-                    add(xcode.declaredPlatforms)
-                }
+                add("--platform")
+                add(xcode.declaredPlatforms)
             })
 
             // dependencies

@@ -21,10 +21,8 @@ internal open class ListMissing : Exec() {
                 add("list")
                 add("--missing")
 
-                if (xcode.hasDeclaredPlatforms) {
-                    add("--platform")
-                    add(xcode.declaredPlatforms)
-                }
+                add("--platform")
+                add(xcode.declaredPlatforms)
             })
 
             // dependencies

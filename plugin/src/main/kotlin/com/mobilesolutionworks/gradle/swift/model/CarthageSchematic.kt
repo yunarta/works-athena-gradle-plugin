@@ -2,14 +2,14 @@ package com.mobilesolutionworks.gradle.swift.model
 
 import org.gradle.api.Project
 
-abstract class CarthageDependency(val name: String) {
+abstract class CarthageDependency() {
 
     abstract val semantic: String
 
     val options = FrameworkOptions()
 }
 
-class CarthageGitHub(name: String, private val repo: String) : CarthageDependency(name) {
+class CarthageGitHub(private val repo: String) : CarthageDependency() {
 
     private var versioning: String = ""
 
@@ -46,11 +46,11 @@ open class CarthageSchematic {
             return declaredDependencies
         }
 
-    fun github(name: String, repo: String): CarthageGitHub = CarthageGitHub(name, repo).also {
+    fun github(repo: String): CarthageGitHub = CarthageGitHub(repo).also {
         declaredDependencies.add(it)
     }
 
-    fun github(name: String, repo: String, rome: (FrameworkOptions) -> Unit): CarthageGitHub = CarthageGitHub(name, repo).also {
+    fun github(repo: String, rome: (FrameworkOptions) -> Unit): CarthageGitHub = CarthageGitHub(repo).also {
         rome(it.options)
         declaredDependencies.add(it)
     }
@@ -64,18 +64,13 @@ open class CarthageSchematic {
 
 val Project.carthage: CarthageSchematic
     get() {
-        return extensions.findByName("carthage") as CarthageSchematic
+        return extensions.getByType(CarthageSchematic::class.java)
     }
 
 class FrameworkOptions {
 
     var key: String = ""
     var frameworks = emptyList<String>()
-
-    fun map(frameworks: List<String>) {
-        this.frameworks = frameworks
-    }
-
 
     fun map(key: String, frameworks: List<String>) {
         this.key = key

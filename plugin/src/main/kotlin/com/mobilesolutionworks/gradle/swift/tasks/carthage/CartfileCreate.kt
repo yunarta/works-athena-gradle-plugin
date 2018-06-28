@@ -3,7 +3,6 @@ package com.mobilesolutionworks.gradle.swift.tasks.carthage
 import com.mobilesolutionworks.gradle.swift.i18n.Strings
 import com.mobilesolutionworks.gradle.swift.model.carthage
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -16,8 +15,7 @@ internal open class CartfileCreate : DefaultTask() {
     @OutputFile
     val cartfile: File = project.file("${project.projectDir}/Cartfile")
 
-    @Input
-    var content = ""
+    private var content = ""
 
     init {
         group = Carthage.group
@@ -30,6 +28,7 @@ internal open class CartfileCreate : DefaultTask() {
             }
 
             // inputs outputs
+            inputs.property("content", content)
             outputs.file(cartfile)
         }
     }

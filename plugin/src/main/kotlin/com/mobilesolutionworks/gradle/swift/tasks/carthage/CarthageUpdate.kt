@@ -24,10 +24,9 @@ internal open class CarthageUpdate : Exec() {
 
             args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("update")
-                if (xcode.hasDeclaredPlatforms) {
-                    add("--platform")
-                    add(xcode.declaredPlatforms)
-                }
+
+                add("--platform")
+                add(xcode.declaredPlatforms)
             })
 
             // dependencies

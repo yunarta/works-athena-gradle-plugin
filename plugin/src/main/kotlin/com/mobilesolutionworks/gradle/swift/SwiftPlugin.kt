@@ -13,10 +13,12 @@ import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageBootstrap
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageUpdate
 import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRepositoryMap
 import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRomefile
-import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeDownload
 import com.mobilesolutionworks.gradle.swift.tasks.rome.ListMissing
 import com.mobilesolutionworks.gradle.swift.tasks.rome.Rome
+import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeDownload
 import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeUpload
+import com.mobilesolutionworks.gradle.swift.tasks.xcode.Xcode
+import com.mobilesolutionworks.gradle.swift.tasks.xcode.XcodeBuildInfo
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -31,6 +33,7 @@ class SwiftPlugin : Plugin<Project> {
             with(it) {
                 file("${project.buildDir}/works-swift/rome/cache").mkdirs()
 
+                tasks.create(Xcode.Tasks.XcodeBuildInfo.value, XcodeBuildInfo::class.java)
                 tasks.create(Rome.Tasks.RomeCreateRepositoryMap.value, CreateRepositoryMap::class.java)
                 tasks.create(Rome.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
 

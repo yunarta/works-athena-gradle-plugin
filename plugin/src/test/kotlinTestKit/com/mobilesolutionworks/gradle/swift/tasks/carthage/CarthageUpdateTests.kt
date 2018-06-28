@@ -38,7 +38,7 @@ class CarthageUpdateTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -64,7 +64,7 @@ class CarthageUpdateTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -86,7 +86,7 @@ class CarthageUpdateTests {
 
             carthage {
                 updates = false
-                github("NullFramework", "yunarta/NullFramework") version "1.1.0"
+                github("yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())
 

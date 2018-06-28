@@ -108,10 +108,5 @@ val ignoreFailures: String? by rootProject.extra
 val shouldIgnoreFailures = ignoreFailures?.toBoolean() == true
 
 tasks.withType<Test> {
-    maxParallelForks = Runtime.getRuntime().availableProcessors().div(2)
     ignoreFailures = shouldIgnoreFailures
-
-    doFirst {
-        logger.quiet("Test with max $maxParallelForks parallel forks")
-    }
 }

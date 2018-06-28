@@ -41,7 +41,7 @@ class ListMissingTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
+                github("yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }
@@ -51,7 +51,7 @@ class ListMissingTests {
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
                     val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
-                    assertEquals("NullFramework 1.0.0 : -iOS", missing.readText().trimMargin())
+                    assertEquals("NullFramework 1.0.0 : -iOS -Mac -tvOS -watchOS", missing.readText().trimMargin())
                 }
 
         build.writeText("""
@@ -69,7 +69,7 @@ class ListMissingTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
+                github("yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }
@@ -100,7 +100,7 @@ class ListMissingTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
+                github("yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }
@@ -134,7 +134,7 @@ class ListMissingTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
+                github("yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.0.0"
             }
@@ -156,7 +156,7 @@ class ListMissingTests {
             }
 
             carthage {
-                github("NullFramework", "yunarta/NullFramework") { rome ->
+                github("yunarta/NullFramework") { rome ->
                     rome.map("NullFramework", listOf("NullFramework"))
                 } version "1.1.0"
             }
