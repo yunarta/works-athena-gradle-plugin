@@ -28,9 +28,9 @@ internal open class CreateRomefile : DefaultTask() {
         }.joinToString(System.lineSeparator())
 
 
-        val s3Line = project.rome.s3Bucket?.let {
-            "S3-Bucket = ${it}${System.lineSeparator()}"
-        } ?: ""
+        val s3Line = project.rome.s3Bucket.let {
+            return@let if (it != null) "S3-Bucket = $it${System.lineSeparator()}" else null
+        }
 
         val romeText = """
 [Cache]
