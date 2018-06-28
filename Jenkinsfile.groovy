@@ -52,7 +52,7 @@ pipeline {
 
             steps {
                 seedGrow("test")
-                currentBuild.result = "SUCCESS"
+                resetBuildState()
                 echo "Build for test and analyze"
                 sh """echo "Execute test"
                         ./gradlew cleanTest test --fail-fast
@@ -206,6 +206,10 @@ pipeline {
             """.stripIndent()
         }
     }
+}
+
+def resetBuildState() {
+    currentBuild.result = "SUCCESS"
 }
 
 def updateVersion() {
