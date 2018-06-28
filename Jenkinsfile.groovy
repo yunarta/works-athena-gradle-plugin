@@ -55,7 +55,7 @@ pipeline {
                 resetBuildState()
                 echo "Build for test and analyze"
                 sh """echo "Execute test"
-                        ./gradlew cleanTest test --fail-fast
+                        ./gradlew cleanTest test --fail-fast jacocoTestReport
                         ./gradlew worksGatherReport"""
             }
         }
@@ -193,18 +193,18 @@ pipeline {
 //        success {
 //            notifyDownstream()
 //        }
-//        changed {
-//            slackSend """
-//                Job: ${GIT_URL}
-//                Branch: ${env.GIT_BRANCH}
-//                Build ${env.BUILD_DISPLAY_NAME} (<${env.BUILD_URL}|Open>)
-//                ---
-//                Running on: ${NODE_NAME}
-//                Build state: ${currentBuild.result == null ? "Success" : currentBuild.result}
-//
-//                Commit#: ${GIT_COMMIT} by ${GIT_AUTHOR_NAME}
-//            """.stripIndent()
-//        }
+        changed {
+            slackSend """
+                Job: ${GIT_URL} 
+                Branch: ${env.GIT_BRANCH} 
+                Build ${env.BUILD_DISPLAY_NAME} (<${env.BUILD_URL}|Open>)
+                ---
+                Running on: ${NODE_NAME}
+                Build state: ${currentBuild.result == null ? "Success" : currentBuild.result}
+
+                Commit#: ${GIT_COMMIT} by ${GIT_AUTHOR_NAME}
+            """.stripIndent()
+        }
     }
 }
 
