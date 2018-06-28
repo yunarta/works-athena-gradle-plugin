@@ -24,6 +24,7 @@ internal open class CarthageUpdate : Exec() {
 
             args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("update")
+                add("--cache-builds")
 
                 add("--platform")
                 add(xcode.declaredPlatforms)

@@ -7,7 +7,7 @@ import org.junit.rules.TemporaryFolder
 import testKit.DefaultGradleRunner
 import testKit.TestWithCoverage
 
-class AthenaUploadTests {
+class AthenaCreateVersionTests {
 
     val temporaryFolder = TemporaryFolder()
 

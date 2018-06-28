@@ -21,6 +21,7 @@ internal open class CarthageBootstrap : Exec() {
 
             args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("bootstrap")
+                add("--cache-builds")
 
                 add("--platform")
                 add(xcode.declaredPlatforms)

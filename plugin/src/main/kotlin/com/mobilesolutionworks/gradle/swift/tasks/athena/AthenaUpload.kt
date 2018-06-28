@@ -1,8 +1,8 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Exec
 
-internal open class AthenaUpload : DefaultTask() {
+internal open class AthenaUpload : Exec() {
 
     init {
         group = Athena.group
@@ -11,6 +11,9 @@ internal open class AthenaUpload : DefaultTask() {
             tasks.withType(AthenaCreatePackage::class.java).whenTaskAdded {
                 dependsOn(it)
             }
+
+            executable = "tree"
+            workingDir = project.buildDir
         }
     }
 }

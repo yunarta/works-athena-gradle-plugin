@@ -39,6 +39,7 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation("commons-io:commons-io:2.6")
     implementation("commons-io:commons-io:2.6")
+    implementation("com.google.code.gson:gson:2.8.5")
 
     testImplementation(gradleTestKit())
     testImplementation("junit:junit:4.12")
