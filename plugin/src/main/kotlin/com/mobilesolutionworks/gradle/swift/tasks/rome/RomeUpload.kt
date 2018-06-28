@@ -22,9 +22,7 @@ internal open class RomeUpload : Exec() {
 
             // conditions
             onlyIf {
-                tasks.withType(ListMissing::class.java).map {
-                    it.outputs.files.singleFile.readText().isNotBlank()
-                }.reduce { a, b -> a && b }
+                tasks.withType(ListMissing::class.java).single().outputs.files.singleFile.readText().isNotBlank()
             }
 
             // dependencies
