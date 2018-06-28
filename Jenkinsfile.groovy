@@ -59,7 +59,7 @@ pipeline {
 
                 echo "Build for test and analyze"
                 sh """echo "Execute test"
-                        ./gradlew cleanTest test -PignoreFailures=true
+                        ./gradlew cleanTest test -PignoreFailures=${seedEval("test", [1: "true", "else": "false"])}
                         ./gradlew worksGatherReport"""
             }
         }
@@ -77,6 +77,8 @@ pipeline {
                 jacoco execPattern: 'build/reports/jacoco/exec/root/*.exec', classPattern: 'plugin/build/classes/kotlin/main', sourcePattern: ''
                 junit allowEmptyResults: true, testResults: 'build/reports/junit/xml/**/*.xml', healthScaleFactor: 100.0
                 checkstyle canComputeNew: false, defaultEncoding: '', healthy: '', pattern: 'build/reports/checkstyle/**/*.xml', unHealthy: ''
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/reports/jacoco/html/root', reportFiles: 'index.html', reportName: 'Coverage Report', reportTitles: ''])
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/reports/junit/html/works-swift/default', reportFiles: 'index.html', reportName: 'Test Report', reportTitles: ''])
 
                 codeCoverage()
             }
