@@ -86,7 +86,7 @@ class CarthageUpdateTests {
 
             carthage {
                 updates = false
-                github("yunarta/NullFramework") version "1.1.0"
+                github("yunarta/NullFramework") atLeast "1.1.0"
             }
         """.trimIndent())
 

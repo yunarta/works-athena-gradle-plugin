@@ -83,7 +83,7 @@ class CarthageBootstrapTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") version "1.1.0"
+                github("yunarta/NullFramework") compatible "1.1.0"
             }
         """.trimIndent())
 
