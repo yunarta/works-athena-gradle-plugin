@@ -76,7 +76,7 @@ pipeline {
 
                 jacoco execPattern: 'build/reports/jacoco/exec/root/*.exec', classPattern: 'plugin/build/classes/kotlin/main', sourcePattern: ''
                 junit allowEmptyResults: true, testResults: 'build/reports/junit/xml/**/*.xml', healthScaleFactor: 100.0
-                checkstyle canComputeNew: false, defaultEncoding: '', healthy: '', pattern: 'build/reports/checkstyle/**/*.xml', unHealthy: ''
+//                checkstyle canComputeNew: false, defaultEncoding: '', healthy: '', pattern: 'build/reports/checkstyle/**/*.xml', unHealthy: ''
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/reports/jacoco/html/root', reportFiles: 'index.html', reportName: 'Coverage Report', reportTitles: ''])
                 publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/reports/junit/html/works-swift/default', reportFiles: 'index.html', reportName: 'Test Report', reportTitles: ''])
 
@@ -281,7 +281,7 @@ def publish(String repo) {
 
 def codeCoverage() {
     echo currentBuild.result
-    if (currentBuild.result == null) {
+    if (currentBuild.result == "SUCCESS") {
         withCredentials([[$class: 'StringBinding', credentialsId: "codecov-token", variable: "CODECOV_TOKEN"]]) {
             sh "curl -s https://codecov.io/bash | bash -s - -f build/reports/jacoco/xml/root/coverage.xml"
         }
