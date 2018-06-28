@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.model
 
+import com.mobilesolutionworks.gradle.util.StringUtil
 import org.gradle.api.Project
 
 enum class Platform(val value: String) {
@@ -13,7 +14,7 @@ open class XcodeSchematic {
 
     var platforms: List<String> = listOf("ios", "macOS", "tvOS", "watchOS")
         set(value) {
-            val lowerCaseValues = value.map { it.toLowerCase() }
+            val lowerCaseValues = value.map { StringUtil.lowerCase(it) }
             val platforms = Platform.values().filter {
                 lowerCaseValues.contains(it.name)
             }.map {

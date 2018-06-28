@@ -47,8 +47,8 @@ open class CarthageSchematic {
         declaredDependencies.add(it)
     }
 
-    fun github(repo: String, rome: (FrameworkOptions) -> Unit): CarthageGitHub = CarthageGitHub(repo).also {
-        rome(it.options)
+    fun github(repo: String, configure: (FrameworkOptions) -> Unit): CarthageGitHub = CarthageGitHub(repo).also {
+        configure(it.options)
         declaredDependencies.add(it)
     }
 }
@@ -60,11 +60,9 @@ val Project.carthage: CarthageSchematic
 
 class FrameworkOptions {
 
-    var key: String = ""
-        private set
+    internal var key: String = ""
 
-    var frameworks = listOf<String>()
-        private set
+    internal var frameworks = listOf<String>()
 
     fun map(key: String, frameworks: List<String>) {
         this.key = key
