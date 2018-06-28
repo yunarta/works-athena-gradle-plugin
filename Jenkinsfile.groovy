@@ -281,9 +281,7 @@ def publish(String repo) {
 
 def codeCoverage() {
     echo currentBuild.result
-    if (currentBuild.result == "SUCCESS") {
-        withCredentials([[$class: 'StringBinding', credentialsId: "codecov-token", variable: "CODECOV_TOKEN"]]) {
-            sh "curl -s https://codecov.io/bash | bash -s - -f build/reports/jacoco/xml/root/coverage.xml"
-        }
+    withCredentials([[$class: 'StringBinding', credentialsId: "codecov-token", variable: "CODECOV_TOKEN"]]) {
+        sh "curl -s https://codecov.io/bash | bash -s - -f build/reports/jacoco/xml/root/coverage.xml"
     }
 }
