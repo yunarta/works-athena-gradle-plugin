@@ -59,9 +59,7 @@ pipeline {
 
                 echo "Build for test and analyze"
                 sh """echo "Execute test"
-                        ./gradlew ${seedEval("test", [1: "cleanTest", "else": "clean"])} test -PignoreFailures=${
-                    seedEval("test", [1: "false", "else": "true"])
-                } ${seedEval("test", [1: "--fail-fast", "else": ""])}
+                        ./gradlew cleanTest test --fail-fast
                         ./gradlew worksGatherReport"""
             }
         }

@@ -95,6 +95,9 @@ class SwiftPlugin : Plugin<Project> {
                         it.executable = "tree"
                         it.workingDir = file("${project.rootDir}/Carthage/Build")
                         it.args("-a")
+                        it.onlyIf {
+                            file("${project.rootDir}/Carthage/Build").exists()
+                        }
                     })
 
                     arrayOf(bootstrap, update).forEach {
