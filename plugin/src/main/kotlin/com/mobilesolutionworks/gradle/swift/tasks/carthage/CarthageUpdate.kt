@@ -27,7 +27,7 @@ internal open class CarthageUpdate : Exec() {
                 add("--cache-builds")
 
                 add("--platform")
-                add(xcode.declaredPlatforms)
+                add(xcode.platformsAsText)
             })
 
             // dependencies

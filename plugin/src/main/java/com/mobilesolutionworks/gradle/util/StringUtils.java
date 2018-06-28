@@ -2,9 +2,9 @@ package com.mobilesolutionworks.gradle.util;
 
 import javax.annotation.Nonnull;
 
-public class StringUtil {
+public class StringUtils {
 
-    private StringUtil() {
+    private StringUtils() {
 
     }
 

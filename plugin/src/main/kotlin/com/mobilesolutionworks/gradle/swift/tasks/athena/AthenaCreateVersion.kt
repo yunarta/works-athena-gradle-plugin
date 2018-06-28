@@ -5,7 +5,6 @@ import com.mobilesolutionworks.gradle.athena.CarthageBuildFile
 import com.mobilesolutionworks.gradle.swift.model.CarthageDependency
 import com.mobilesolutionworks.gradle.swift.model.carthage
 import com.mobilesolutionworks.gradle.swift.model.xcode
-import jdk.nashorn.internal.objects.NativeArray.forEach
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
@@ -21,8 +20,6 @@ internal open class AthenaCreateVersion : DefaultTask() {
         with(project) {
             carthage.dependencies.forEach {
                 val versions = project.file("${project.rootDir}/Carthage/Build/.${it.module}.version")
-                println(versions.absolutePath)
-                println(versions.exists())
 
                 val gson = GsonBuilder().create()
                 val buildFile = gson.fromJson(versions.reader(), CarthageBuildFile::class.java)
@@ -50,7 +47,7 @@ internal open class AthenaCreateVersion : DefaultTask() {
 
         return if (options.frameworks.isNotEmpty()) {
             options.frameworks.flatMap { framework ->
-                xcode.platforms.map { platform ->
+                xcode.declaredPlatforms.map { platform ->
                     AthenaCreatePackage.PackageInfo(
                             org = dependency.org,
                             platform = platform,
@@ -61,7 +58,7 @@ internal open class AthenaCreateVersion : DefaultTask() {
                 }
             }
         } else {
-            xcode.platforms.map { platform ->
+            xcode.declaredPlatforms.map { platform ->
                 AthenaCreatePackage.PackageInfo(
                         org = dependency.org,
                         platform = platform,

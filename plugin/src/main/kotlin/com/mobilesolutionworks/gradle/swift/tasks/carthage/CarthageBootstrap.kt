@@ -24,7 +24,7 @@ internal open class CarthageBootstrap : Exec() {
                 add("--cache-builds")
 
                 add("--platform")
-                add(xcode.declaredPlatforms)
+                add(xcode.platformsAsText)
             })
 
             // dependencies

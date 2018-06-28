@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
+import com.mobilesolutionworks.gradle.swift.cocoa.Platform
 import com.mobilesolutionworks.gradle.swift.model.CarthageDependency
 import com.mobilesolutionworks.gradle.swift.model.carthage
 import com.mobilesolutionworks.gradle.swift.model.xcode
@@ -114,7 +115,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
 
         return if (options.frameworks.isNotEmpty()) {
             options.frameworks.flatMap { framework ->
-                xcode.platforms.map { platform ->
+                xcode.declaredPlatforms.map { platform ->
                     PackageInfo(
                             org = dependency.org,
                             platform = platform,
@@ -125,7 +126,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
                 }
             }
         } else {
-            xcode.platforms.map { platform ->
+            xcode.declaredPlatforms.map { platform ->
                 PackageInfo(
                         org = dependency.org,
                         platform = platform,
@@ -137,5 +138,5 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
         }
     }
 
-    class PackageInfo(var org: String = "", var platform: String, var module: String, var framework: String, var version: String) : Serializable
+    class PackageInfo(var org: String = "", var platform: Platform, var module: String, var framework: String, var version: String) : Serializable
 }

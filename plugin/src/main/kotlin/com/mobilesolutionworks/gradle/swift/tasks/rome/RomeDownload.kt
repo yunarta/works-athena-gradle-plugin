@@ -19,7 +19,7 @@ internal open class RomeDownload : Exec() {
                 add("download")
 
                 add("--platform")
-                add(xcode.declaredPlatforms)
+                add(xcode.platformsAsText)
             })
 
             // dependencies

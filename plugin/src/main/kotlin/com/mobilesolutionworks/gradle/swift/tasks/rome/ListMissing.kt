@@ -22,7 +22,7 @@ internal open class ListMissing : Exec() {
                 add("--missing")
 
                 add("--platform")
-                add(xcode.declaredPlatforms)
+                add(xcode.platformsAsText)
             })
 
             // dependencies

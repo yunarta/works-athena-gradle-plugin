@@ -17,7 +17,7 @@ internal open class RomeUpload : Exec() {
                 add("upload")
 
                 add("--platform")
-                add(xcode.declaredPlatforms)
+                add(xcode.platformsAsText)
             })
 
             // conditions

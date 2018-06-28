@@ -1,24 +1,32 @@
 package com.mobilesolutionworks.gradle.athena
 
-import com.mobilesolutionworks.gradle.swift.model.Platform
+import com.mobilesolutionworks.gradle.swift.cocoa.Platform
+import org.gradle.internal.impldep.com.google.gson.annotations.SerializedName
 import javax.inject.Inject
 
 class CarthageBuildInfo @Inject constructor(val name: String, val hash: String)
 
 class CarthageBuildFile {
-    val platforms: Map<String, List<CarthageBuildInfo>>
-        get() {
-            return mapOf(
-                    Platform.ios.value to iOS,
-                    Platform.macos.value to Mac,
-                    Platform.tvos.value to tvOS,
-                    Platform.watchos.value to watchOS
-            )
-        }
+    val platforms: Map<Platform, List<CarthageBuildInfo>>
+        get() = mapOf(
+                Platform.iOS to iOS,
+                Platform.macOS to macOs,
+                Platform.tvOS to tvOS,
+                Platform.watchOS to watchOS
+        )
 
-    val Mac = emptyList<CarthageBuildInfo>()
+    @SerializedName("Mac")
+    val macOs = emptyList<CarthageBuildInfo>()
+
+    @SerializedName("watchOS")
     val watchOS = emptyList<CarthageBuildInfo>()
+
+    @SerializedName("iOS")
     val iOS = emptyList<CarthageBuildInfo>()
+
+    @SerializedName("tvOS")
     val tvOS = emptyList<CarthageBuildInfo>()
+
+    @SerializedName("commitish")
     val commitish: String = ""
 }

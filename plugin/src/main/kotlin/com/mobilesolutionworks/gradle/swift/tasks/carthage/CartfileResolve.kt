@@ -50,7 +50,7 @@ internal open class CartfileResolve : Exec() {
                 add("--no-checkout")
 
                 add("--platform")
-                add(xcode.declaredPlatforms)
+                add(xcode.platformsAsText)
             })
 
             // dependencies
