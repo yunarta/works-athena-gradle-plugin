@@ -193,18 +193,18 @@ pipeline {
 //        success {
 //            notifyDownstream()
 //        }
-        changed {
-            slackSend """
-                Job: ${GIT_URL} 
-                Branch: ${env.GIT_BRANCH} 
-                Build ${env.BUILD_DISPLAY_NAME} (<${env.BUILD_URL}|Open>)
-                ---
-                Running on: ${NODE_NAME}
-                Build state: ${currentBuild.result == null ? "Success" : currentBuild.result}
-
-                Commit#: ${GIT_COMMIT} by ${GIT_AUTHOR_NAME}
-            """.stripIndent()
-        }
+//        changed {
+//            slackSend """
+//                Job: ${GIT_URL}
+//                Branch: ${env.GIT_BRANCH}
+//                Build ${env.BUILD_DISPLAY_NAME} (<${env.BUILD_URL}|Open>)
+//                ---
+//                Running on: ${NODE_NAME}
+//                Build state: ${currentBuild.result == null ? "Success" : currentBuild.result}
+//
+//                Commit#: ${GIT_COMMIT} by ${GIT_AUTHOR_NAME}
+//            """.stripIndent()
+//        }
     }
 }
 
@@ -280,10 +280,7 @@ def publish(String repo) {
 }
 
 def codeCoverage() {
-    echo currentBuild.result
-    if (currentBuild.result != "FAILED") {
-        withCredentials([[$class: 'StringBinding', credentialsId: "codecov-token", variable: "CODECOV_TOKEN"]]) {
-            sh "curl -s https://codecov.io/bash | bash -s - -f build/reports/jacoco/xml/root/coverage.xml"
-        }
+    withCredentials([[$class: 'StringBinding', credentialsId: "codecov-token", variable: "CODECOV_TOKEN"]]) {
+        sh "curl -s https://codecov.io/bash | bash -s - -f build/reports/jacoco/xml/root/coverage.xml"
     }
 }
