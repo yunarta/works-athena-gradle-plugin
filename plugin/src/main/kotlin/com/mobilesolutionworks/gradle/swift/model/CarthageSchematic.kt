@@ -61,7 +61,10 @@ val Project.carthage: CarthageSchematic
 class FrameworkOptions {
 
     var key: String = ""
+        private set
+
     var frameworks = listOf<String>()
+        private set
 
     fun map(key: String, frameworks: List<String>) {
         this.key = key
