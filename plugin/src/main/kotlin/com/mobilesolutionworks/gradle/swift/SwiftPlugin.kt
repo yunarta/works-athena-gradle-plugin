@@ -81,7 +81,7 @@ class SwiftPlugin : Plugin<Project> {
                 }
 
                 if (athena.enabled) {
-                    carthage.dependencies.map {
+                    carthage.dependencies.filter { it.group.isNotBlank() }.map {
                         athena.resolvedObjects[it.repo] = Component(it.group, it.module)
                     }
 

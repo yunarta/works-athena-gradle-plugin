@@ -38,6 +38,10 @@ class AthenaInspectCarthageTests {
                 enabled = true
             }
 
+            rome {
+                cachePath = file("${"$"}{project.rootDir}/romeCache")
+            }
+
             carthage {
                 github("ReactiveX/RxSwift")
             }
@@ -66,13 +70,17 @@ class AthenaInspectCarthageTests {
                 enabled = true
             }
 
+            rome {
+                cachePath = file("${"$"}{project.rootDir}/romeCache")
+            }
+
             carthage {
                 git("https://github.com/yunarta/NullFramework.git") {
                 }
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
                 .build()
     }
 
@@ -95,6 +103,10 @@ class AthenaInspectCarthageTests {
                 enabled = true
             }
 
+            rome {
+                cachePath = file("${"$"}{project.rootDir}/romeCache")
+            }
+
             carthage {
                 git("https://bitbucket.org/yunarta/nullframework.git") {
                     id("yunarta", "NullFramework")
@@ -102,7 +114,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
                 .build()
     }
 
@@ -125,13 +137,17 @@ class AthenaInspectCarthageTests {
                 enabled = true
             }
 
+            rome {
+                cachePath = file("${"$"}{project.rootDir}/romeCache")
+            }
+
             carthage {
                 git("https://bitbucket.org/yunarta/nullframework.git") {
                 }
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
                 .buildAndFail()
     }
 
@@ -160,13 +176,17 @@ class AthenaInspectCarthageTests {
                 }
             }
 
+            rome {
+                cachePath = file("${"$"}{project.rootDir}/romeCache")
+            }
+
             carthage {
                 git("https://bitbucket.org/yunarta/nullframework.git") {
                 }
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
                 .build()
     }
 }
