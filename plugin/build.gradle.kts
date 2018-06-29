@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URI
 
 plugins {
     kotlin("jvm") version "1.2.50"
@@ -14,6 +15,9 @@ version = "1.0.0"
 
 repositories {
     mavenCentral()
+    maven {
+        url = URI("https://oss.sonatype.org/content/repositories/snapshots/")
+    }
 }
 
 worksJacoco {
@@ -43,6 +47,12 @@ dependencies {
 
     testImplementation(gradleTestKit())
     testImplementation("junit:junit:4.12")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-migrationsupport:5.2.0")
+    testImplementation("org.junit-pioneer:junit-pioneer:0.1-SNAPSHOT")
+
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.2.0")
+    testRuntime("org.junit.vintage:junit-vintage-engine:5.2.0")
 }
 
 gradlePlugin {
@@ -114,6 +124,7 @@ val shouldIgnoreFailures = ignoreFailures?.toBoolean() == true
 tasks.withType<Test> {
     maxParallelForks = Runtime.getRuntime().availableProcessors().div(2)
     ignoreFailures = shouldIgnoreFailures
+    useJUnitPlatform()
 
     doFirst {
         logger.quiet("Test with max $maxParallelForks parallel forks")
