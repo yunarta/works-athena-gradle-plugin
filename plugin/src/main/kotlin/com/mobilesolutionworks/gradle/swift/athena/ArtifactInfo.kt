@@ -3,7 +3,7 @@ package com.mobilesolutionworks.gradle.swift.athena
 import com.mobilesolutionworks.gradle.swift.cocoa.Platform
 import java.io.Serializable
 
-class Component(
+open class Component(
         val group: String,
         val module: String
 
@@ -13,10 +13,14 @@ class Component(
     }
 }
 
+internal class ComponentWithVersion(component: Component, val version: String) :
+        Component(component.group, component.module)
+
 class ArtifactInfo(
         val id: Component,
         val framework: String,
         val version: String,
+        val hash: String,
         val platform: Platform
 
 

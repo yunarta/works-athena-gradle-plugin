@@ -16,7 +16,6 @@ open class XcodeSchematic {
                 throw IllegalStateException("Failure in xcode.platforms, at least one of available platforms must be provided")
             }
 
-            println("declaredPlatforms $declaredPlatforms")
             field = declaredPlatforms.map {
                 it.name
             }.toSet()

@@ -7,7 +7,7 @@ import org.junit.rules.TemporaryFolder
 import testKit.DefaultGradleRunner
 import testKit.TestWithCoverage
 
-class AthenaUploadTests {
+class AthenaDownloadTests {
 
     val temporaryFolder = TemporaryFolder()
 
@@ -46,7 +46,7 @@ class AthenaUploadTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "--parallel", "-i")
+        gradle.runner.withArguments("athenaDownload", "-i")
                 .build().let {
                     // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }

@@ -10,6 +10,8 @@ import com.mobilesolutionworks.gradle.swift.model.athena
 import com.mobilesolutionworks.gradle.swift.model.carthage
 import com.mobilesolutionworks.gradle.swift.model.rome
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaCreatePackage
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaDownload
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaGenerateArtifacts
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaInspectCarthage
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaUpload
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.ActivateUpdate
@@ -87,25 +89,30 @@ class SwiftPlugin : Plugin<Project> {
 
                     val inspectCarthage = tasks.create("athenaInspectCarthage", AthenaInspectCarthage::class.java)
 
+                    val download = tasks.create("athenaDownload", AthenaDownload::class.java)
+                    val generate = tasks.create("athenaGenerateArtifacts", AthenaGenerateArtifacts::class.java)
+                    val create = tasks.create("athenaCreatePackage", AthenaCreatePackage::class.java)
                     val upload = tasks.create("athenaUpload", AthenaUpload::class.java)
-                    tasks.create("athenaCreatePackage", AthenaCreatePackage::class.java)
 
                     tasks.create(Rome.Tasks.RomeCreateRepositoryMap.value, CreateRepositoryMap::class.java)
                     tasks.create(Rome.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
 
                     val list = tasks.create(Rome.Tasks.RomeListMissing.value, ListMissing::class.java)
-                    val download = tasks.create(Rome.Tasks.RomeDownload.value, RomeDownload::class.java)
+//                    val download = tasks.create(Rome.Tasks.RomeDownload.value, RomeDownload::class.java)
 //                    val upload = tasks.create(Rome.Tasks.RomeUpload.value, RomeUpload::class.java)
 
-                    download.dependsOn(replace)
+                    inspectCarthage.dependsOn(replace)
+                    download.dependsOn(inspectCarthage)
 
-                    list.dependsOn(replace)
-                    list.shouldRunAfter(download)
-                    list.finalizedBy(tasks.create("tree", Exec::class.java) {
+
+                    val tree = tasks.create("tree", Exec::class.java) {
                         it.executable = "tree"
                         it.workingDir = file("${project.rootDir}/")
                         it.args("-a")
-                    })
+                    }
+
+                    download.finalizedBy(tree)
+                    create.finalizedBy(tree)
 
                     arrayOf(bootstrap, update).forEach {
                         it.dependsOn(download, list)

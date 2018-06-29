@@ -1,9 +1,9 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import com.google.gson.GsonBuilder
-import com.mobilesolutionworks.gradle.swift.carthage.CarthageBuildFile
 import com.mobilesolutionworks.gradle.swift.athena.ArtifactInfo
 import com.mobilesolutionworks.gradle.swift.carthage.CarthageAssetLocator
+import com.mobilesolutionworks.gradle.swift.carthage.CarthageBuildFile
 import com.mobilesolutionworks.gradle.swift.carthage.CarthageResolved
 import com.mobilesolutionworks.gradle.swift.model.athena
 import org.apache.commons.io.FilenameUtils
@@ -18,6 +18,7 @@ internal open class AthenaInspectCarthage : DefaultTask() {
 
     init {
         group = Athena.group
+
         with(project) {
             // inputs outputs
             inputs.file(CarthageAssetLocator.resolved(project))
@@ -31,7 +32,6 @@ internal open class AthenaInspectCarthage : DefaultTask() {
             val unresolved = mutableListOf<String>()
             val components = CarthageResolved.from(CarthageAssetLocator.resolved(project)) {
                 val component = athena.resolvedObjects[it]
-                println("resolving = $it, component = $component")
                 if (component == null) {
                     unresolved.add(it)
                 }
@@ -39,7 +39,6 @@ internal open class AthenaInspectCarthage : DefaultTask() {
                 component
             }.associateBy { it.module }
 
-            println("unresolved.isNotEmpty() = ${unresolved.isNotEmpty()}")
             if (unresolved.isNotEmpty()) {
                 val resolutions = unresolved.map {
                     """|    "$it" {
@@ -62,34 +61,9 @@ internal open class AthenaInspectCarthage : DefaultTask() {
                 """.trimMargin())
             }
 
-            val gson = GsonBuilder().create()
-            val artifacts = CarthageAssetLocator.versions(project).flatMap { file ->
-                println("file = ${file}")
-                val moduleName = FilenameUtils.getBaseName(file.name).substring(1)
-                val component = components[moduleName]
-                println("$moduleName -> $component")
+            athena.components = components
 
-                if (component != null) {
-                    val buildFile = gson.fromJson(file.reader(), CarthageBuildFile::class.java)
-                    buildFile.platforms.flatMap { entry ->
-                        entry.value.map {
-                            ArtifactInfo(
-                                    id = component,
-                                    framework = it.name,
-                                    version = buildFile.commitish,
-                                    platform = entry.key
-                            )
-                        }
-                    }
-                } else {
-                    emptyList()
-                }
-            }
-            athena.packages = artifacts
 
-            for (info in artifacts) {
-                println("info = ${info}")
-            }
         }
     }
 }

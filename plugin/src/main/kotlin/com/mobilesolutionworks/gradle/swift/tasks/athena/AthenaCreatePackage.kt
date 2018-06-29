@@ -1,6 +1,8 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
+import com.google.gson.GsonBuilder
 import com.mobilesolutionworks.gradle.swift.athena.ArtifactInfo
+import com.mobilesolutionworks.gradle.swift.model.AthenaPackageInfo
 import com.mobilesolutionworks.gradle.swift.model.athena
 import org.gradle.api.DefaultTask
 import org.gradle.api.internal.file.IdentityFileResolver
@@ -20,7 +22,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
         group = Athena.group
 
         with(project) {
-            tasks.withType(AthenaInspectCarthage::class.java) {
+            tasks.withType(AthenaGenerateArtifacts::class.java) {
                 dependsOn(it)
             }
         }
@@ -52,7 +54,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
                 it.substring(6).substringBefore(" ")
             }
 
-            val outputdir = File(workingDir, "build/out/${info.id.group}-${info.id.module}/${info.framework}-${info.platform}-${info.version}")
+            val outputdir = File(workingDir, "build/athena/${info.id.group}-${info.id.module}/${info.framework}-${info.platform}-${info.version}")
             outputdir.mkdirs()
 
 
@@ -61,32 +63,43 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
                 if (file.exists()) {
                     executor = execActionFactory.newExecAction()
                     executor.executable = "zip"
-                    executor.workingDir = workingDir
+                    executor.workingDir = file.parentFile
 
-                    executor.args("-r")
+                    executor.args("-r", "-q")
                     executor.args(File(outputdir, "${uuid}-${info.version}.zip").absolutePath)
-                    executor.args(file.absolutePath)
+                    executor.args(file.name)
                     executor.execute()
                 }
             }
 
+            var target: File
+
+            target = File(workingDir, "Carthage/Build/${info.platform}/${info.framework}.framework")
             executor = execActionFactory.newExecAction()
             executor.executable = "zip"
-            executor.workingDir = workingDir
+            executor.workingDir = target.parentFile
 
-            executor.args("-r")
+            executor.args("-r", "-q")
             executor.args(File(outputdir, "${info.framework}.framework-${info.version}.zip").absolutePath)
-            executor.args(File(workingDir, "Carthage/Build/${info.platform}/${info.framework}.framework").absolutePath)
+            executor.args(target.name)
             executor.execute()
 
+            target = File(workingDir, "Carthage/Build/${info.platform}/${info.framework}.framework.dSYM")
             executor = execActionFactory.newExecAction()
             executor.executable = "zip"
-            executor.workingDir = workingDir
+            executor.workingDir = target.parentFile
 
-            executor.args("-r")
+            executor.args("-r", "-q")
             executor.args(File(outputdir, "${info.framework}.framework.dSYM-${info.version}.zip").absolutePath)
-            executor.args(File(workingDir, "Carthage/Build/${info.platform}/${info.framework}.framework.dSYM").absolutePath)
+            executor.args(target.name)
             executor.execute()
+
+            File(outputdir, "${info.framework}.json").writeText(GsonBuilder().create().toJson(AthenaPackageInfo(
+                    info.framework,
+                    info.platform.name,
+                    info.version,
+                    info.hash
+            )))
         }
     }
 

@@ -8,12 +8,17 @@ internal open class AthenaUpload : Exec() {
         group = Athena.group
 
         with(project) {
-            tasks.withType(AthenaCreatePackage::class.java).whenTaskAdded {
+            tasks.withType(AthenaCreatePackage::class.java) {
                 dependsOn(it)
             }
 
-            executable = "tree"
-            workingDir = project.buildDir
+            executable = "jfrog"
+            workingDir = file("$buildDir/athena")
+            args("rt")
+            args("u")
+//            args("--dry-run")
+            args("--flat=false")
+            args("*.*", "athena")
         }
     }
 }
