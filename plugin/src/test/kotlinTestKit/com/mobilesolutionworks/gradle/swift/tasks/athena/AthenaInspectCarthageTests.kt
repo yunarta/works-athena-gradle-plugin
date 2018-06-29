@@ -20,7 +20,7 @@ class AthenaInspectCarthageTests {
             .around(gradle)
 
     @Test
-    fun execution() {
+    fun `test unresolved github`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -36,12 +36,65 @@ class AthenaInspectCarthageTests {
 
             athena {
                 enabled = true
-//                resolutions {
-//                    "https://bitbucket.org/yunarta/nullframework.git" {
-//                        group = "group"
-//                        module = "module"
-//                    }
-//                }
+            }
+
+            carthage {
+                git("https://github.com/yunarta/NullFramework.git") {
+                }
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+                .build()
+    }
+
+    @Test
+    fun `test resolved git`() {
+        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = temporaryFolder.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
+                enabled = true
+            }
+
+            carthage {
+                git("https://bitbucket.org/yunarta/nullframework.git") {
+                    id("yunarta", "NullFramework")
+                }
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+                .buildAndFail()
+    }
+
+    @Test
+    fun `test unresolved source`() {
+        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = temporaryFolder.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
+                enabled = true
             }
 
             carthage {
