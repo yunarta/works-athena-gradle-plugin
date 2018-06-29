@@ -16,7 +16,7 @@ internal open class AthenaUpload : Exec() {
             workingDir = file("$buildDir/athena")
             args("rt")
             args("u")
-//            args("--dry-run")
+            args("--dry-run")
             args("--flat=false")
             args("*.*", "athena")
         }

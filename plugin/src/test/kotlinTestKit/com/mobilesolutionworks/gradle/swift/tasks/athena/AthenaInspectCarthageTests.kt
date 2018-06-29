@@ -1,30 +1,27 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TemporaryFolder
-import testKit.DefaultGradleRunner
-import testKit.TestWithCoverage
+import org.gradle.testkit.runner.GradleRunner
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.parallel.ResourceAccessMode
+import org.junit.jupiter.api.parallel.ResourceLock
+import testKit.GradleRunnerProvider
+import testKit.newFile
 
+
+@ExtendWith(GradleRunnerProvider::class)
+@DisplayName("Test AthenaInspectCarthage")
+@ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
 class AthenaInspectCarthageTests {
 
-    val temporaryFolder = TemporaryFolder()
-
-    var gradle = DefaultGradleRunner(temporaryFolder)
-
-    @JvmField
-    @Rule
-    val rule = RuleChain.outerRule(temporaryFolder)
-            .around(TestWithCoverage(temporaryFolder))
-            .around(gradle)
-
     @Test
-    fun execution() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify athenaInspectCarthage")
+    fun test1(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -47,16 +44,17 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
+        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
                 .build()
     }
 
     @Test
-    fun `test unresolved github`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("test unresolved github")
+    fun test2(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -80,16 +78,17 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
+        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
                 .build()
     }
 
     @Test
-    fun `test resolved git`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("test resolved github")
+    fun test3(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -114,16 +113,17 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
+        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
                 .build()
     }
 
     @Test
-    fun `test unresolved source`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("test unresolved source")
+    fun test4(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -147,16 +147,17 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
+        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
                 .buildAndFail()
     }
 
     @Test
-    fun `test athena resolutions`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("test athena resolutions")
+    fun test5(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -186,7 +187,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
+        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
                 .build()
     }
 }

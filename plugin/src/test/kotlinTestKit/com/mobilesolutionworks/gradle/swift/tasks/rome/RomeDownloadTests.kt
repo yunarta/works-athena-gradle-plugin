@@ -1,32 +1,28 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
+import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TemporaryFolder
-import testKit.DefaultGradleRunner
-import testKit.TestWithCoverage
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.parallel.ResourceAccessMode
+import org.junit.jupiter.api.parallel.ResourceLock
+import testKit.GradleRunnerProvider
+import testKit.newFile
 
+@ExtendWith(GradleRunnerProvider::class)
+@DisplayName("Test RomeDownload")
+@ResourceLock(value = "rome", mode = ResourceAccessMode.READ_WRITE)
 class RomeDownloadTests {
 
-    val temporaryFolder = TemporaryFolder()
-
-    var gradle = DefaultGradleRunner(temporaryFolder)
-
-    @JvmField
-    @Rule
-    val rule = RuleChain.outerRule(temporaryFolder)
-            .around(TestWithCoverage(temporaryFolder))
-            .around(gradle)
-
     @Test
-    fun execution() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify romeDownload")
+    fun test1(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -41,18 +37,19 @@ class RomeDownloadTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeDownload")
+        runner.withArguments("romeDownload")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeDownload")?.outcome)
                 }
     }
 
     @Test
-    fun incremental() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify incremental build")
+    fun test2(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -67,15 +64,14 @@ class RomeDownloadTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeDownload")
+        runner.withArguments("romeDownload")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeDownload")?.outcome)
                 }
 
-        gradle.runner.withArguments("romeDownload")
+        runner.withArguments("romeDownload")
                 .build().let {
                     assertEquals(TaskOutcome.UP_TO_DATE, it.task(":romeDownload")?.outcome)
                 }
     }
-
 }

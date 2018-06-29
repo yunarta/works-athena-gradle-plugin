@@ -47,12 +47,12 @@ dependencies {
 
     testImplementation(gradleTestKit())
     testImplementation("junit:junit:4.12")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-migrationsupport:5.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.0-M1")
+    testImplementation("org.junit.jupiter:junit-jupiter-migrationsupport:5.3.0-M1")
     testImplementation("org.junit-pioneer:junit-pioneer:0.1-SNAPSHOT")
 
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.2.0")
-    testRuntime("org.junit.vintage:junit-vintage-engine:5.2.0")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.0-M1")
+    testRuntime("org.junit.vintage:junit-vintage-engine:5.3.0-M1")
 }
 
 gradlePlugin {
@@ -122,7 +122,10 @@ val ignoreFailures: String? by rootProject.extra
 val shouldIgnoreFailures = ignoreFailures?.toBoolean() == true
 
 tasks.withType<Test> {
+//    maxParallelForks = Runtime.getRuntime().availableProcessors().div(2)
     ignoreFailures = shouldIgnoreFailures
+    systemProperty("junit.jupiter.execution.parallel.enabled", "true")
+    systemProperty("junit.jupiter.execution.parallel.config.dynamic.factor", "1")
 
     useJUnitPlatform()
 

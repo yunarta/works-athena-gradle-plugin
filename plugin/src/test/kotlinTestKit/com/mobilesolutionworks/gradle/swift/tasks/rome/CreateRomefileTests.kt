@@ -1,34 +1,27 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
-import com.mobilesolutionworks.gradle.swift.model.rome
+import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TemporaryFolder
-import testKit.DefaultGradleRunner
-import testKit.TestWithCoverage
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import testKit.GradleRunnerProvider
+import testKit.newFile
+import testKit.root
 import java.io.File
 
+@ExtendWith(GradleRunnerProvider::class)
+@DisplayName("Test CreateRomefile")
 class CreateRomefileTests {
 
-    val temporaryFolder = TemporaryFolder()
-
-    var gradle = DefaultGradleRunner(temporaryFolder)
-
-    @JvmField
-    @Rule
-    val rule = RuleChain.outerRule(temporaryFolder)
-            .around(TestWithCoverage(temporaryFolder))
-            .around(gradle)
-
     @Test
-    fun execution() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify romeCreateRomefile")
+    fun test1(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -45,21 +38,22 @@ class CreateRomefileTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeCreateRomefile")
+        runner.withArguments("romeCreateRomefile")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeCreateRomefile")?.outcome)
 
-                    val text = File(temporaryFolder.root, "romefile").readText()
+                    val text = File(runner.root, "romefile").readText()
                     assertEquals(true, text.contains("NullFramework = NullFramework"))
                 }
     }
 
     @Test
-    fun `test s3Bucket`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("test S3 Bucket")
+    fun test2(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -77,14 +71,13 @@ class CreateRomefileTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeCreateRomefile")
+        runner.withArguments("romeCreateRomefile")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeCreateRomefile")?.outcome)
 
-                    val text = File(temporaryFolder.root, "romefile").readText()
+                    val text = File(runner.root, "romefile").readText()
                     assertEquals(true, text.contains("S3-Bucket = s3Bucket"))
                     assertEquals(true, text.contains("NullFramework = NullFramework"))
                 }
     }
-
 }

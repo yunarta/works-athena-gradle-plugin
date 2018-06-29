@@ -1,35 +1,29 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TemporaryFolder
-import testKit.DefaultGradleRunner
-import testKit.TestWithCoverage
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import testKit.GradleRunnerProvider
+import testKit.newFile
+import testKit.root
 
+@ExtendWith(GradleRunnerProvider::class)
+@DisplayName("Test CreateRepositoryMap")
 class ListMissingTests {
 
-    val temporaryFolder = TemporaryFolder()
-
-    var gradle = DefaultGradleRunner(temporaryFolder)
-
-    @JvmField
-    @Rule
-    val rule = RuleChain.outerRule(temporaryFolder)
-            .around(TestWithCoverage(temporaryFolder))
-            .around(gradle)
-
     @Test
-    fun execution() {
-        val project = ProjectBuilder().withProjectDir(temporaryFolder.root).build()
+    @DisplayName("verify romeListMissing")
+    fun execution(runner: GradleRunner) {
+        val project = ProjectBuilder().withProjectDir(runner.root).build()
 
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -45,7 +39,7 @@ class ListMissingTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeListMissing")
+        runner.withArguments("romeListMissing")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
                     val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
@@ -71,7 +65,7 @@ class ListMissingTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeListMissing")
+        runner.withArguments("romeListMissing")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
                     val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
@@ -80,11 +74,12 @@ class ListMissingTests {
     }
 
     @Test
-    fun incremental() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify incremental build")
+    fun incremental(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -100,23 +95,24 @@ class ListMissingTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeListMissing")
+        runner.withArguments("romeListMissing")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
                 }
 
-        gradle.runner.withArguments("romeListMissing")
+        runner.withArguments("romeListMissing")
                 .build().let {
                     assertEquals(TaskOutcome.UP_TO_DATE, it.task(":romeListMissing")?.outcome)
                 }
     }
 
     @Test
-    fun `DSL modification will redo list missing`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("DSL modification will redo list missing")
+    fun test3(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -132,7 +128,7 @@ class ListMissingTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeListMissing")
+        runner.withArguments("romeListMissing")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
                 }
@@ -153,7 +149,7 @@ class ListMissingTests {
         """.trimIndent())
 
 
-        gradle.runner.withArguments("romeListMissing", "-i")
+        runner.withArguments("romeListMissing", "-i")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
                 }

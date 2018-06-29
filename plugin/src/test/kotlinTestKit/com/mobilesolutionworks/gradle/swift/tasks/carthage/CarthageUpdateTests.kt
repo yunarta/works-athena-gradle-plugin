@@ -1,33 +1,30 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
+import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TemporaryFolder
-import testKit.DefaultGradleRunner
-import testKit.TestWithCoverage
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.parallel.ResourceAccessMode
+import org.junit.jupiter.api.parallel.ResourceLock
+import testKit.GradleRunnerProvider
+import testKit.newFile
+import testKit.root
 import java.io.File
 
+@ExtendWith(GradleRunnerProvider::class)
+@DisplayName("Test CarthageUpdate")
 class CarthageUpdateTests {
 
-    val temporaryFolder = TemporaryFolder()
-
-    var gradle = DefaultGradleRunner(temporaryFolder)
-
-    @JvmField
-    @Rule
-    val rule = RuleChain.outerRule(temporaryFolder)
-            .around(TestWithCoverage(temporaryFolder))
-            .around(gradle)
-
     @Test
-    fun execution() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify carthageUpdate")
+    @ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
+    fun test1(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -42,18 +39,20 @@ class CarthageUpdateTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageUpdate")
+        runner.withArguments("carthageUpdate")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageUpdate")?.outcome)
                 }
     }
 
     @Test
-    fun `replacing task should be executed even if updates = false`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("replacing task should be executed even if updates = false")
+    @ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
+    fun test2(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -68,12 +67,12 @@ class CarthageUpdateTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageUpdate")
+        runner.withArguments("carthageUpdate")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageUpdate")?.outcome)
                 }
 
-        File(temporaryFolder.root, "build").deleteRecursively()
+        File(runner.root, "build").deleteRecursively()
 
         build.writeText("""
             plugins {
@@ -90,10 +89,9 @@ class CarthageUpdateTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageUpdate")
+        runner.withArguments("carthageUpdate")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageUpdate")?.outcome)
                 }
     }
-
 }

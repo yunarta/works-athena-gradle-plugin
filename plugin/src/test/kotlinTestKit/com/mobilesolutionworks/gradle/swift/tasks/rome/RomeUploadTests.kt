@@ -1,33 +1,34 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
+import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TemporaryFolder
-import testKit.DefaultGradleRunner
-import testKit.TestWithCoverage
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.parallel.ResourceAccessMode
+import org.junit.jupiter.api.parallel.ResourceLock
+import org.junit.jupiter.api.parallel.ResourceLocks
+import testKit.GradleRunnerProvider
+import testKit.newFile
+import testKit.root
 import java.io.File
 
+@ExtendWith(GradleRunnerProvider::class)
+@DisplayName("Test RomeUpload")
+@ResourceLocks(
+        ResourceLock(value = "rome", mode = ResourceAccessMode.READ_WRITE),
+        ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
+)
 class RomeUploadTests {
 
-    val temporaryFolder = TemporaryFolder()
-
-    var gradle = DefaultGradleRunner(temporaryFolder)
-
-    @JvmField
-    @Rule
-    val rule = RuleChain.outerRule(temporaryFolder)
-            .around(TestWithCoverage(temporaryFolder))
-            .around(gradle)
-
     @Test
-    fun execution() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify romeUpload")
+    fun execution(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -47,18 +48,19 @@ class RomeUploadTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap")
+        runner.withArguments("carthageBootstrap")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
     }
 
     @Test
-    fun incremental() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("test incremental build")
+    fun test2(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -78,12 +80,12 @@ class RomeUploadTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap")
+        runner.withArguments("carthageBootstrap")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
 
-        gradle.runner.withArguments("carthageBootstrap")
+        runner.withArguments("carthageBootstrap")
                 .build().let {
                     assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageBootstrap")?.outcome)
                     assertEquals(TaskOutcome.SKIPPED, it.task(":romeUpload")?.outcome)
@@ -91,11 +93,12 @@ class RomeUploadTests {
     }
 
     @Test
-    fun `simulate clean`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("test simulate clean")
+    fun test3(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -115,19 +118,18 @@ class RomeUploadTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap")
+        runner.withArguments("carthageBootstrap")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
 
-        File(temporaryFolder.root, "Carthage").deleteRecursively()
-        File(temporaryFolder.root, "build").deleteRecursively()
+        File(runner.root, "Carthage").deleteRecursively()
+        File(runner.root, "build").deleteRecursively()
 
-        gradle.runner.withArguments("carthageBootstrap")
+        runner.withArguments("carthageBootstrap")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageBootstrap")?.outcome)
                     assertEquals(TaskOutcome.SKIPPED, it.task(":romeUpload")?.outcome)
                 }
     }
-
 }

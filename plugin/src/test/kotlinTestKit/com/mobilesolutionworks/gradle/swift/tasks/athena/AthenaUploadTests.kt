@@ -1,30 +1,25 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TemporaryFolder
-import testKit.DefaultGradleRunner
-import testKit.TestWithCoverage
+import org.gradle.testkit.runner.GradleRunner
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.parallel.ResourceAccessMode
+import org.junit.jupiter.api.parallel.ResourceLock
+import testKit.GradleRunnerProvider
+import testKit.newFile
 
+@ExtendWith(GradleRunnerProvider::class)
+@ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
 class AthenaUploadTests {
 
-    val temporaryFolder = TemporaryFolder()
-
-    var gradle = DefaultGradleRunner(temporaryFolder)
-
-    @JvmField
-    @Rule
-    val rule = RuleChain.outerRule(temporaryFolder)
-            .around(TestWithCoverage(temporaryFolder))
-            .around(gradle)
-
     @Test
-    fun execution() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify athenaUpload")
+    fun test1(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -46,7 +41,7 @@ class AthenaUploadTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "--parallel", "-i")
+        runner.withArguments("carthageBootstrap", "--parallel", "-i")
                 .build().let {
                     // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }

@@ -1,33 +1,28 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
+import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TemporaryFolder
-import testKit.DefaultGradleRunner
-import testKit.TestWithCoverage
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import testKit.GradleRunnerProvider
+import testKit.newFile
+import testKit.root
 import java.io.File
 
+@ExtendWith(GradleRunnerProvider::class)
+@DisplayName("Test CartfileReplace")
 class CartfileReplaceTests {
 
-    val temporaryFolder = TemporaryFolder()
-
-    var gradle = DefaultGradleRunner(temporaryFolder)
-
-    @JvmField
-    @Rule
-    val rule = RuleChain.outerRule(temporaryFolder)
-            .around(TestWithCoverage(temporaryFolder))
-            .around(gradle)
-
     @Test
-    fun execution() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify carthageCartfileReplace")
+    fun test1(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -42,19 +37,20 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-                    assertEquals(true, File(temporaryFolder.root, "Cartfile.resolved").exists())
+                    assertEquals(true, File(runner.root, "Cartfile.resolved").exists())
                 }
     }
 
     @Test
-    fun incremental() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify incremental build")
+    fun test2(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -69,23 +65,24 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
                 }
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageCartfileReplace")?.outcome)
                 }
     }
 
     @Test
-    fun `DSL change always redo replace`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("DSL change always redo replace")
+    fun test3(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -100,7 +97,7 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
                 }
@@ -115,18 +112,19 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
                 }
     }
 
     @Test
-    fun `deleting Cartfile-dot-resolved will redo replace`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("deleting Cartfile.resolved will redo replace")
+    fun test4(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -142,12 +140,12 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
                 }
 
-        File(temporaryFolder.root, "Cartfile.resolved").delete()
+        File(runner.root, "Cartfile.resolved").delete()
 
         build.writeText("""
             plugins {
@@ -164,7 +162,7 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     // this task is up to date because this just check whether should it resolve
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
@@ -172,11 +170,12 @@ class CartfileReplaceTests {
     }
 
     @Test
-    fun `replace does not execute when no update found (updates = true, build = deleted)`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("replace does not execute when no update found (updates = true, build = deleted)")
+    fun test5(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -192,25 +191,26 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
                 }
 
-        File(temporaryFolder.root, "build").deleteRecursively()
+        File(runner.root, "build").deleteRecursively()
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageCartfileReplace")?.outcome)
                 }
     }
 
     @Test
-    fun `replace executed when update found (update = true, build = deleted)`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("replace executed when update found (update = true, build = deleted)")
+    fun test6(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -226,12 +226,12 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
                 }
 
-        File(temporaryFolder.root, "build").deleteRecursively()
+        File(runner.root, "build").deleteRecursively()
 
         build.writeText("""
             plugins {
@@ -248,18 +248,20 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
                 }
     }
 
-    //    @Test
-    fun `replacing executed due to DSL changes, even if updates = false`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @Test
+    @Disabled
+    @DisplayName("replacing executed due to DSL changes, even if updates = false")
+    fun test7(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -275,12 +277,12 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
                 }
 
-        File(temporaryFolder.root, "build").deleteRecursively()
+        File(runner.root, "build").deleteRecursively()
 
         build.writeText("""
             plugins {
@@ -297,14 +299,13 @@ class CartfileReplaceTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileReplace")
+        runner.withArguments("carthageCartfileReplace")
                 .build().let {
-                    File(temporaryFolder.root, "Cartfile.resolved").readText().also {
+                    File(runner.root, "Cartfile.resolved").readText().also {
                         println(it)
                     }
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
 
                 }
     }
-
 }

@@ -1,33 +1,27 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
+import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TemporaryFolder
-import testKit.DefaultGradleRunner
-import testKit.TestWithCoverage
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import testKit.GradleRunnerProvider
+import testKit.newFile
+import testKit.root
 import java.io.File
 
+@ExtendWith(GradleRunnerProvider::class)
+@DisplayName("Test CartfileCreate")
 class CartfileCreateTests {
 
-    val temporaryFolder = TemporaryFolder()
-
-    var gradle = DefaultGradleRunner(temporaryFolder)
-
-    @JvmField
-    @Rule
-    val rule = RuleChain.outerRule(temporaryFolder)
-            .around(TestWithCoverage(temporaryFolder))
-            .around(gradle)
-
     @Test
-    fun execution() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify carthageCartfileCreate")
+    fun test1(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -42,22 +36,22 @@ class CartfileCreateTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileCreate")
+        runner.withArguments("carthageCartfileCreate")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileCreate")?.outcome)
                     assertEquals("""
                         github "yunarta/NullFramework" == 1.0.0
-                    """.trimIndent(), File(temporaryFolder.root, "Cartfile").readText())
-
+                    """.trimIndent(), File(runner.root, "Cartfile").readText())
                 }
     }
 
     @Test
-    fun incremental() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify incremental build")
+    fun test2(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -72,23 +66,24 @@ class CartfileCreateTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileCreate")
+        runner.withArguments("carthageCartfileCreate")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileCreate")?.outcome)
                 }
 
-        gradle.runner.withArguments("carthageCartfileCreate")
+        runner.withArguments("carthageCartfileCreate")
                 .build().let {
                     assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageCartfileCreate")?.outcome)
                 }
     }
 
     @Test
-    fun modification() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    @DisplayName("verify incremental build after modification")
+    fun test3(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -103,12 +98,12 @@ class CartfileCreateTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageCartfileCreate")
+        runner.withArguments("carthageCartfileCreate")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileCreate")?.outcome)
                     assertEquals("""
                         github "yunarta/NullFramework" == 1.0.0
-                    """.trimIndent(), File(temporaryFolder.root, "Cartfile").readText())
+                    """.trimIndent(), File(runner.root, "Cartfile").readText())
 
                 }
 
@@ -127,22 +122,22 @@ class CartfileCreateTests {
         """.trimIndent())
 
 
-        gradle.runner.withArguments("carthageCartfileCreate")
+        runner.withArguments("carthageCartfileCreate")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileCreate")?.outcome)
                     assertEquals("""
                         github "yunarta/NullFramework" == 1.1.0
-                    """.trimIndent(), File(temporaryFolder.root, "Cartfile").readText())
+                    """.trimIndent(), File(runner.root, "Cartfile").readText())
                 }
 
-        File(temporaryFolder.root, "Cartfile").delete()
+        File(runner.root, "Cartfile").delete()
 
-        gradle.runner.withArguments("carthageCartfileCreate")
+        runner.withArguments("carthageCartfileCreate")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileCreate")?.outcome)
                     assertEquals("""
                         github "yunarta/NullFramework" == 1.1.0
-                    """.trimIndent(), File(temporaryFolder.root, "Cartfile").readText())
+                    """.trimIndent(), File(runner.root, "Cartfile").readText())
                 }
     }
 }

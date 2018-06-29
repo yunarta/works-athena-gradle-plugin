@@ -1,30 +1,22 @@
 package com.mobilesolutionworks.gradle.swift.tasks.xcode
 
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TemporaryFolder
-import testKit.DefaultGradleRunner
-import testKit.TestWithCoverage
+import org.gradle.testkit.runner.GradleRunner
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import testKit.GradleRunnerProvider
+import testKit.newFile
 
+@ExtendWith(GradleRunnerProvider::class)
+@DisplayName("Test XcodeSchematic")
 class XcodeSchematicTests {
 
-    val temporaryFolder = TemporaryFolder()
-
-    var gradle = DefaultGradleRunner(temporaryFolder)
-
-    @JvmField
-    @Rule
-    val rule = RuleChain.outerRule(temporaryFolder)
-            .around(TestWithCoverage(temporaryFolder))
-            .around(gradle)
-
     @Test
-    fun `gradle should fail if xcode platforms is empty`() {
-        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+    fun `gradle should fail if xcode platforms is empty`(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
-        val build = temporaryFolder.newFile("build.gradle.kts")
+        val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
@@ -35,6 +27,6 @@ class XcodeSchematicTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("xcodeBuildInfo").buildAndFail()
+        runner.withArguments("xcodeBuildInfo").buildAndFail()
     }
 }
