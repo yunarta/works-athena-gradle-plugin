@@ -9,8 +9,6 @@ abstract class CarthageDependency(val repo: String) {
 
     abstract val semantic: String
 
-    val options = FrameworkOptions()
-
     internal var versioning: String = ""
 
     var frameworks = setOf<String>()
@@ -104,15 +102,3 @@ val Project.carthage: CarthageSchematic
     get() {
         return extensions.getByType(CarthageSchematic::class.java)
     }
-
-class FrameworkOptions {
-
-    internal var key: String = ""
-
-    internal var frameworks = setOf<String>()
-
-    fun map(key: String, frameworks: Set<String>) {
-        this.key = key
-        this.frameworks = frameworks
-    }
-}
