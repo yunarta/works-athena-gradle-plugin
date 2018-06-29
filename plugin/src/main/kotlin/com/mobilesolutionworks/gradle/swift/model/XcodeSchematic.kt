@@ -7,6 +7,7 @@ import org.gradle.api.Project
 open class XcodeSchematic {
 
     internal var declaredPlatforms: Collection<Platform> = Platform.values().toList()
+        private set
 
     var platforms: List<String> = listOf("iOS", "macOS", "tvOS", "watchOS")
         set(value) {
