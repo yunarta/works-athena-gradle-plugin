@@ -6,9 +6,7 @@ import com.mobilesolutionworks.gradle.swift.model.athena
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-class AthenaInspection(message: String) : RuntimeException(message) {
-
-}
+class AthenaInspection(message: String) : RuntimeException(message)
 
 internal open class AthenaInspectCarthage : DefaultTask() {
 
