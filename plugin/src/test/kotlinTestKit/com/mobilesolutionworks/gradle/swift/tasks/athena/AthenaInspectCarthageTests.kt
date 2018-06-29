@@ -1,7 +1,5 @@
-package com.mobilesolutionworks.gradle.swift.tasks.rome
+package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
@@ -9,7 +7,7 @@ import org.junit.rules.TemporaryFolder
 import testKit.DefaultGradleRunner
 import testKit.TestWithCoverage
 
-class RomeDownloadTests {
+class AthenaInspectCarthageTests {
 
     val temporaryFolder = TemporaryFolder()
 
@@ -32,23 +30,32 @@ class RomeDownloadTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
-            rome {
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
                 enabled = true
+//                resolutions {
+//                    "https://bitbucket.org/yunarta/nullframework.git" {
+//                        group = "group"
+//                        module = "module"
+//                    }
+//                }
             }
 
             carthage {
-                github("yunarta/NullFramework") version "1.0.0"
+                git("https://bitbucket.org/yunarta/nullframework.git") {
+                }
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeDownload")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeDownload")?.outcome)
-                }
+        gradle.runner.withArguments("athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+                .buildAndFail()
     }
 
     @Test
-    fun incremental() {
+    fun `test athena resolutions`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
@@ -58,24 +65,27 @@ class RomeDownloadTests {
                 id("com.mobilesolutionworks.gradle.swift")
             }
 
-            rome {
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
                 enabled = true
+                resolutions {
+                    "https://bitbucket.org/yunarta/nullframework.git" {
+                        group = "yunarta"
+                        module = "NullFramework"
+                    }
+                }
             }
 
             carthage {
-                github("yunarta/NullFramework") version "1.0.0"
+                git("https://bitbucket.org/yunarta/nullframework.git") {
+                }
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("romeDownload")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeDownload")?.outcome)
-                }
-
-        gradle.runner.withArguments("romeDownload")
-                .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":romeDownload")?.outcome)
-                }
+        gradle.runner.withArguments("athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+                .build()
     }
-
 }

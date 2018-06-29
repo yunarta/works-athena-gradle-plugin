@@ -13,6 +13,13 @@ internal open class AthenaCreateVersion : DefaultTask() {
 
     init {
         group = Athena.group
+
+        with(project) {
+            tasks.withType(AthenaInspectCarthage::class.java) {
+                println("depends on $it")
+                dependsOn(it)
+            }
+        }
     }
 
     @TaskAction
@@ -34,7 +41,7 @@ internal open class AthenaCreateVersion : DefaultTask() {
                     buildFile.platforms.getOrDefault(info.platform, emptyList()).filter {
                         it.name == info.module
                     }.forEach {
-                        
+
                     }
                 }
             }
@@ -49,7 +56,7 @@ internal open class AthenaCreateVersion : DefaultTask() {
             options.frameworks.flatMap { framework ->
                 xcode.declaredPlatforms.map { platform ->
                     AthenaCreatePackage.PackageInfo(
-                            org = dependency.org,
+                            org = dependency.group,
                             platform = platform,
                             module = dependency.module,
                             framework = framework,
@@ -60,7 +67,7 @@ internal open class AthenaCreateVersion : DefaultTask() {
         } else {
             xcode.declaredPlatforms.map { platform ->
                 AthenaCreatePackage.PackageInfo(
-                        org = dependency.org,
+                        org = dependency.group,
                         platform = platform,
                         module = dependency.module,
                         framework = dependency.module,

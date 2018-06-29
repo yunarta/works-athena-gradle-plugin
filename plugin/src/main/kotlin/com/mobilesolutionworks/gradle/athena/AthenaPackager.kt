@@ -10,7 +10,7 @@ internal class AthenaPackager {
     fun createPackagingJobs(project: Project): List<String> {
         val tasks = project.tasks
         return project.carthage.dependencies.flatMap {
-            val org = it.org
+            val org = it.group
             makeAthenaModules(project, it).map { modules ->
                 "athenaCreatePackage-$org.$modules".also {
                 }
@@ -19,11 +19,9 @@ internal class AthenaPackager {
     }
 
     private fun makeAthenaModules(project: Project, it: CarthageDependency): List<String> {
-        val options = it.options
         val xcode = project.xcode
-
-        return if (options.frameworks.isNotEmpty()) {
-            options.frameworks.flatMap { framework ->
+        return if (it.frameworks.isNotEmpty()) {
+            it.frameworks.flatMap { framework ->
                 xcode.platforms.map { platform ->
                     "$framework-$platform"
                 }

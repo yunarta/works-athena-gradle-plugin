@@ -18,11 +18,9 @@ object PlatformParser {
         return input.map {
             StringUtils.lowerCase(it)
         }.let { list ->
-            mapping.filterKeys {
-                list.contains(it)
+            mapping.keys.intersect(list).map {
+                mapping.getValue(it)
             }
-        }.map {
-            it.value
         }.toSet()
     }
 }

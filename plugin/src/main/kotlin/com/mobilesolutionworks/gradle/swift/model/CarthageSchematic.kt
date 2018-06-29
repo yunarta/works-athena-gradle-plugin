@@ -4,17 +4,16 @@ import org.gradle.api.Project
 
 abstract class CarthageDependency {
 
-    abstract val org: String
+    abstract val group: String
     abstract val module: String
 
     abstract val semantic: String
 
     val options = FrameworkOptions()
-}
 
-class CarthageGitHub(val repo: String) : CarthageDependency() {
+    internal var versioning: String = ""
 
-    private var versioning: String = ""
+    var frameworks = setOf<String>()
 
     infix fun compatible(version: String) {
         versioning = " ~> $version"
@@ -27,13 +26,42 @@ class CarthageGitHub(val repo: String) : CarthageDependency() {
     infix fun atLeast(version: String) {
         versioning = " >= $version"
     }
+}
+
+class CarthageGit(val repo: String) : CarthageDependency() {
+
+    override val semantic: String
+        get() {
+            return "git \"$repo\"$versioning"
+        }
+
+    var backingGroup = ""
+    var backingModule = ""
+
+    fun id(group: String, module: String) {
+        backingGroup = group
+        backingModule = module
+    }
+
+    override val group: String
+        get() {
+            return backingGroup
+        }
+
+    override val module: String
+        get() {
+            return backingModule
+        }
+}
+
+class CarthageGitHub(val repo: String) : CarthageDependency() {
 
     override val semantic: String
         get() {
             return "github \"$repo\"$versioning"
         }
 
-    override val org: String
+    override val group: String
         get() {
             return repo.substringBefore("/")
         }
@@ -60,10 +88,16 @@ open class CarthageSchematic {
         declaredDependencies.add(it)
     }
 
-    fun github(repo: String, configure: (FrameworkOptions) -> Unit): CarthageGitHub = CarthageGitHub(repo).also {
-        configure(it.options)
+    fun github(repo: String, configure: CarthageGitHub.() -> Unit): CarthageGitHub = CarthageGitHub(repo).also {
+        it.configure()
         declaredDependencies.add(it)
     }
+
+    fun git(repo: String, configure: CarthageGit.() -> Unit): CarthageGit = CarthageGit(repo).also {
+        it.configure()
+        declaredDependencies.add(it)
+    }
+
 }
 
 val Project.carthage: CarthageSchematic

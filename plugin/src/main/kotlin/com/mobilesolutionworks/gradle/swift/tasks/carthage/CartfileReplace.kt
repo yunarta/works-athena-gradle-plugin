@@ -23,7 +23,7 @@ internal open class CartfileReplace : DefaultTask() {
             outputs.files(cartfileResolved)
 
             // dependencies
-            tasks.withType(CartfileResolve::class.java).forEach {
+            tasks.withType(CartfileResolve::class.java) {
                 this@CartfileReplace.dependsOn(it)
             }
 

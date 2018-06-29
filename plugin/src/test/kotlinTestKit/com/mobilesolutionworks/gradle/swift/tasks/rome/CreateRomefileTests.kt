@@ -39,8 +39,8 @@ class CreateRomefileTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", setOf("NullFramework"))
+                github("yunarta/NullFramework")  {
+                    frameworks = setOf("NullFramework")
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -71,8 +71,8 @@ class CreateRomefileTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", setOf("NullFramework"))
+                github("yunarta/NullFramework")  {
+                    frameworks = setOf("NullFramework")
                 } version "1.0.0"
             }
         """.trimIndent())

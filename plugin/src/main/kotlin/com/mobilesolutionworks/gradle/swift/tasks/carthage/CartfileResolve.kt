@@ -54,7 +54,7 @@ internal open class CartfileResolve : Exec() {
             })
 
             // dependencies
-            tasks.withType(CartfileCreate::class.java).forEach {
+            tasks.withType(CartfileCreate::class.java) {
                 this@CartfileResolve.dependsOn(it)
             }
         }

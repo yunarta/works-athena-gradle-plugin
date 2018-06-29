@@ -13,7 +13,7 @@ internal open class CreateRomefile : DefaultTask() {
         group = Rome.group
 
         with(project) {
-            tasks.withType(CreateRepositoryMap::class.java).forEach {
+            tasks.withType(CreateRepositoryMap::class.java) {
                 this@CreateRomefile.dependsOn(it)
                 this@CreateRomefile.inputs.files(it.outputs)
             }

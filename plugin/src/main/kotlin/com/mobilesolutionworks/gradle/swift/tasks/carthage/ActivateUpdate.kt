@@ -12,7 +12,7 @@ internal open class ActivateUpdate : DefaultTask() {
         description = Strings["CartfileResolve_description"]
 
         with(project) {
-            tasks.withType(CartfileCreate::class.java).forEach {
+            tasks.withType(CartfileCreate::class.java) {
                 this@ActivateUpdate.shouldRunAfter(it)
             }
         }

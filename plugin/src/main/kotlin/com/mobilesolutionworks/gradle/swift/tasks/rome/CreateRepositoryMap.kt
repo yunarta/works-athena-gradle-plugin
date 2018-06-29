@@ -3,6 +3,7 @@ package com.mobilesolutionworks.gradle.swift.tasks.rome
 import com.mobilesolutionworks.gradle.swift.model.carthage
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.impldep.aQute.bnd.osgi.Constants.options
 
 internal open class CreateRepositoryMap : DefaultTask() {
 
@@ -14,9 +15,8 @@ internal open class CreateRepositoryMap : DefaultTask() {
     init {
         with(project) {
             repositoriesMap = carthage.dependencies.mapNotNull {
-                val options = it.options
-                if (options.frameworks.isNotEmpty()) {
-                    RomeMap(options.key, "${options.key} = ${options.frameworks.joinToString(", ")}")
+                if (it.frameworks.isNotEmpty()) {
+                    RomeMap(it.module, "${it.module} = ${it.frameworks.joinToString(", ")}")
                 } else {
                     null
                 }

@@ -24,7 +24,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
         group = Athena.group
 
         with(project) {
-            tasks.withType(AthenaCreateVersion::class.java).forEach {
+            tasks.withType(AthenaCreateVersion::class.java) {
                 dependsOn(it)
             }
         }
@@ -117,7 +117,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
             options.frameworks.flatMap { framework ->
                 xcode.declaredPlatforms.map { platform ->
                     PackageInfo(
-                            org = dependency.org,
+                            org = dependency.group,
                             platform = platform,
                             module = dependency.module,
                             framework = framework,
@@ -128,7 +128,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
         } else {
             xcode.declaredPlatforms.map { platform ->
                 PackageInfo(
-                        org = dependency.org,
+                        org = dependency.group,
                         platform = platform,
                         module = dependency.module,
                         framework = dependency.module,

@@ -26,7 +26,7 @@ internal open class ListMissing : Exec() {
             })
 
             // dependencies
-            tasks.withType(CreateRomefile::class.java).forEach {
+            tasks.withType(CreateRomefile::class.java) {
                 this@ListMissing.dependsOn(it)
             }
         }

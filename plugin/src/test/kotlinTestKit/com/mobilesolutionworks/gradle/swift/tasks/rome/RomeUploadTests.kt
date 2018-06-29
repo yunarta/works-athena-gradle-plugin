@@ -43,9 +43,7 @@ class RomeUploadTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", setOf("NullFramework"))
-                } version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -76,9 +74,7 @@ class RomeUploadTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", setOf("NullFramework"))
-                } version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 
@@ -115,9 +111,7 @@ class RomeUploadTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", setOf("NullFramework"))
-                } version "1.0.0"
+                github("yunarta/NullFramework") version "1.0.0"
             }
         """.trimIndent())
 

@@ -2,12 +2,14 @@ package com.mobilesolutionworks.gradle.swift
 
 import com.mobilesolutionworks.gradle.swift.model.AthenaSchematic
 import com.mobilesolutionworks.gradle.swift.model.CarthageSchematic
+import com.mobilesolutionworks.gradle.swift.model.ComponentExtension
 import com.mobilesolutionworks.gradle.swift.model.RomeSchematic
 import com.mobilesolutionworks.gradle.swift.model.XcodeSchematic
 import com.mobilesolutionworks.gradle.swift.model.athena
 import com.mobilesolutionworks.gradle.swift.model.rome
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaCreatePackage
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaCreateVersion
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaInspectCarthage
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaUpload
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.ActivateUpdate
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileCreate
@@ -34,7 +36,9 @@ class SwiftPlugin : Plugin<Project> {
         project.extensions.create("carthage", CarthageSchematic::class.java)
         project.extensions.create("rome", RomeSchematic::class.java)
         project.extensions.create("xcode", XcodeSchematic::class.java)
-        project.extensions.create("athena", AthenaSchematic::class.java)
+
+        val container = project.container(ComponentExtension::class.java)
+        project.extensions.create("athena", AthenaSchematic::class.java, container)
 
         project.afterEvaluate {
             with(it) {
@@ -76,6 +80,10 @@ class SwiftPlugin : Plugin<Project> {
                 }
 
                 if (athena.enabled) {
+                    val inspectCarthage = tasks.create("athenaInspectCarthage", AthenaInspectCarthage::class.java)
+                    inspectCarthage.dependsOn(replace)
+                    inspectCarthage.shouldRunAfter(replace)
+
                     tasks.create("athenaCreateVersion", AthenaCreateVersion::class.java)
                     val upload = tasks.create("athenaUpload", AthenaUpload::class.java)
                     tasks.create("athenaCreatePackage", AthenaCreatePackage::class.java)
@@ -93,11 +101,8 @@ class SwiftPlugin : Plugin<Project> {
                     list.shouldRunAfter(download)
                     list.finalizedBy(tasks.create("tree", Exec::class.java) {
                         it.executable = "tree"
-                        it.workingDir = file("${project.rootDir}/Carthage/Build")
+                        it.workingDir = file("${project.rootDir}/")
                         it.args("-a")
-                        it.onlyIf {
-                            file("${project.rootDir}/Carthage/Build").exists()
-                        }
                     })
 
                     arrayOf(bootstrap, update).forEach {

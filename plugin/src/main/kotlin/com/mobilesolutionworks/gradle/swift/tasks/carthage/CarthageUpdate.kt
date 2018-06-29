@@ -31,11 +31,11 @@ internal open class CarthageUpdate : Exec() {
             })
 
             // dependencies
-            tasks.withType(ActivateUpdate::class.java).forEach {
+            tasks.withType(ActivateUpdate::class.java) {
                 this@CarthageUpdate.dependsOn(it)
             }
 
-            tasks.withType(CartfileResolve::class.java).forEach {
+            tasks.withType(CartfileResolve::class.java) {
                 this@CarthageUpdate.dependsOn(it)
             }
         }

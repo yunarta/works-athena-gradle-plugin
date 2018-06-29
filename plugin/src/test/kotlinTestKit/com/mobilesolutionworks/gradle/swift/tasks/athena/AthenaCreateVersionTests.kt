@@ -40,8 +40,8 @@ class AthenaCreateVersionTests {
 
             carthage {
                 github("yunarta/NullFramework")
-                github("ReactiveX/RxSwift") { options ->
-                    options.map("RxSwift", setOf("RxBlocking", "RxCocoa", "RxSwift", "RxTest"))
+                github("ReactiveX/RxSwift") {
+                    frameworks = setOf("RxBlocking", "RxCocoa", "RxSwift", "RxTest")
                 }
             }
         """.trimIndent())

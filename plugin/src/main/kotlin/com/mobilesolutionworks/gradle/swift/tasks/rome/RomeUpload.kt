@@ -26,7 +26,7 @@ internal open class RomeUpload : Exec() {
             }
 
             // dependencies
-            tasks.withType(CreateRomefile::class.java).forEach {
+            tasks.withType(CreateRomefile::class.java) {
                 this@RomeUpload.dependsOn(it)
             }
 
