@@ -1,3 +1,4 @@
+import com.adarshr.gradle.testlogger.theme.ThemeType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
 
@@ -6,6 +7,7 @@ plugins {
     `java-gradle-plugin`
     jacoco
 
+    id("com.adarshr.test-logger") version "1.3.1"
     id("com.gradle.plugin-publish") version "0.9.10"
     id("com.mobilesolutionworks.gradle.jacoco") version "1.1.3"
 }
@@ -23,6 +25,10 @@ repositories {
 worksJacoco {
     onlyRunCoverageWhenReporting = true
     hasTestKit = true
+}
+
+testlogger {
+    theme = ThemeType.MOCHA
 }
 
 tasks.withType<KotlinCompile> {
@@ -122,7 +128,6 @@ val ignoreFailures: String? by rootProject.extra
 val shouldIgnoreFailures = ignoreFailures?.toBoolean() == true
 
 tasks.withType<Test> {
-//    maxParallelForks = Runtime.getRuntime().availableProcessors().div(2)
     ignoreFailures = shouldIgnoreFailures
     systemProperty("junit.jupiter.execution.parallel.enabled", "true")
     systemProperty("junit.jupiter.execution.parallel.config.dynamic.factor", "1")

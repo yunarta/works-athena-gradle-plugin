@@ -14,11 +14,11 @@ import testKit.newFile
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test CarthageBootstrap")
+@ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
 class CarthageBootstrapTests {
 
     @Test
     @DisplayName("verify carthageBootstrap")
-    @ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
     fun test1(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -47,7 +47,6 @@ class CarthageBootstrapTests {
 
     @Test
     @DisplayName("DSL change should always run bootstrap (updates = false)")
-    @ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
