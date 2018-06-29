@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.carthage
 
+import org.gradle.api.tasks.StopExecutionException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -18,8 +19,8 @@ class CarthageResolvedTests {
 
         val file = temporaryDir.newFile()
         file.writeText("""
-            github "Alamofire/Alamofire" ~> 4.1
-            github "ReactiveCocoa/ReactiveSwift" ~> 3.0
+            github "Alamofire/Alamofire" "4.1"
+            github "ReactiveCocoa/ReactiveSwift" "3.0"
         """.trimIndent())
         val from = CarthageResolved.from(file)
         assertEquals("Alamofire", from.get(0).group)
@@ -28,12 +29,11 @@ class CarthageResolvedTests {
         assertEquals("ReactiveSwift", from.get(1).module)
     }
 
-    @Test
+    @Test(expected = StopExecutionException::class)
     fun `test parsing git source`() {
         val file = temporaryDir.newFile()
         file.writeText("""
            git "https://enterprise.local/desktop/git-error-translations2.git"
-
         """.trimIndent())
         val unresolved= mutableListOf<String>()
         CarthageResolved.from(file) {

@@ -1,12 +1,8 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import com.google.gson.GsonBuilder
-import com.mobilesolutionworks.gradle.swift.athena.ArtifactInfo
 import com.mobilesolutionworks.gradle.swift.carthage.CarthageAssetLocator
-import com.mobilesolutionworks.gradle.swift.carthage.CarthageBuildFile
 import com.mobilesolutionworks.gradle.swift.carthage.CarthageResolved
 import com.mobilesolutionworks.gradle.swift.model.athena
-import org.apache.commons.io.FilenameUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -18,11 +14,11 @@ internal open class AthenaInspectCarthage : DefaultTask() {
 
     init {
         group = Athena.group
+        description = "Inspect Cartfile.resolved to get modules information to download"
 
         with(project) {
             // inputs outputs
             inputs.file(CarthageAssetLocator.resolved(project))
-            inputs.files(CarthageAssetLocator.versions(project))
         }
     }
 
@@ -62,8 +58,6 @@ internal open class AthenaInspectCarthage : DefaultTask() {
             }
 
             athena.components = components
-
-
         }
     }
 }

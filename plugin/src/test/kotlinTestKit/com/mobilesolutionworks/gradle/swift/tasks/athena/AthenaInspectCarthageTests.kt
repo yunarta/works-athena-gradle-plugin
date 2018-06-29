@@ -47,7 +47,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
                 .build()
     }
 
@@ -80,7 +80,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
                 .build()
     }
 
@@ -114,7 +114,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
                 .build()
     }
 
@@ -147,7 +147,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
                 .buildAndFail()
     }
 
@@ -186,7 +186,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
                 .build()
     }
 }

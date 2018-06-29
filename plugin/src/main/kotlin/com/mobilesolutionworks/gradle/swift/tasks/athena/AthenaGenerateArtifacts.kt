@@ -13,7 +13,7 @@ internal open class AthenaGenerateArtifacts : DefaultTask() {
 
     init {
         group = Athena.group
-
+        description = "Create Athena artifact information for upload process"
         with(project) {
             // inputs outputs
             inputs.file(CarthageAssetLocator.resolved(project))
@@ -26,6 +26,7 @@ internal open class AthenaGenerateArtifacts : DefaultTask() {
         with(project) {
             val components = athena.components
             val gson = GsonBuilder().create()
+
             val artifacts = CarthageAssetLocator.versions(project).flatMap { file ->
                 val moduleName = FilenameUtils.getBaseName(file.name).substring(1)
                 val component = components[moduleName]
@@ -47,7 +48,8 @@ internal open class AthenaGenerateArtifacts : DefaultTask() {
                     emptyList()
                 }
             }
-            println(artifacts)
+
+            println("artifacts = $artifacts")
             athena.packages = artifacts
         }
     }
