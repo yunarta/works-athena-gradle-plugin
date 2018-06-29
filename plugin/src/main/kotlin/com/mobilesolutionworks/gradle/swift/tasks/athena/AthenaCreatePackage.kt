@@ -1,11 +1,8 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import com.mobilesolutionworks.gradle.swift.cocoa.Platform
-import com.mobilesolutionworks.gradle.swift.model.CarthageDependency
-import com.mobilesolutionworks.gradle.swift.model.carthage
-import com.mobilesolutionworks.gradle.swift.model.xcode
+import com.mobilesolutionworks.gradle.swift.athena.ArtifactInfo
+import com.mobilesolutionworks.gradle.swift.model.athena
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
 import org.gradle.api.internal.file.IdentityFileResolver
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.internal.DefaultExecActionFactory
@@ -14,7 +11,6 @@ import org.gradle.workers.IsolationMode
 import org.gradle.workers.WorkerExecutor
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.Serializable
 import javax.inject.Inject
 
 
@@ -24,7 +20,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
         group = Athena.group
 
         with(project) {
-            tasks.withType(AthenaCreateVersion::class.java) {
+            tasks.withType(AthenaInspectCarthage::class.java) {
                 dependsOn(it)
             }
         }
@@ -35,12 +31,11 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
         throw UnsupportedOperationException()
     }
 
-    class ArchiveWorker @Inject constructor(val info: PackageInfo, val workingDir: File) : Runnable {
+    class ArchiveWorker @Inject constructor(val info: ArtifactInfo, val workingDir: File) : Runnable {
 
         override fun run() {
             val execActionFactory = DefaultExecActionFactory(IdentityFileResolver())
             var executor = execActionFactory.newExecAction()
-
 
             executor.executable = "xcrun"
             executor.workingDir = workingDir
@@ -57,7 +52,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
                 it.substring(6).substringBefore(" ")
             }
 
-            val outputdir = File(workingDir, "build/out/${info.org}-${info.module}/${info.framework}-${info.platform}-${info.version}")
+            val outputdir = File(workingDir, "build/out/${info.id.group}-${info.id.module}/${info.framework}-${info.platform}-${info.version}")
             outputdir.mkdirs()
 
 
@@ -98,45 +93,12 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
     @TaskAction
     fun run() {
         with(project) {
-            project.carthage.dependencies.flatMap {
-                makeAthenaModules(project, it).map { info ->
-                    workerExecutor.submit(ArchiveWorker::class.java) {
-                        it.isolationMode = IsolationMode.NONE
-                        it.params(info, project.rootDir)
-                    }
+            athena.packages.forEach { info ->
+                workerExecutor.submit(ArchiveWorker::class.java) {
+                    it.isolationMode = IsolationMode.NONE
+                    it.params(info, project.rootDir)
                 }
             }
         }
     }
-
-    private fun makeAthenaModules(project: Project, dependency: CarthageDependency): List<PackageInfo> {
-        val options = dependency.options
-        val xcode = project.xcode
-
-        return if (options.frameworks.isNotEmpty()) {
-            options.frameworks.flatMap { framework ->
-                xcode.declaredPlatforms.map { platform ->
-                    PackageInfo(
-                            org = dependency.group,
-                            platform = platform,
-                            module = dependency.module,
-                            framework = framework,
-                            version = "1.0.0"
-                    )
-                }
-            }
-        } else {
-            xcode.declaredPlatforms.map { platform ->
-                PackageInfo(
-                        org = dependency.group,
-                        platform = platform,
-                        module = dependency.module,
-                        framework = dependency.module,
-                        version = "1.0.0"
-                )
-            }
-        }
-    }
-
-    class PackageInfo(var org: String = "", var platform: Platform, var module: String, var framework: String, var version: String) : Serializable
 }

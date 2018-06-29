@@ -10,6 +10,6 @@ object CarthageAssetLocator {
 
     fun versions(project: Project): ConfigurableFileTree = project.fileTree(mapOf(
             "dir" to project.file("Carthage/Build/"),
-            "include" to "*.version"
+            "include" to "*version"
     ))
 }

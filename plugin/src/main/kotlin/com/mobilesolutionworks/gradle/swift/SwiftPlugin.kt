@@ -1,14 +1,15 @@
 package com.mobilesolutionworks.gradle.swift
 
+import com.mobilesolutionworks.gradle.swift.athena.Component
 import com.mobilesolutionworks.gradle.swift.model.AthenaSchematic
 import com.mobilesolutionworks.gradle.swift.model.CarthageSchematic
 import com.mobilesolutionworks.gradle.swift.model.ComponentExtension
 import com.mobilesolutionworks.gradle.swift.model.RomeSchematic
 import com.mobilesolutionworks.gradle.swift.model.XcodeSchematic
 import com.mobilesolutionworks.gradle.swift.model.athena
+import com.mobilesolutionworks.gradle.swift.model.carthage
 import com.mobilesolutionworks.gradle.swift.model.rome
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaCreatePackage
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaCreateVersion
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaInspectCarthage
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaUpload
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.ActivateUpdate
@@ -80,11 +81,12 @@ class SwiftPlugin : Plugin<Project> {
                 }
 
                 if (athena.enabled) {
-                    val inspectCarthage = tasks.create("athenaInspectCarthage", AthenaInspectCarthage::class.java)
-                    inspectCarthage.dependsOn(replace)
-                    inspectCarthage.shouldRunAfter(replace)
+                    carthage.dependencies.map {
+                        athena.resolvedObjects[it.repo] = Component(it.group, it.module)
+                    }
 
-                    tasks.create("athenaCreateVersion", AthenaCreateVersion::class.java)
+                    val inspectCarthage = tasks.create("athenaInspectCarthage", AthenaInspectCarthage::class.java)
+
                     val upload = tasks.create("athenaUpload", AthenaUpload::class.java)
                     tasks.create("athenaCreatePackage", AthenaCreatePackage::class.java)
 
@@ -108,6 +110,8 @@ class SwiftPlugin : Plugin<Project> {
                     arrayOf(bootstrap, update).forEach {
                         it.dependsOn(download, list)
                         it.finalizedBy(upload)
+
+                        inspectCarthage.shouldRunAfter(it)
 
 //                        it.onlyIf {
 //                            list.outputs.files.singleFile.readText().isNotBlank()

@@ -1,4 +1,4 @@
-package com.mobilesolutionworks.gradle.athena
+package com.mobilesolutionworks.gradle.swift.carthage
 
 import com.mobilesolutionworks.gradle.swift.cocoa.Platform
 import org.gradle.internal.impldep.com.google.gson.annotations.SerializedName

@@ -20,6 +20,34 @@ class AthenaInspectCarthageTests {
             .around(gradle)
 
     @Test
+    fun execution() {
+        temporaryFolder.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = temporaryFolder.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
+                enabled = true
+            }
+
+            carthage {
+                github("ReactiveX/RxSwift")
+            }
+        """.trimIndent())
+
+        gradle.runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
+                .build()
+    }
+
+    @Test
     fun `test unresolved github`() {
         temporaryFolder.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -75,7 +103,7 @@ class AthenaInspectCarthageTests {
         """.trimIndent())
 
         gradle.runner.withArguments("athenaInspectCarthage", "--parallel", "--stacktrace", "--continue")
-                .buildAndFail()
+                .build()
     }
 
     @Test

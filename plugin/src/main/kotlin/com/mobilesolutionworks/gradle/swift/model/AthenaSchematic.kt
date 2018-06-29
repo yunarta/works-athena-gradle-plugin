@@ -9,7 +9,7 @@ open class AthenaSchematic(val resolutions: NamedDomainObjectContainer<Component
 
     var enabled = false
 
-    internal var packages: Set<ArtifactInfo> = emptySet()
+    internal var packages: List<ArtifactInfo> = emptyList()
 
     internal val resolvedObjects = mutableMapOf<String, Component>()
 

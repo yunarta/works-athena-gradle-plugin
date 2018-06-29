@@ -1,10 +1,13 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
+import com.google.gson.GsonBuilder
+import com.mobilesolutionworks.gradle.swift.carthage.CarthageBuildFile
+import com.mobilesolutionworks.gradle.swift.athena.ArtifactInfo
 import com.mobilesolutionworks.gradle.swift.carthage.CarthageAssetLocator
 import com.mobilesolutionworks.gradle.swift.carthage.CarthageResolved
 import com.mobilesolutionworks.gradle.swift.model.athena
+import org.apache.commons.io.FilenameUtils
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.TaskAction
 
 class AthenaInspection(message: String) : RuntimeException(message) {
@@ -26,7 +29,7 @@ internal open class AthenaInspectCarthage : DefaultTask() {
     fun inspect() {
         with(project) {
             val unresolved = mutableListOf<String>()
-            CarthageResolved.from(CarthageAssetLocator.resolved(project)) {
+            val components = CarthageResolved.from(CarthageAssetLocator.resolved(project)) {
                 val component = athena.resolvedObjects[it]
                 println("resolving = $it, component = $component")
                 if (component == null) {
@@ -34,7 +37,7 @@ internal open class AthenaInspectCarthage : DefaultTask() {
                 }
 
                 component
-            }
+            }.associateBy { it.module }
 
             println("unresolved.isNotEmpty() = ${unresolved.isNotEmpty()}")
             if (unresolved.isNotEmpty()) {
@@ -59,26 +62,34 @@ internal open class AthenaInspectCarthage : DefaultTask() {
                 """.trimMargin())
             }
 
-//            val gson = GsonBuilder().create()
-//            athena.packages = carthage.dependencies.flatMap { dependency ->
-//                val file = CarthageAssetLocator.version(project, dependency.module)
-//                if (file.exists()) {
-//                    throw StopExecutionException("Cannot find version file for dependency ${dependency.semantic}")
-//                }
-//
-//                val buildFile = gson.fromJson(file.reader(), CarthageBuildFile::class.java)
-//                buildFile.platforms.flatMap { entry ->
-//                    entry.value.map {
-//                        ArtifactInfo(
-//                                organization = dependency.org,
-//                                module = dependency.module,
-//                                framework = it.name,
-//                                version = buildFile.commitish,
-//                                platform = entry.key
-//                        )
-//                    }
-//                }
-//            }
+            val gson = GsonBuilder().create()
+            val artifacts = CarthageAssetLocator.versions(project).flatMap { file ->
+                println("file = ${file}")
+                val moduleName = FilenameUtils.getBaseName(file.name).substring(1)
+                val component = components[moduleName]
+                println("$moduleName -> $component")
+
+                if (component != null) {
+                    val buildFile = gson.fromJson(file.reader(), CarthageBuildFile::class.java)
+                    buildFile.platforms.flatMap { entry ->
+                        entry.value.map {
+                            ArtifactInfo(
+                                    id = component,
+                                    framework = it.name,
+                                    version = buildFile.commitish,
+                                    platform = entry.key
+                            )
+                        }
+                    }
+                } else {
+                    emptyList()
+                }
+            }
+            athena.packages = artifacts
+
+            for (info in artifacts) {
+                println("info = ${info}")
+            }
         }
     }
 }

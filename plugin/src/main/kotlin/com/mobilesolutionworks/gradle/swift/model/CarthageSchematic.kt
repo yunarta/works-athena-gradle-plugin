@@ -2,7 +2,7 @@ package com.mobilesolutionworks.gradle.swift.model
 
 import org.gradle.api.Project
 
-abstract class CarthageDependency {
+abstract class CarthageDependency(val repo: String) {
 
     abstract val group: String
     abstract val module: String
@@ -28,7 +28,7 @@ abstract class CarthageDependency {
     }
 }
 
-class CarthageGit(val repo: String) : CarthageDependency() {
+class CarthageGit(repo: String) : CarthageDependency(repo) {
 
     override val semantic: String
         get() {
@@ -54,7 +54,7 @@ class CarthageGit(val repo: String) : CarthageDependency() {
         }
 }
 
-class CarthageGitHub(val repo: String) : CarthageDependency() {
+class CarthageGitHub(repo: String) : CarthageDependency(repo) {
 
     override val semantic: String
         get() {
