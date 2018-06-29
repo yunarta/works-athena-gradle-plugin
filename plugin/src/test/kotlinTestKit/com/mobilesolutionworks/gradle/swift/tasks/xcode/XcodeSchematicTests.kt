@@ -31,7 +31,7 @@ class XcodeSchematicTests {
             }
 
             xcode {
-                platforms = listOf()
+                platforms = emptySet()
             }
         """.trimIndent())
 

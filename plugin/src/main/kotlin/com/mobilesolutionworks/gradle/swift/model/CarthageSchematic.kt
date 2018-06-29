@@ -75,9 +75,9 @@ class FrameworkOptions {
 
     internal var key: String = ""
 
-    internal var frameworks = listOf<String>()
+    internal var frameworks = setOf<String>()
 
-    fun map(key: String, frameworks: List<String>) {
+    fun map(key: String, frameworks: Set<String>) {
         this.key = key
         this.frameworks = frameworks
     }

@@ -14,7 +14,7 @@ object PlatformParser {
 
     private val mapping = Platform.values().associateBy { StringUtils.lowerCase(it.name) }
 
-    fun matches(input: List<String>): Collection<Platform> {
+    fun matches(input: Set<String>): Set<Platform> {
         return input.map {
             StringUtils.lowerCase(it)
         }.let { list ->
@@ -23,6 +23,6 @@ object PlatformParser {
             }
         }.map {
             it.value
-        }
+        }.toSet()
     }
 }

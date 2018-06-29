@@ -96,7 +96,7 @@ class CartfileResolveTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -117,7 +117,7 @@ class CartfileResolveTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.1.0"
             }
         """.trimIndent())
@@ -147,7 +147,7 @@ class CartfileResolveTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -170,7 +170,7 @@ class CartfileResolveTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -199,7 +199,7 @@ class CartfileResolveTests {
             carthage {
                 updates = true
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())

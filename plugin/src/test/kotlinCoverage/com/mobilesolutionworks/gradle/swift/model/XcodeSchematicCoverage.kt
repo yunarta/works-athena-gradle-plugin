@@ -8,6 +8,6 @@ class XcodeSchematicCoverage {
     @Test
     fun fulfillCoverage() {
         val schematic = XcodeSchematic()
-        assertEquals(schematic.platforms, listOf("iOS", "macOS", "tvOS", "watchOS"))
+        assertEquals(schematic.platforms, setOf("iOS", "macOS", "tvOS", "watchOS"))
     }
 }

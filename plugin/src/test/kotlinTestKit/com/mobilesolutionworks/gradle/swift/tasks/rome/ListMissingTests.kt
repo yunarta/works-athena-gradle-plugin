@@ -42,7 +42,7 @@ class ListMissingTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -60,7 +60,7 @@ class ListMissingTests {
             }
 
             xcode {
-                platforms = listOf("ios", "macos")
+                platforms = setOf("ios", "macos")
             }
 
             rome {
@@ -70,7 +70,7 @@ class ListMissingTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -101,7 +101,7 @@ class ListMissingTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -135,7 +135,7 @@ class ListMissingTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -157,7 +157,7 @@ class ListMissingTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.1.0"
             }
         """.trimIndent())

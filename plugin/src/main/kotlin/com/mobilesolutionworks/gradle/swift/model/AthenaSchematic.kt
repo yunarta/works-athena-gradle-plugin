@@ -7,7 +7,7 @@ open class AthenaSchematic {
 
     var enabled = false
 
-    internal var packages: List<ArtifactInfo> = emptyList()
+    internal var packages: Set<ArtifactInfo> = emptySet()
 }
 
 val Project.athena: AthenaSchematic

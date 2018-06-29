@@ -6,10 +6,10 @@ import org.gradle.api.Project
 
 open class XcodeSchematic {
 
-    internal var declaredPlatforms: Collection<Platform> = Platform.values().toList()
+    internal var declaredPlatforms: Set<Platform> = Platform.values().toSet()
         private set
 
-    var platforms: List<String> = listOf("iOS", "macOS", "tvOS", "watchOS")
+    var platforms: Set<String> = setOf("iOS", "macOS", "tvOS", "watchOS")
         set(value) {
             declaredPlatforms = PlatformParser.matches(value)
             if (declaredPlatforms.isEmpty()) {
@@ -19,7 +19,7 @@ open class XcodeSchematic {
             println("declaredPlatforms $declaredPlatforms")
             field = declaredPlatforms.map {
                 it.name
-            }
+            }.toSet()
         }
 
     internal val platformsAsText: String

@@ -34,7 +34,7 @@ class RomeUploadTests {
             }
 
             xcode {
-                platforms = listOf("iOS")
+                platforms = setOf("iOS")
             }
 
             rome {
@@ -44,7 +44,7 @@ class RomeUploadTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -67,7 +67,7 @@ class RomeUploadTests {
             }
 
             xcode {
-                platforms = listOf("iOS")
+                platforms = setOf("iOS")
             }
 
             rome {
@@ -77,7 +77,7 @@ class RomeUploadTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())
@@ -106,7 +106,7 @@ class RomeUploadTests {
             }
 
             xcode {
-                platforms = listOf("iOS")
+                platforms = setOf("iOS")
             }
 
             rome {
@@ -116,7 +116,7 @@ class RomeUploadTests {
 
             carthage {
                 github("yunarta/NullFramework") { options ->
-                    options.map("NullFramework", listOf("NullFramework"))
+                    options.map("NullFramework", setOf("NullFramework"))
                 } version "1.0.0"
             }
         """.trimIndent())

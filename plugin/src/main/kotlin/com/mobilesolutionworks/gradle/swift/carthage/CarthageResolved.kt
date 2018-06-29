@@ -7,10 +7,13 @@ object CarthageResolved {
 
     private val regex = "(github) \\\"([^\\/]*)\\/([^\\\"]*)\\\".*".toRegex()
 
-    fun from(file: File) =
+    fun from(file: File, unresolved: (String) -> Component? = { null }) =
             file.readLines().mapNotNull {
-                regex.find(it)?.let {
-                    Component(it.groupValues[2], it.groupValues[3])
+                val find = regex.find(it)
+                if (find != null) {
+                    Component(find.groupValues[2], find.groupValues[3])
+                } else {
+                    unresolved(it)
                 }
             }
 }

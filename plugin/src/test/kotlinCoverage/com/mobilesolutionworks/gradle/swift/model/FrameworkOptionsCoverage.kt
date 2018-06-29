@@ -8,6 +8,6 @@ class FrameworkOptionsCoverage {
     fun fulfillCoverage() {
         val options = FrameworkOptions()
         options.key = "key"
-        options.frameworks = emptyList()
+        options.frameworks = setOf()
     }
 }

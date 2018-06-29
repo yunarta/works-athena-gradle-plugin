@@ -31,7 +31,7 @@ class AthenaUploadTests {
             }
 
             xcode {
-                platforms = listOf("iOS")
+                platforms = setOf("iOS")
             }
 
             athena {
@@ -41,7 +41,7 @@ class AthenaUploadTests {
             carthage {
                 github("yunarta/NullFramework")
                 github("ReactiveX/RxSwift") { options ->
-                    options.map("RxSwift", listOf("RxBlocking", "RxCocoa", "RxSwift", "RxTest"))
+                    options.map("RxSwift", setOf("RxBlocking", "RxCocoa", "RxSwift", "RxTest"))
                 }
             }
         """.trimIndent())

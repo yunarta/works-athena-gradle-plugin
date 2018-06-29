@@ -1,20 +1,22 @@
 package com.mobilesolutionworks.gradle.swift.carthage
 
-import org.`junit$pioneer`.jupiter.TempDirectory
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import java.io.File
-import java.nio.file.Path
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.TemporaryFolder
+
 
 class CarthageResolvedTests {
 
-    @Test
-    @ExtendWith(TempDirectory::class)
-    fun `test parsing github source`(@TempDirectory.TempDir path: Path) {
-        val root = path.toFile()
-        val file = File.createTempFile("Carthage", "resolved", root)
+    @JvmField
+    @Rule
+    val temporaryDir = TemporaryFolder()
 
+    @Test
+    fun `test parsing github source`() {
+
+        val file = temporaryDir.newFile()
         file.writeText("""
             github "Alamofire/Alamofire" ~> 4.1
             github "ReactiveCocoa/ReactiveSwift" ~> 3.0
@@ -27,14 +29,18 @@ class CarthageResolvedTests {
     }
 
     @Test
-    @ExtendWith(TempDirectory::class)
-    fun `test parsing git source`(@TempDirectory.TempDir path: Path) {
-        val root = path.toFile()
-        val file = File.createTempFile("Carthage", "resolved", root)
+    fun `test parsing git source`() {
+        val file = temporaryDir.newFile()
         file.writeText("""
            git "https://enterprise.local/desktop/git-error-translations2.git"
 
         """.trimIndent())
-        CarthageResolved.from(file)
+        val unresolved= mutableListOf<String>()
+        CarthageResolved.from(file) {
+            unresolved.add(it)
+            null
+        }
+
+        assertTrue(unresolved.isNotEmpty())
     }
 }
