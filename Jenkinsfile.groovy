@@ -10,6 +10,7 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: buildCount))
         disableConcurrentBuilds()
+        ansiColor('css')
     }
 
     stages {
