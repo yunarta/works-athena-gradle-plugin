@@ -15,11 +15,11 @@ import java.io.File
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test CarthageUpdate")
+@ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
 class CarthageUpdateTests {
 
     @Test
     @DisplayName("verify carthageUpdate")
-    @ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
     fun test1(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -47,7 +47,6 @@ class CarthageUpdateTests {
 
     @Test
     @DisplayName("replacing task should be executed even if updates = false")
-    @ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
