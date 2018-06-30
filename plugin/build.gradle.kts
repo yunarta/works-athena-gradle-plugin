@@ -128,15 +128,15 @@ val ignoreFailures: String? by rootProject.extra
 val shouldIgnoreFailures = ignoreFailures?.toBoolean() == true
 
 tasks.withType<Test> {
-    maxParallelForks = Runtime.getRuntime().availableProcessors().div(2)
+//    maxParallelForks = Runtime.getRuntime().availableProcessors().div(2)
     ignoreFailures = shouldIgnoreFailures
 
-    systemProperty("junit.jupiter.execution.parallel.enabled", "true")
-    systemProperty("junit.jupiter.execution.parallel.config.dynamic.factor", "1")
+//    systemProperty("junit.jupiter.execution.parallel.enabled", "true")
+//    systemProperty("junit.jupiter.execution.parallel.config.dynamic.factor", "1")
 
     useJUnitPlatform()
 
-    doFirst {
-        logger.quiet("Test with max $maxParallelForks parallel forks")
-    }
+//    doFirst {
+//        logger.quiet("Test with max $maxParallelForks parallel forks")
+//    }
 }
