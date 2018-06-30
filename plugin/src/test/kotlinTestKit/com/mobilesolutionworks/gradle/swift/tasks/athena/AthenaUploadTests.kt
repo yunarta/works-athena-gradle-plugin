@@ -41,7 +41,7 @@ class AthenaUploadTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "--parallel", "-i")
+        runner.withArguments("carthageBootstrap")
                 .build().let {
                     // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }

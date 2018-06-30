@@ -44,7 +44,7 @@ class AthenaCheck {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "--parallel", "--stacktrace", "--continue")
+        runner.withArguments("carthageBootstrap")
                 .build().let {
                     // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }

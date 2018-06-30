@@ -44,7 +44,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
+        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload")
                 .build()
     }
 
@@ -78,7 +78,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
+        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload")
                 .build()
     }
 
@@ -113,7 +113,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
+        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload")
                 .build()
     }
 
@@ -147,7 +147,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
+        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload")
                 .buildAndFail()
     }
 
@@ -187,7 +187,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload", "--parallel", "--stacktrace", "--continue")
+        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload")
                 .build()
     }
 }
