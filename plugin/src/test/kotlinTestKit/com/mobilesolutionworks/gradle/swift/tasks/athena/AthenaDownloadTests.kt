@@ -33,9 +33,6 @@ class AthenaDownloadTests {
 
             carthage {
                 github("yunarta/NullFramework")
-                github("ReactiveX/RxSwift") {
-                    frameworks = setOf("RxBlocking", "RxCocoa", "RxSwift", "RxTest")
-                }
             }
         """.trimIndent())
 
