@@ -254,58 +254,58 @@ class CartfileReplaceTests {
                 }
     }
 
-    @Test
-    @Disabled
-    @DisplayName("replacing executed due to DSL changes, even if updates = false")
-    fun test7(runner: GradleRunner) {
-        runner.newFile("settings.gradle.kts").writeText("""
-        """.trimIndent())
-
-        val build = runner.newFile("build.gradle.kts")
-        build.writeText("""
-            plugins {
-                id("com.mobilesolutionworks.gradle.swift")
-            }
-
-            rome {
-                enabled = false
-            }
-
-            carthage {
-                updates = false
-                github("yunarta/NullFramework") version "1.0.0"
-            }
-        """.trimIndent())
-
-        runner.withArguments("carthageCartfileReplace")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-                }
-
-        File(runner.root, "build").deleteRecursively()
-
-        build.writeText("""
-            plugins {
-                id("com.mobilesolutionworks.gradle.swift")
-            }
-
-            rome {
-                enabled = false
-            }
-
-            carthage {
-                updates = false
-                github("yunarta/NullFramework") version "1.1.0"
-            }
-        """.trimIndent())
-
-        runner.withArguments("carthageCartfileReplace")
-                .build().let {
-                    File(runner.root, "Cartfile.resolved").readText().also {
-                        println(it)
-                    }
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-
-                }
-    }
+//    @Test
+//    @Disabled
+//    @DisplayName("replacing executed due to DSL changes, even if updates = false")
+//    fun test7(runner: GradleRunner) {
+//        runner.newFile("settings.gradle.kts").writeText("""
+//        """.trimIndent())
+//
+//        val build = runner.newFile("build.gradle.kts")
+//        build.writeText("""
+//            plugins {
+//                id("com.mobilesolutionworks.gradle.swift")
+//            }
+//
+//            rome {
+//                enabled = false
+//            }
+//
+//            carthage {
+//                updates = false
+//                github("yunarta/NullFramework") version "1.0.0"
+//            }
+//        """.trimIndent())
+//
+//        runner.withArguments("carthageCartfileReplace")
+//                .build().let {
+//                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
+//                }
+//
+//        File(runner.root, "build").deleteRecursively()
+//
+//        build.writeText("""
+//            plugins {
+//                id("com.mobilesolutionworks.gradle.swift")
+//            }
+//
+//            rome {
+//                enabled = false
+//            }
+//
+//            carthage {
+//                updates = false
+//                github("yunarta/NullFramework") version "1.1.0"
+//            }
+//        """.trimIndent())
+//
+//        runner.withArguments("carthageCartfileReplace")
+//                .build().let {
+//                    File(runner.root, "Cartfile.resolved").readText().also {
+//                        println(it)
+//                    }
+//                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
+//
+//                }
+//    }
 }
