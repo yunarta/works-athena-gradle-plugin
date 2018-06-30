@@ -1,4 +1,4 @@
-import com.adarshr.gradle.testlogger.theme.ThemeType
+//import com.adarshr.gradle.testlogger.theme.ThemeType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
 
