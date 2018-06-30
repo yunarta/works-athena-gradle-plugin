@@ -60,7 +60,7 @@ class GradleRunnerProvider : ParameterResolver {
             return GradleRunner.create()
                     .withProjectDir(temporaryFolder)
                     .withPluginClasspath()
-                    .forwardOutput()
+//                    .forwardOutput()
         }
     }
 }
