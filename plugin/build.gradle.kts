@@ -7,7 +7,7 @@ plugins {
     `java-gradle-plugin`
     jacoco
 
-    id("com.adarshr.test-logger") version "1.3.1"
+//    id("com.adarshr.test-logger") version "1.3.1"
     id("com.gradle.plugin-publish") version "0.9.10"
     id("com.mobilesolutionworks.gradle.jacoco") version "1.1.3"
 }
@@ -27,9 +27,9 @@ worksJacoco {
     hasTestKit = true
 }
 
-testlogger {
-    theme = ThemeType.MOCHA
-}
+//testlogger {
+//    theme = ThemeType.MOCHA
+//}
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
