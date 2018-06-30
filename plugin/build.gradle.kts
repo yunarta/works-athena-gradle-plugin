@@ -131,8 +131,8 @@ tasks.withType<Test> {
     //    maxParallelForks = Runtime.getRuntime().availableProcessors().div(2)
     ignoreFailures = shouldIgnoreFailures
 
-    systemProperty("junit.jupiter.execution.parallel.enabled", "true")
-    systemProperty("junit.jupiter.execution.parallel.config.dynamic.factor", "1")
+//    systemProperty("junit.jupiter.execution.parallel.enabled", "true")
+//    systemProperty("junit.jupiter.execution.parallel.config.dynamic.factor", "1")
 
     useJUnitPlatform()
 
