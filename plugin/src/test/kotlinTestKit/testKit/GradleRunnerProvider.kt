@@ -49,9 +49,7 @@ class GradleRunnerProvider : ParameterResolver {
         }
 
         fun get(): GradleRunner {
-
-
-            val agentString = TestKitConfiguration(javaClass.simpleName).agentString
+            val agentString = TestKitConfiguration(temporaryFolder.name).agentString
             if (agentString != null) {
                 temporaryFolder.newFile("gradle.properties").apply {
                     val properties = Properties()
