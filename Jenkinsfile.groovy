@@ -56,7 +56,7 @@ pipeline {
                 resetBuildState()
                 echo "Build for test and analyze"
                 sh """echo "Execute test"
-                        ./gradlew clean test --fail-fast jacocoTestReport -i
+                        ./gradlew clean test --fail-fast jacocoTestReport -q
                         ./gradlew worksGatherReport"""
             }
         }
