@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.parallel.ResourceAccessMode
-import org.junit.jupiter.api.parallel.ResourceLock
 import testKit.GradleRunnerProvider
 import testKit.newFile
 import testKit.root
@@ -15,7 +13,6 @@ import java.io.File
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test CarthageUpdate")
-@ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
 class CarthageUpdateTests {
 
     @Test

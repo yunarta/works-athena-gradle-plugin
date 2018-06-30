@@ -4,14 +4,11 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.parallel.ResourceAccessMode
-import org.junit.jupiter.api.parallel.ResourceLock
 import testKit.GradleRunnerProvider
 import testKit.newFile
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test AthenaCreatePackage")
-@ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
 class AthenaCreatePackageTests {
 
     @Test
@@ -36,9 +33,6 @@ class AthenaCreatePackageTests {
 
             carthage {
                 github("yunarta/NullFramework")
-                github("ReactiveX/RxSwift") {
-                    frameworks = setOf("RxBlocking", "RxCocoa", "RxSwift", "RxTest")
-                }
             }
         """.trimIndent())
 

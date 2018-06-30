@@ -6,14 +6,11 @@ import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.parallel.ResourceAccessMode
-import org.junit.jupiter.api.parallel.ResourceLock
 import testKit.GradleRunnerProvider
 import testKit.newFile
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test RomeDownload")
-@ResourceLock(value = "rome", mode = ResourceAccessMode.READ_WRITE)
 class RomeDownloadTests {
 
     @Test

@@ -6,9 +6,6 @@ import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.parallel.ResourceAccessMode
-import org.junit.jupiter.api.parallel.ResourceLock
-import org.junit.jupiter.api.parallel.ResourceLocks
 import testKit.GradleRunnerProvider
 import testKit.newFile
 import testKit.root
@@ -16,10 +13,6 @@ import java.io.File
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test RomeUpload")
-@ResourceLocks(
-        ResourceLock(value = "rome", mode = ResourceAccessMode.READ_WRITE),
-        ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
-)
 class RomeUploadTests {
 
     @Test

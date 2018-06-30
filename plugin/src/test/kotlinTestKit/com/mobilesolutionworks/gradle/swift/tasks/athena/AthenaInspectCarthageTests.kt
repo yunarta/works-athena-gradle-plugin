@@ -4,15 +4,11 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.parallel.ResourceAccessMode
-import org.junit.jupiter.api.parallel.ResourceLock
 import testKit.GradleRunnerProvider
 import testKit.newFile
 
-
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test AthenaInspectCarthage")
-@ResourceLock(value = "xcode", mode = ResourceAccessMode.READ_WRITE)
 class AthenaInspectCarthageTests {
 
     @Test
@@ -40,11 +36,11 @@ class AthenaInspectCarthageTests {
             }
 
             carthage {
-                github("ReactiveX/RxSwift")
+                github("yunarta/NullFramework")
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload")
+        runner.withArguments("athenaInspectCarthage")
                 .build()
     }
 
@@ -78,7 +74,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload")
+        runner.withArguments("athenaInspectCarthage")
                 .build()
     }
 
@@ -113,7 +109,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload")
+        runner.withArguments("athenaInspectCarthage")
                 .build()
     }
 
@@ -147,7 +143,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload")
+        runner.withArguments("athenaInspectCarthage")
                 .buildAndFail()
     }
 
@@ -187,7 +183,7 @@ class AthenaInspectCarthageTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "athenaInspectCarthage", "-x", "athenaUpload")
+        runner.withArguments("athenaInspectCarthage")
                 .build()
     }
 }
