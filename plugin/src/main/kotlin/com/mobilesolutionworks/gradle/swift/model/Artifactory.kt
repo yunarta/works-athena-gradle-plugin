@@ -1,6 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.model
 
-internal object Artifactory {
+internal class Artifactory private constructor() {
 
     internal open class FileSpecs(val files: List<FileSpec>) {
 

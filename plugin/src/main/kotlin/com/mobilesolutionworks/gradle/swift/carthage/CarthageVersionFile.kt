@@ -6,7 +6,22 @@ import javax.inject.Inject
 
 class CarthageBuildInfo @Inject constructor(val name: String, val hash: String)
 
-class CarthageBuildFile {
+class CarthageBuildFile constructor(
+        @SerializedName(value = "Mac")
+        private val macOs: List<CarthageBuildInfo> = emptyList(),
+
+        @SerializedName("watchOS")
+        private val watchOS: List<CarthageBuildInfo> = emptyList(),
+
+        @SerializedName("iOS")
+        private val iOS: List<CarthageBuildInfo> = emptyList(),
+
+        @SerializedName("tvOS")
+        private val tvOS: List<CarthageBuildInfo> = emptyList()/*,
+
+        @SerializedName("commitish")
+        private val commitish: String = ""*/
+) {
     val platforms: Map<Platform, List<CarthageBuildInfo>>
         get() = mapOf(
                 Platform.iOS to iOS,
@@ -14,19 +29,4 @@ class CarthageBuildFile {
                 Platform.tvOS to tvOS,
                 Platform.watchOS to watchOS
         )
-
-    @SerializedName("Mac")
-    val macOs = emptyList<CarthageBuildInfo>()
-
-    @SerializedName("watchOS")
-    val watchOS = emptyList<CarthageBuildInfo>()
-
-    @SerializedName("iOS")
-    val iOS = emptyList<CarthageBuildInfo>()
-
-    @SerializedName("tvOS")
-    val tvOS = emptyList<CarthageBuildInfo>()
-
-    @SerializedName("commitish")
-    val commitish: String = ""
 }

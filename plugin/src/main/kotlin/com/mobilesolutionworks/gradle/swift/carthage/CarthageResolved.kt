@@ -9,7 +9,7 @@ object CarthageResolved {
 
     private val regex = "(git|github) \\\"(([^\\/]*)\\/([^\\\"]*))\\\" \"([^\"]*)\"".toRegex()
 
-    internal fun from(file: File, resolver: (String) -> AthenaPackage? = { null }) =
+    internal fun from(file: File, resolver: (String) -> AthenaPackage?) =
             file.readLines().mapNotNull { it ->
                 val find = regex.find(it)
                 when {

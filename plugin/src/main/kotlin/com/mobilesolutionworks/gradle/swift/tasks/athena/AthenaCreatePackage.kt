@@ -6,7 +6,6 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.internal.file.IdentityFileResolver
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.internal.DefaultExecActionFactory
-import org.gradle.process.internal.ExecActionFactory
 import org.gradle.workers.IsolationMode
 import org.gradle.workers.WorkerExecutor
 import java.io.ByteArrayOutputStream
@@ -14,7 +13,7 @@ import java.io.File
 import javax.inject.Inject
 
 
-internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: WorkerExecutor) : DefaultTask() {
+internal open class AthenaCreatePackage @Inject constructor(private val workerExecutor: WorkerExecutor) : DefaultTask() {
 
     init {
         group = Athena.group
@@ -25,7 +24,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
             }
         }
     }
-    
+
     @TaskAction
     fun run() {
         with(project) {
@@ -38,7 +37,11 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
         }
     }
 
-    class ArchiveWorker @Inject constructor(val info: AthenaUploadInfo, val workingDir: File, val outputRoot: File) : Runnable {
+    private class ArchiveWorker @Inject constructor(
+            private val info: AthenaUploadInfo,
+            private val workingDir: File,
+            private val outputRoot: File
+    ) : Runnable {
 
         override fun run() {
             val execActionFactory = DefaultExecActionFactory(IdentityFileResolver())

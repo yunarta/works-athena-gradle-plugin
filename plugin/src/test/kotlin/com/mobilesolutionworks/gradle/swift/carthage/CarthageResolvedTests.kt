@@ -24,7 +24,9 @@ class CarthageResolvedTests {
             github "Alamofire/Alamofire" "4.1"
             github "ReactiveCocoa/ReactiveSwift" "3.0"
         """.trimIndent())
-        val from = CarthageResolved.from(file)
+        val from = CarthageResolved.from(file) {
+            null
+        }
         assertAll(
                 { assertEquals("Alamofire", from.get(0).group) },
                 { assertEquals("Alamofire", from.get(0).module) }

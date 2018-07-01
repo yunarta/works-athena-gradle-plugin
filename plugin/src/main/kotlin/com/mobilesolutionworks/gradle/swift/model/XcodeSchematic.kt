@@ -6,8 +6,7 @@ import org.gradle.api.Project
 
 open class XcodeSchematic {
 
-    internal var declaredPlatforms: Set<Platform> = Platform.values().toSet()
-        private set
+    private var declaredPlatforms: Set<Platform> = Platform.values().toSet()
 
     var platforms: Set<String> = setOf("iOS", "macOS", "tvOS", "watchOS")
         set(value) {

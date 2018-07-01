@@ -10,6 +10,7 @@ abstract class CarthageDependency(val repo: String) {
     abstract val semantic: String
 
     internal var versioning: String = ""
+        private set
 
     var frameworks = setOf<String>()
 
@@ -69,7 +70,6 @@ class CarthageGitHub(repo: String) : CarthageDependency(repo) {
             return repo.substringAfter("/")
         }
 }
-
 
 open class CarthageSchematic {
 
