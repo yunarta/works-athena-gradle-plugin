@@ -7,10 +7,5 @@ internal open class Artifactory {
         internal open class FileSpec(val pattern: String)
     }
 
-    internal open class ResultSpec(val path: String) {
-
-        override fun toString(): String {
-            return "ResultSpec(path='$path')"
-        }
-    }
+    internal open class ResultSpec(val path: String) 
 }

@@ -6,14 +6,6 @@ import com.mobilesolutionworks.gradle.swift.athena.AthenaUploadInfo
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 
-internal class AthenaPackageInfo(
-
-        val name: String,
-        val platform: String,
-        val version: String,
-        val hash: String
-)
-
 open class AthenaSchematic(val resolutions: NamedDomainObjectContainer<PackageExtension>) {
 
     var enabled = false
