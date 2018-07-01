@@ -77,7 +77,7 @@ class SwiftPlugin : Plugin<Project> {
                     tasks.create(Rome.Tasks.RomeCreateRepositoryMap.value, CreateRepositoryMap::class.java)
                     tasks.create(Rome.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
 
-                    val list = tasks.create(Rome.Tasks.RomeListMissing.value, ListMissing::class.java)
+                    val list = tasks.create("athenaListMissing", AthenaListMissing::class.java)
 //                    val download = tasks.create(Rome.Tasks.RomeDownload.value, RomeDownload::class.java)
 //                    val upload = tasks.create(Rome.Tasks.RomeUpload.value, RomeUpload::class.java)
 

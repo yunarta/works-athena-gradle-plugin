@@ -84,7 +84,6 @@ pluginBundle {
 }
 
 tasks.withType<JacocoReport> {
-
     reports {
         xml.isEnabled = true
         html.isEnabled = true

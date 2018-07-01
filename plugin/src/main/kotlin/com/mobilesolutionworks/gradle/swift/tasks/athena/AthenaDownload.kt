@@ -24,7 +24,7 @@ internal open class AthenaDownload : DefaultTask() {
         with(project) {
             val execActionFactory = DefaultExecActionFactory(IdentityFileResolver())
             athena.packages.values.map { info ->
-                artifactoryString(info, athena.swiftVersion).let {
+                info.artifactory(athena.swiftVersion).let {
                     val executor = execActionFactory.newExecAction()
                     executor.executable = "jfrog"
                     executor.workingDir = file("$buildDir/athena")
@@ -51,9 +51,5 @@ internal open class AthenaDownload : DefaultTask() {
                 }
             }
         }
-    }
-
-    private fun artifactoryString(info: AthenaPackageVersion, version: String): String {
-        return "${info.group}/${info.module}/${info.version}-Swift$version"
     }
 }
