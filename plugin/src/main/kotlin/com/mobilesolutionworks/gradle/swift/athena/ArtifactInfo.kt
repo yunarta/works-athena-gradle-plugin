@@ -3,20 +3,12 @@ package com.mobilesolutionworks.gradle.swift.athena
 import com.mobilesolutionworks.gradle.swift.cocoa.Platform
 import java.io.Serializable
 
-internal open class AthenaPackage(
-        val group: String,
-        val module: String
-
-) : Serializable {
-    override fun toString(): String {
-        return "Package(group='$group', module='$module')"
-    }
-}
+internal open class AthenaPackage(val group: String, val module: String) : Serializable
 
 internal open class AthenaPackageVersion(`package`: AthenaPackage, val version: String) :
         AthenaPackage(`package`.group, `package`.module)
 
-internal object NullAthenaPackageVersion: AthenaPackageVersion(AthenaPackage("", ""), "")
+internal object NullAthenaPackageVersion : AthenaPackageVersion(AthenaPackage("", ""), "")
 
 internal open class AthenaFramework(val name: String, val hash: String) : Serializable
 
