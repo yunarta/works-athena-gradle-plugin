@@ -1,6 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
-object Carthage {
+internal object Carthage {
 
     val group = "carthage"
 

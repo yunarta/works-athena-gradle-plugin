@@ -110,8 +110,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
             """.trimIndent()
             File(outputDir, "${info.version.module}-$artifactVersion.pom").writeText(pom)
 
-            var executor = execActionFactory.newExecAction()
-            executor = execActionFactory.newExecAction()
+            val executor = execActionFactory.newExecAction()
             executor.executable = "zip"
             executor.workingDir = workingDir
 

@@ -33,8 +33,8 @@ class CarthageGit(repo: String) : CarthageDependency(repo) {
             return "git \"$repo\"$versioning"
         }
 
-    var backingGroup = ""
-    var backingModule = ""
+    private var backingGroup = ""
+    private var backingModule = ""
 
     fun id(group: String, module: String) {
         backingGroup = group

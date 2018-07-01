@@ -1,6 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
-object Rome {
+internal object Rome {
 
     val group = "rome"
 

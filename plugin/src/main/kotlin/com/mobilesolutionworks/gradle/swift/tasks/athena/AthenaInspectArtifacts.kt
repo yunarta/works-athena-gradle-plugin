@@ -3,6 +3,7 @@ package com.mobilesolutionworks.gradle.swift.tasks.athena
 import com.google.gson.GsonBuilder
 import com.mobilesolutionworks.gradle.swift.athena.AthenaFramework
 import com.mobilesolutionworks.gradle.swift.athena.AthenaUploadInfo
+import com.mobilesolutionworks.gradle.swift.athena.NullAthenaPackageVersion
 import com.mobilesolutionworks.gradle.swift.carthage.CarthageAssetLocator
 import com.mobilesolutionworks.gradle.swift.carthage.CarthageBuildFile
 import com.mobilesolutionworks.gradle.swift.model.athena
@@ -29,17 +30,14 @@ internal open class AthenaInspectArtifacts : DefaultTask() {
             val packages = athena.packages
             val gson = GsonBuilder().create()
 
-            val artifacts = CarthageAssetLocator.versions(project).mapNotNull { file ->
+            val artifacts = CarthageAssetLocator.versions(project).map { file ->
                 val moduleName = FilenameUtils.getBaseName(file.name).substring(1)
-                val `package` = packages[moduleName]
-                if (`package` != null) {
-                    val buildFile = gson.fromJson(file.reader(), CarthageBuildFile::class.java)
-                    AthenaUploadInfo(`package`, athena.swiftVersion, buildFile.platforms.mapValues { entry ->
-                        entry.value.map { AthenaFramework(it.name, it.hash) }
-                    })
-                } else {
-                    null
-                }
+
+                val `package` = packages.getOrDefault(moduleName, NullAthenaPackageVersion)
+                val buildFile = gson.fromJson(file.reader(), CarthageBuildFile::class.java)
+                AthenaUploadInfo(`package`, athena.swiftVersion, buildFile.platforms.mapValues { entry ->
+                    entry.value.map { AthenaFramework(it.name, it.hash) }
+                })
             }
 
             athena.artifacts = artifacts

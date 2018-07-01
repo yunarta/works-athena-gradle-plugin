@@ -7,5 +7,5 @@ internal open class Artifactory {
         internal open class FileSpec(val pattern: String)
     }
 
-    internal open class ResultSpec(val path: String) 
+    internal open class ResultSpec(val path: String)
 }

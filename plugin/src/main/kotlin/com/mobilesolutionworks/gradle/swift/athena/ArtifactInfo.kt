@@ -3,7 +3,7 @@ package com.mobilesolutionworks.gradle.swift.athena
 import com.mobilesolutionworks.gradle.swift.cocoa.Platform
 import java.io.Serializable
 
-open class AthenaPackage(
+internal open class AthenaPackage(
         val group: String,
         val module: String
 
@@ -13,9 +13,11 @@ open class AthenaPackage(
     }
 }
 
-class AthenaPackageVersion(`package`: AthenaPackage, val version: String) :
+internal open class AthenaPackageVersion(`package`: AthenaPackage, val version: String) :
         AthenaPackage(`package`.group, `package`.module)
 
-class AthenaFramework(val name: String, val hash: String) : Serializable
+internal object NullAthenaPackageVersion: AthenaPackageVersion(AthenaPackage("", ""), "")
 
-class AthenaUploadInfo(val version: AthenaPackageVersion, val swiftVersion: String, val frameworks: Map<Platform, List<AthenaFramework>>) : Serializable
+internal open class AthenaFramework(val name: String, val hash: String) : Serializable
+
+internal open class AthenaUploadInfo(val version: AthenaPackageVersion, val swiftVersion: String, val frameworks: Map<Platform, List<AthenaFramework>>) : Serializable
