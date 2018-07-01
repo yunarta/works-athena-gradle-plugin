@@ -29,7 +29,6 @@ internal open class AthenaInspectCarthage : DefaultTask() {
         with(project) {
             val unresolved = mutableListOf<String>()
             val packages = CarthageResolved.from(CarthageAssetLocator.resolved(project)) {
-                println("resolve $it")
                 val `package` = athena.resolve(it)
                 if (`package` == null) {
                     unresolved.add(it)
@@ -38,7 +37,6 @@ internal open class AthenaInspectCarthage : DefaultTask() {
                 `package`
             }.associateBy { it.module }
 
-            println("unresolved = $unresolved")
             if (unresolved.isNotEmpty()) {
                 val resolutions = unresolved.map {
                     """|    "$it" {

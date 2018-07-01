@@ -20,7 +20,6 @@ object CarthageResolved {
 
                     find != null && find.groupValues[1] == "git" -> {
                         resolver(find.groupValues[2])?.let {
-                            println("resolved = $it")
                             AthenaPackageVersion(it, find.groupValues[5])
                         }
                     }

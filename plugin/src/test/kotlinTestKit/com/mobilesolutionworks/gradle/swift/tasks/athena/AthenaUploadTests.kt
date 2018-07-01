@@ -35,6 +35,11 @@ class AthenaUploadTests {
             }
         """.trimIndent())
 
+        runner.withArguments("help", "--task",
+                "athenaUpload")
+                .build().let {
+                    // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
+                }
         runner.withArguments("carthageBootstrap",
                 "athenaUpload", "--upload-dry-run", "--stacktrace")
                 .build().let {

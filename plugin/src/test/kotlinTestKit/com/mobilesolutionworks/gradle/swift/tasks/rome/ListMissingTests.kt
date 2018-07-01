@@ -149,7 +149,7 @@ class ListMissingTests {
         """.trimIndent())
 
 
-        runner.withArguments("romeListMissing", "-i")
+        runner.withArguments("romeListMissing")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
                 }

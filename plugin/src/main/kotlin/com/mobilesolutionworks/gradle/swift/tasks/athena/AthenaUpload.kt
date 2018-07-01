@@ -19,14 +19,19 @@ internal open class AthenaUpload : Exec() {
 
             executable = "jfrog"
             workingDir = file("$buildDir/athena")
-            args("rt")
-            args("u")
-
-            if (dryRun) {
-                args("--dry-run")
-            }
-            args("--flat=false")
-            args("*.*", "athena")
         }
+    }
+
+    override fun exec() {
+        args("rt")
+        args("u")
+
+        if (dryRun) {
+            args("--dry-run")
+        }
+        args("--flat=false")
+        args("*.*", "athena")
+
+        super.exec()
     }
 }

@@ -100,9 +100,9 @@ class SwiftPlugin : Plugin<Project> {
 
                         inspectCarthage.shouldRunAfter(it)
 
-//                        it.onlyIf {
-//                            list.outputs.files.singleFile.readText().isNotBlank()
-//                        }
+                        it.onlyIf {
+                            list.outputs.files.singleFile.readText().isNotBlank()
+                        }
                     }
                 }
             }

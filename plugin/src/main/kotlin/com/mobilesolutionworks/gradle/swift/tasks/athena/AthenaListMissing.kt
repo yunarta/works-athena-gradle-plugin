@@ -9,12 +9,14 @@ import java.io.File
 
 internal open class AthenaListMissing : Exec() {
 
+    private val target = project.file("${project.buildDir}/works-swift/athena/missing.json")
+
     init {
         group = Athena.group
 
         with(project) {
             inputs.file("$buildDir/works-athena/packages.json")
-            outputs.file("$buildDir/works-athena/missing.txt")
+            outputs.file(target)
 
             executable = "jfrog"
             workingDir = file("$buildDir/athena")
@@ -63,8 +65,11 @@ internal open class AthenaListMissing : Exec() {
                 "athena/$it"
             }.toMutableList().apply {
                 removeAll(result)
+            }.joinToString(System.lineSeparator()) {
+                "Missing $it"
             }.let {
-                project.file("$buildDir/works-swift/athena/missing.txt")
+                println(it)
+                target.writeText(it)
             }
         }
     }

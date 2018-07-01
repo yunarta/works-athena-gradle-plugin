@@ -36,7 +36,7 @@ class AthenaDownloadTests {
             }
         """.trimIndent())
 
-        runner.withArguments("athenaDownload", "-i")
+        runner.withArguments("athenaDownload")
                 .build().let {
                     // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }

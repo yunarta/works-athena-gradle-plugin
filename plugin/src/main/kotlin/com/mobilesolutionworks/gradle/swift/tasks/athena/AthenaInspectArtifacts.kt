@@ -42,7 +42,6 @@ internal open class AthenaInspectArtifacts : DefaultTask() {
                 }
             }
 
-            println("artifacts = $artifacts")
             athena.artifacts = artifacts
         }
     }

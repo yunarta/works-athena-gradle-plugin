@@ -39,7 +39,7 @@ class AthenaListMissingTests {
             }
         """.trimIndent())
 
-        runner.withArguments("athenaListMissing", "-i", "--stacktrace")
+        runner.withArguments("athenaListMissing")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":athenaListMissing")?.outcome)
                 }

@@ -83,10 +83,6 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
                 }
             }
 
-            for (file in files) {
-                println("file = ${file}")
-            }
-
             val artifactVersion = "${info.version.version}-Swift${info.swiftVersion}"
             val outputDir = File(outputRoot, "${info.version.group}/${info.version.module}/$artifactVersion")
             outputDir.mkdirs()
