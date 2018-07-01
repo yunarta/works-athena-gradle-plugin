@@ -1,8 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import com.google.gson.GsonBuilder
-import com.mobilesolutionworks.gradle.swift.athena.ArtifactInfo
-import com.mobilesolutionworks.gradle.swift.model.AthenaPackageInfo
+import com.mobilesolutionworks.gradle.swift.athena.AthenaUploadInfo
 import com.mobilesolutionworks.gradle.swift.model.athena
 import org.gradle.api.DefaultTask
 import org.gradle.api.internal.file.IdentityFileResolver
@@ -22,7 +20,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
         group = Athena.group
 
         with(project) {
-            tasks.withType(AthenaGenerateArtifacts::class.java) {
+            tasks.withType(AthenaInspectArtifacts::class.java) {
                 dependsOn(it)
             }
         }
@@ -33,85 +31,101 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
         throw UnsupportedOperationException()
     }
 
-    class ArchiveWorker @Inject constructor(val info: ArtifactInfo, val workingDir: File) : Runnable {
-
-        override fun run() {
-            val execActionFactory = DefaultExecActionFactory(IdentityFileResolver())
-            var executor = execActionFactory.newExecAction()
-
-            executor.executable = "xcrun"
-            executor.workingDir = workingDir
-            executor.args("dwarfdump", "--uuid",
-                    "Carthage/Build/${info.platform}/${info.framework}.framework/${info.framework}")
-
-            val stream = ByteArrayOutputStream()
-
-            executor.standardOutput = stream
-            executor.execute()
-
-            val output = stream.toString()
-            val uuids = output.lines().filter { it.isNotBlank() }.map {
-                it.substring(6).substringBefore(" ")
-            }
-
-            val outputdir = File(workingDir, "build/athena/${info.id.group}-${info.id.module}/${info.framework}-${info.platform}-${info.version}")
-            outputdir.mkdirs()
-
-
-            uuids.forEach { uuid ->
-                val file = File(workingDir, "Carthage/Build/${info.platform}/${uuid}.bcsymbolmap")
-                if (file.exists()) {
-                    executor = execActionFactory.newExecAction()
-                    executor.executable = "zip"
-                    executor.workingDir = file.parentFile
-
-                    executor.args("-r", "-q")
-                    executor.args(File(outputdir, "${uuid}-${info.version}.zip").absolutePath)
-                    executor.args(file.name)
-                    executor.execute()
-                }
-            }
-
-            var target: File
-
-            target = File(workingDir, "Carthage/Build/${info.platform}/${info.framework}.framework")
-            executor = execActionFactory.newExecAction()
-            executor.executable = "zip"
-            executor.workingDir = target.parentFile
-
-            executor.args("-r", "-q")
-            executor.args(File(outputdir, "${info.framework}.framework-${info.version}.zip").absolutePath)
-            executor.args(target.name)
-            executor.execute()
-
-            target = File(workingDir, "Carthage/Build/${info.platform}/${info.framework}.framework.dSYM")
-            executor = execActionFactory.newExecAction()
-            executor.executable = "zip"
-            executor.workingDir = target.parentFile
-
-            executor.args("-r", "-q")
-            executor.args(File(outputdir, "${info.framework}.framework.dSYM-${info.version}.zip").absolutePath)
-            executor.args(target.name)
-            executor.execute()
-
-            File(outputdir, "${info.framework}.json").writeText(GsonBuilder().create().toJson(AthenaPackageInfo(
-                    info.framework,
-                    info.platform.name,
-                    info.version,
-                    info.hash
-            )))
-        }
-    }
-
     @TaskAction
     fun run() {
         with(project) {
-            athena.packages.forEach { info ->
+            athena.artifacts.forEach { info ->
                 workerExecutor.submit(ArchiveWorker::class.java) {
                     it.isolationMode = IsolationMode.NONE
-                    it.params(info, project.rootDir)
+                    it.params(info, project.rootDir, project.file("${project.buildDir}/athena/"))
                 }
             }
+        }
+    }
+
+    class ArchiveWorker @Inject constructor(val info: AthenaUploadInfo, val workingDir: File, val outputRoot: File) : Runnable {
+
+        override fun run() {
+            val execActionFactory = DefaultExecActionFactory(IdentityFileResolver())
+
+            val files = info.frameworks.flatMap { entry ->
+                val platform = entry.key
+                val platformOutputDir = "Carthage/Build/$platform"
+
+                entry.value.flatMap { it ->
+                    var executor = execActionFactory.newExecAction()
+                    executor.executable = "xcrun"
+                    executor.workingDir = workingDir
+                    executor.args("dwarfdump", "--uuid",
+                            "$platformOutputDir/${it.name}.framework/${it.name}")
+
+                    val mutableList = mutableListOf(
+                            "${it.name}.framework",
+                            "${it.name}.framework.dSYM"
+                    )
+
+                    val stream = ByteArrayOutputStream()
+                    executor.standardOutput = stream
+                    executor.execute()
+
+                    val output = stream.toString()
+                    output.lines().filter { it.isNotBlank() }.map {
+                        it.substring(6).substringBefore(" ")
+                    }.filter {
+                        File(workingDir, "$platformOutputDir/$it.bcsymbolmap").exists()
+                    }.map {
+                        mutableList.add("$it.bcsymbolmap")
+                    }
+
+                    mutableList.map {
+                        "Carthage/Build/$platform/$it"
+                    }
+                }
+            }
+
+            for (file in files) {
+                println("file = ${file}")
+            }
+
+            val artifactVersion = "${info.version.version}-Swift${info.swiftVersion}"
+            val outputDir = File(outputRoot, "${info.version.group}/${info.version.module}/$artifactVersion")
+            outputDir.mkdirs()
+
+            val target = File(outputDir, "${info.version.module}-$artifactVersion.zip")
+
+            val pom = """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0"
+                         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>${info.version.group}</groupId>
+                  <artifactId>${info.version.module}</artifactId>
+                  <version>$artifactVersion</version>
+                  <packaging>zip</packaging>
+                  <licenses>
+                    <license>
+                      <name>The Apache Software License, Version 2.0</name>
+                      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+                      <distribution>repo</distribution>
+                    </license>
+                  </licenses>
+                </project>
+            """.trimIndent()
+            File(outputDir, "${info.version.module}-$artifactVersion.pom").writeText(pom)
+
+            var executor = execActionFactory.newExecAction()
+            executor = execActionFactory.newExecAction()
+            executor.executable = "zip"
+            executor.workingDir = workingDir
+
+            executor.args("-r", "-q")
+            executor.args(target.absolutePath)
+            executor.args("Carthage/Build/.${info.version.module}.version")
+            files.forEach {
+                executor.args(it)
+            }
+            executor.execute()
         }
     }
 }

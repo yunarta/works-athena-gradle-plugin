@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
+import com.google.gson.GsonBuilder
 import com.mobilesolutionworks.gradle.swift.carthage.CarthageAssetLocator
 import com.mobilesolutionworks.gradle.swift.carthage.CarthageResolved
 import com.mobilesolutionworks.gradle.swift.model.athena
@@ -10,6 +11,8 @@ class AthenaInspection(message: String) : RuntimeException(message)
 
 internal open class AthenaInspectCarthage : DefaultTask() {
 
+    private val target = project.file("${project.buildDir}/works-swift/athena/packages.json")
+
     init {
         group = Athena.group
         description = "Inspect Cartfile.resolved to get modules information to download"
@@ -17,6 +20,7 @@ internal open class AthenaInspectCarthage : DefaultTask() {
         with(project) {
             // inputs outputs
             inputs.file(CarthageAssetLocator.resolved(project))
+            outputs.file(target)
         }
     }
 
@@ -24,15 +28,17 @@ internal open class AthenaInspectCarthage : DefaultTask() {
     fun inspect() {
         with(project) {
             val unresolved = mutableListOf<String>()
-            val components = CarthageResolved.from(CarthageAssetLocator.resolved(project)) {
-                val component = athena.resolvedObjects[it]
-                if (component == null) {
+            val packages = CarthageResolved.from(CarthageAssetLocator.resolved(project)) {
+                println("resolve $it")
+                val `package` = athena.resolve(it)
+                if (`package` == null) {
                     unresolved.add(it)
                 }
 
-                component
+                `package`
             }.associateBy { it.module }
 
+            println("unresolved = $unresolved")
             if (unresolved.isNotEmpty()) {
                 val resolutions = unresolved.map {
                     """|    "$it" {
@@ -55,7 +61,10 @@ internal open class AthenaInspectCarthage : DefaultTask() {
                 """.trimMargin())
             }
 
-            athena.components = components
+            val json = GsonBuilder().create().toJson(packages)
+            target.writeText(json)
+
+            athena.packages = packages
         }
     }
 }

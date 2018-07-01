@@ -36,9 +36,9 @@ class AthenaDownloadTests {
             }
         """.trimIndent())
 
-//        gradle.runner.withArguments("athenaDownload", "-i")
-//                .build().let {
-//                    // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
-//                }
+        runner.withArguments("athenaDownload", "-i")
+                .build().let {
+                    // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
+                }
     }
 }

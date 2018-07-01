@@ -8,10 +8,11 @@ import testKit.GradleRunnerProvider
 import testKit.newFile
 
 @ExtendWith(GradleRunnerProvider::class)
-class AthenaUploadTests {
+@DisplayName("Test CarthageBootstrap with Athena")
+class CarthageBootstrapWithAthenaTests {
 
     @Test
-    @DisplayName("verify athenaUpload")
+    @DisplayName("verify athenaDownload")
     fun test1(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -31,12 +32,11 @@ class AthenaUploadTests {
             }
 
             carthage {
-                github("yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework")
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap",
-                "athenaUpload", "--upload-dry-run", "--stacktrace")
+        runner.withArguments("carthageBootstrap", "-x", "athenaUpload", "-i")
                 .build().let {
                     // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }

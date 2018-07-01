@@ -3,29 +3,19 @@ package com.mobilesolutionworks.gradle.swift.athena
 import com.mobilesolutionworks.gradle.swift.cocoa.Platform
 import java.io.Serializable
 
-open class Component(
+open class AthenaPackage(
         val group: String,
         val module: String
 
 ) : Serializable {
     override fun toString(): String {
-        return "Component(group='$group', module='$module')"
+        return "Package(group='$group', module='$module')"
     }
 }
 
-internal class ComponentWithVersion(component: Component, val version: String) :
-        Component(component.group, component.module)
+class AthenaPackageVersion(`package`: AthenaPackage, val version: String) :
+        AthenaPackage(`package`.group, `package`.module)
 
-class ArtifactInfo(
-        val id: Component,
-        val framework: String,
-        val version: String,
-        val hash: String,
-        val platform: Platform
+class AthenaFramework(val name: String, val hash: String) : Serializable
 
-
-) : Serializable {
-    override fun toString(): String {
-        return "ArtifactInfo(id=$id, framework='$framework', version='$version', platform=$platform)"
-    }
-}
+class AthenaUploadInfo(val version: AthenaPackageVersion, val swiftVersion: String, val frameworks: Map<Platform, List<AthenaFramework>>) : Serializable

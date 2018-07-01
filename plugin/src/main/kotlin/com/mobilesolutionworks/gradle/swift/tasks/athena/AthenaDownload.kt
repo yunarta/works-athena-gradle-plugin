@@ -1,7 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import com.mobilesolutionworks.gradle.swift.athena.ArtifactInfo
-import com.mobilesolutionworks.gradle.swift.athena.ComponentWithVersion
+import com.mobilesolutionworks.gradle.swift.athena.AthenaPackageVersion
 import com.mobilesolutionworks.gradle.swift.model.athena
 import org.gradle.api.DefaultTask
 import org.gradle.api.internal.file.IdentityFileResolver
@@ -22,34 +21,39 @@ internal open class AthenaDownload : DefaultTask() {
 
     @TaskAction
     fun download() {
-//        with(project) {
-//            val execActionFactory = DefaultExecActionFactory(IdentityFileResolver())
-//            athena.components.values.forEach { info ->
-//                println("packages = ${info}")
-//                artifactoryString(info).let {
-//                    val executor = execActionFactory.newExecAction()
-//                    executor.executable = "jfrog"
-//                    executor.workingDir = file("$buildDir/athena")
-//
-//                    executor.args("rt")
-//                    executor.args("d")
-////                    executor.args("--dry-run")
+        with(project) {
+            val execActionFactory = DefaultExecActionFactory(IdentityFileResolver())
+            athena.packages.values.map { info ->
+                artifactoryString(info, athena.swiftVersion).let {
+                    val executor = execActionFactory.newExecAction()
+                    executor.executable = "jfrog"
+                    executor.workingDir = file("$buildDir/athena")
+                    executor.workingDir.mkdirs()
+
+                    executor.args("rt")
+                    executor.args("dl")
+//                    executor.args("--explode")
+//                    executor.args("--dry-run")
 //                    executor.args("--flat=false")
-//                    executor.args("athena/${it}", "athena")
-//                    println("execute")
-//                    executor.execute()
-//                }
-//
-//                //                info.
-//                //                workerExecutor.submit(AthenaCreatePackage.ArchiveWorker::class.java) {
-////                    it.isolationMode = IsolationMode.NONE
-////                    it.params(info, project.rootDir)
-////                }
-//            }
-//        }
+                    executor.args("athena/$it/*.zip")
+                    executor.execute()
+
+                    project.fileTree(mapOf(
+                            "dir" to file("$buildDir/athena/$it"),
+                            "include" to "*.zip"
+                    ))
+                }.map {
+                    val executor = execActionFactory.newExecAction()
+                    executor.executable = "unzip"
+                    executor.workingDir = projectDir
+                    executor.args(it)
+                    executor.execute()
+                }
+            }
+        }
     }
 
-//    fun artifactoryString(info: ComponentWithVersion): String {
-//        return "${info.group}-${info.module}/${info.framework}-${info.platform}-${info.version}"
-//    }
+    private fun artifactoryString(info: AthenaPackageVersion, version: String): String {
+        return "${info.group}/${info.module}/${info.version}-Swift$version"
+    }
 }

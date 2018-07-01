@@ -1,32 +1,9 @@
 package com.mobilesolutionworks.gradle.swift
 
-import com.mobilesolutionworks.gradle.swift.athena.Component
-import com.mobilesolutionworks.gradle.swift.model.AthenaSchematic
-import com.mobilesolutionworks.gradle.swift.model.CarthageSchematic
-import com.mobilesolutionworks.gradle.swift.model.ComponentExtension
-import com.mobilesolutionworks.gradle.swift.model.RomeSchematic
-import com.mobilesolutionworks.gradle.swift.model.XcodeSchematic
-import com.mobilesolutionworks.gradle.swift.model.athena
-import com.mobilesolutionworks.gradle.swift.model.carthage
-import com.mobilesolutionworks.gradle.swift.model.rome
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaCreatePackage
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaDownload
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaGenerateArtifacts
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaInspectCarthage
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaUpload
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.ActivateUpdate
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileCreate
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileReplace
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileResolve
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.Carthage
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageBootstrap
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageUpdate
-import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRepositoryMap
-import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRomefile
-import com.mobilesolutionworks.gradle.swift.tasks.rome.ListMissing
-import com.mobilesolutionworks.gradle.swift.tasks.rome.Rome
-import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeDownload
-import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeUpload
+import com.mobilesolutionworks.gradle.swift.model.*
+import com.mobilesolutionworks.gradle.swift.tasks.athena.*
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.*
+import com.mobilesolutionworks.gradle.swift.tasks.rome.*
 import com.mobilesolutionworks.gradle.swift.tasks.xcode.Xcode
 import com.mobilesolutionworks.gradle.swift.tasks.xcode.XcodeBuildInfo
 import org.gradle.api.Plugin
@@ -40,12 +17,12 @@ class SwiftPlugin : Plugin<Project> {
         project.extensions.create("rome", RomeSchematic::class.java)
         project.extensions.create("xcode", XcodeSchematic::class.java)
 
-        val container = project.container(ComponentExtension::class.java)
+        val container = project.container(PackageExtension::class.java)
         project.extensions.create("athena", AthenaSchematic::class.java, container)
 
         project.afterEvaluate {
-            with(it) {
-                file("${project.buildDir}/works-swift/rome/cache").mkdirs()
+            with(project) {
+                file("${buildDir}/works-swift/rome/cache").mkdirs()
 
                 tasks.create(Xcode.Tasks.XcodeBuildInfo.value, XcodeBuildInfo::class.java)
                 tasks.create(Carthage.Tasks.CarthageCartfileCreate.value, CartfileCreate::class.java)
@@ -83,14 +60,17 @@ class SwiftPlugin : Plugin<Project> {
                 }
 
                 if (athena.enabled) {
-                    carthage.dependencies.filter { it.group.isNotBlank() }.map {
-                        athena.resolvedObjects[it.repo] = Component(it.group, it.module)
+                    carthage.dependencies.filter { it.group.isNotBlank() }.map { dependency ->
+                        athena.resolutions.create(dependency.repo) {
+                            it.group = dependency.group
+                            it.module = dependency.module
+                        }
                     }
 
                     val inspectCarthage = tasks.create("athenaInspectCarthage", AthenaInspectCarthage::class.java)
 
-//                    val download = tasks.create("athenaDownload", AthenaDownload::class.java)
-                    val generate = tasks.create("athenaGenerateArtifacts", AthenaGenerateArtifacts::class.java)
+                    val download = tasks.create("athenaDownload", AthenaDownload::class.java)
+                    val generate = tasks.create("athenaInspectArtifacts", AthenaInspectArtifacts::class.java)
                     val create = tasks.create("athenaCreatePackage", AthenaCreatePackage::class.java)
                     val upload = tasks.create("athenaUpload", AthenaUpload::class.java)
 
@@ -98,7 +78,7 @@ class SwiftPlugin : Plugin<Project> {
                     tasks.create(Rome.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
 
                     val list = tasks.create(Rome.Tasks.RomeListMissing.value, ListMissing::class.java)
-                    val download = tasks.create(Rome.Tasks.RomeDownload.value, RomeDownload::class.java)
+//                    val download = tasks.create(Rome.Tasks.RomeDownload.value, RomeDownload::class.java)
 //                    val upload = tasks.create(Rome.Tasks.RomeUpload.value, RomeUpload::class.java)
 
                     inspectCarthage.dependsOn(replace)
