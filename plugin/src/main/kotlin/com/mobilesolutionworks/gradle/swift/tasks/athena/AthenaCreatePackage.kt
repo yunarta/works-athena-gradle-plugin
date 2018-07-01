@@ -25,12 +25,7 @@ internal open class AthenaCreatePackage @Inject constructor(val workerExecutor: 
             }
         }
     }
-
-    @Inject
-    open fun getExecActionFactory(): ExecActionFactory {
-        throw UnsupportedOperationException()
-    }
-
+    
     @TaskAction
     fun run() {
         with(project) {
