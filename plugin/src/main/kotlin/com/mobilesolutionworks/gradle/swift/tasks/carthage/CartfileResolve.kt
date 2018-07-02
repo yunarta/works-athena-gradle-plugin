@@ -39,7 +39,6 @@ internal open class CartfileResolve : DefaultTask() {
             }
 
 
-
             // dependencies
             tasks.withType(CartfileCreate::class.java) {
                 this@CartfileResolve.dependsOn(it)
