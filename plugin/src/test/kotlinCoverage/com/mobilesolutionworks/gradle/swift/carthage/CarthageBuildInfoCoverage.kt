@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("Coverage for CarthageBuildInfo")
 class CarthageBuildInfoCoverage {
-    
+
     @Test
     @DisplayName("fulfill coverage")
     fun fulfillCoverage() {

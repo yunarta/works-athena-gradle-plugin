@@ -68,7 +68,7 @@ internal open class AthenaCreatePackage @Inject constructor(private val workerEx
 
                     val output = stream.toString()
                     output.lines().filter { it.isNotBlank() }.map {
-                        it.substring(6).substringBefore(" ")
+                        it.substring(6 until it.length).substringBefore(" ")
                     }.filter {
                         File(workingDir, "$platformOutputDir/$it.bcsymbolmap").exists()
                     }.map {
