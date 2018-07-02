@@ -121,7 +121,7 @@ class RomeUploadTests {
 
         runner.withArguments("carthageBootstrap")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageBootstrap")?.outcome)
+                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageBootstrap")?.outcome)
                     assertEquals(TaskOutcome.SKIPPED, it.task(":romeUpload")?.outcome)
                 }
     }
