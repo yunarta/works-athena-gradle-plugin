@@ -28,7 +28,6 @@ internal open class AthenaArtifactoryUpload : DefaultTask() {
             it.args("rt")
             it.args("u")
 
-            println("dryRun = $dryRun")
             if (dryRun) {
                 it.args("--dry-run")
             }

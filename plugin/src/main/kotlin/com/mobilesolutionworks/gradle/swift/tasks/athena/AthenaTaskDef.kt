@@ -11,10 +11,6 @@ internal fun AthenaPackageVersion.component(swift: String): String {
     return "$group:$module:$version-Swift$swift"
 }
 
-internal fun AthenaPackageVersion.bintrayPackage(): String {
-    return "$group:$module"
-}
-
 internal fun AthenaPackageVersion.bintrayTarget(swift: String): String {
     return "$group:$module/$version-Swift$swift"
 }

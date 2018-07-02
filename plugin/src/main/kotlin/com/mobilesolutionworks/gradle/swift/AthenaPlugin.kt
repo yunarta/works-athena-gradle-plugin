@@ -27,13 +27,13 @@ import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRepositoryMap
 import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRomefile
 import com.mobilesolutionworks.gradle.swift.tasks.rome.ListMissing
 import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeDownload
-import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeTaskDef
 import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeUpload
 import com.mobilesolutionworks.gradle.swift.tasks.xcode.XcodeBuildInfo
 import com.mobilesolutionworks.gradle.swift.tasks.xcode.XcodeTaskDef
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+@Suppress("unused")
 class AthenaPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
@@ -61,27 +61,21 @@ class AthenaPlugin : Plugin<Project> {
                 val preExecute = tasks.create("carthagePrepareExecution", PreExecute::class.java)
 
                 val bootstrap = tasks.create("carthageBootstrap", CarthageBootstrap::class.java)
-                val update = tasks.create("carthageUpdate", CarthageUpdate::class.java)
+                tasks.create("carthageUpdate", CarthageUpdate::class.java)
 
 
                 if (rome.enabled) {
-                    tasks.create(RomeTaskDef.Tasks.RomeCreateRepositoryMap.value, CreateRepositoryMap::class.java)
-                    tasks.create(RomeTaskDef.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
+                    tasks.create("romeCreateRepositoryMap", CreateRepositoryMap::class.java)
+                    tasks.create("romeCreateRomefile", CreateRomefile::class.java)
 
-                    val download = tasks.create(RomeTaskDef.Tasks.RomeDownload.value, RomeDownload::class.java)
-                    val list = tasks.create(RomeTaskDef.Tasks.RomeListMissing.value, ListMissing::class.java)
-                    val upload = tasks.create(RomeTaskDef.Tasks.RomeUpload.value, RomeUpload::class.java)
+                    val download = tasks.create("romeDownload", RomeDownload::class.java)
+                    val list = tasks.create("romeListMissing", ListMissing::class.java)
+                    val upload = tasks.create("romeUpload", RomeUpload::class.java)
 
                     list.dependsOn(replace)
                     download.dependsOn(replace)
 
                     preExecute.dependsOn(list, download)
-                    arrayOf(bootstrap, update).forEach {
-//                        it.onlyIf {
-//                            list.outputs.files.singleFile.readText().isNotBlank()
-//                        }
-                    }
-
                     upload.dependsOn(bootstrap)
                 }
 
@@ -107,14 +101,8 @@ class AthenaPlugin : Plugin<Project> {
                     }
 
                     inspectCarthage.dependsOn(replace)
+
                     preExecute.dependsOn(list, download)
-
-                    arrayOf(bootstrap, update).forEach {
-//                        it.onlyIf {
-//                            list.outputs.files.singleFile.readText().isNotBlank()
-//                        }
-                    }
-
                     upload.dependsOn(bootstrap)
                 }
             }

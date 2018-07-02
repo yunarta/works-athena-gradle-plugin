@@ -20,7 +20,6 @@ internal open class CarthageUpdate : DefaultTask() {
 
             // dependencies
             tasks.withType(ActivateUpdate::class.java) {
-                println("activate = $it")
                 this@CarthageUpdate.dependsOn(it)
             }
 

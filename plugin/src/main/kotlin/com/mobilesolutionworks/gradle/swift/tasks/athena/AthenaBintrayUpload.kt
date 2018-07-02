@@ -44,7 +44,6 @@ internal open class AthenaBintrayUpload : DefaultTask() {
                 it.args("--flat=false")
                 it.args("--publish", "--override")
 
-                println("dryRun = $dryRun")
                 if (dryRun) {
                     it.args("--dry-run")
                 }
