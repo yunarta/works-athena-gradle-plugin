@@ -1,8 +1,7 @@
-package com.mobilesolutionworks.gradle.swift.model
+package com.mobilesolutionworks.gradle.swift.model.extension
 
-import com.mobilesolutionworks.gradle.swift.cocoa.Platform
-import com.mobilesolutionworks.gradle.swift.cocoa.PlatformParser
-import org.gradle.api.Project
+import com.mobilesolutionworks.gradle.swift.model.Platform
+import com.mobilesolutionworks.gradle.swift.model.PlatformParser
 
 open class XcodeSchematic {
 
@@ -24,7 +23,3 @@ open class XcodeSchematic {
         get() = declaredPlatforms.joinToString(",") { it.name }
 }
 
-val Project.xcode: XcodeSchematic
-    get() {
-        return extensions.getByType(XcodeSchematic::class.java)
-    }

@@ -1,9 +1,8 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
-import com.mobilesolutionworks.gradle.swift.model.carthage
+import com.mobilesolutionworks.gradle.swift.model.extension.carthage
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import org.gradle.internal.impldep.aQute.bnd.osgi.Constants.options
 
 internal open class CreateRepositoryMap : DefaultTask() {
 

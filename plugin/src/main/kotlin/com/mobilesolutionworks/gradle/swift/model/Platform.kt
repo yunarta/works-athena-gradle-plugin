@@ -1,4 +1,4 @@
-package com.mobilesolutionworks.gradle.swift.cocoa
+package com.mobilesolutionworks.gradle.swift.model
 
 import com.mobilesolutionworks.gradle.util.StringUtils
 
@@ -10,7 +10,7 @@ enum class Platform {
     watchOS,
 }
 
-object PlatformParser {
+internal object PlatformParser {
 
     private val mapping = Platform.values().associateBy { StringUtils.lowerCase(it.name) }
 

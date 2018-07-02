@@ -1,5 +1,6 @@
-package com.mobilesolutionworks.gradle.swift.model
+package com.mobilesolutionworks.gradle.swift.model.extension
 
+import com.mobilesolutionworks.gradle.swift.model.Artifactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

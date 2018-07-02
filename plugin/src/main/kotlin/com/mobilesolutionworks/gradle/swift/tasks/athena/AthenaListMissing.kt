@@ -2,7 +2,7 @@ package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import com.google.gson.GsonBuilder
 import com.mobilesolutionworks.gradle.swift.model.Artifactory
-import com.mobilesolutionworks.gradle.swift.model.athena
+import com.mobilesolutionworks.gradle.swift.model.extension.athena
 import org.gradle.api.tasks.Exec
 import java.io.ByteArrayOutputStream
 import java.io.File

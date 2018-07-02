@@ -1,4 +1,4 @@
-package com.mobilesolutionworks.gradle.swift.model
+package com.mobilesolutionworks.gradle.swift.model.extension
 
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
@@ -12,8 +12,3 @@ open class RomeSchematic {
 
     var cachePath = File(FileUtils.getUserDirectory(), "Library/Cache/Rome")
 }
-
-val Project.rome: RomeSchematic
-    get() {
-        return extensions.getByType(RomeSchematic::class.java)
-    }

@@ -1,6 +1,5 @@
-package com.mobilesolutionworks.gradle.swift.athena
+package com.mobilesolutionworks.gradle.swift.model
 
-import com.mobilesolutionworks.gradle.swift.cocoa.Platform
 import java.io.Serializable
 
 internal open class AthenaPackage(val group: String, val module: String) : Serializable

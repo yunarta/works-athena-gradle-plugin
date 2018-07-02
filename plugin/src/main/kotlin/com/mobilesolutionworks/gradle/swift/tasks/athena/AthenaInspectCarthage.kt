@@ -1,9 +1,9 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import com.google.gson.GsonBuilder
-import com.mobilesolutionworks.gradle.swift.carthage.CarthageAssetLocator
-import com.mobilesolutionworks.gradle.swift.carthage.CarthageResolved
-import com.mobilesolutionworks.gradle.swift.model.athena
+import com.mobilesolutionworks.gradle.swift.model.CarthageAssetLocator
+import com.mobilesolutionworks.gradle.swift.model.CarthageResolved
+import com.mobilesolutionworks.gradle.swift.model.extension.athena
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 

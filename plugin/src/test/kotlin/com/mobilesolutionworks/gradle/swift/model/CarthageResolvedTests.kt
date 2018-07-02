@@ -1,4 +1,4 @@
-package com.mobilesolutionworks.gradle.swift.carthage
+package com.mobilesolutionworks.gradle.swift.model
 
 import org.`junit$pioneer`.jupiter.TempDirectory
 import org.gradle.api.tasks.StopExecutionException

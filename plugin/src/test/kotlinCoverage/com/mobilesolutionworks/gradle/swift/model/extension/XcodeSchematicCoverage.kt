@@ -1,4 +1,4 @@
-package com.mobilesolutionworks.gradle.swift.model
+package com.mobilesolutionworks.gradle.swift.model.extension
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName

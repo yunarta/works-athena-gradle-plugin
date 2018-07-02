@@ -1,11 +1,9 @@
-package com.mobilesolutionworks.gradle.swift.carthage
+package com.mobilesolutionworks.gradle.swift.model
 
-import com.mobilesolutionworks.gradle.swift.athena.AthenaPackage
-import com.mobilesolutionworks.gradle.swift.athena.AthenaPackageVersion
 import org.gradle.api.tasks.StopExecutionException
 import java.io.File
 
-object CarthageResolved {
+internal object CarthageResolved {
 
     private val regex = "(git|github) \\\"(([^\\/]*)\\/([^\\\"]*))\\\" \"([^\"]*)\"".toRegex()
 

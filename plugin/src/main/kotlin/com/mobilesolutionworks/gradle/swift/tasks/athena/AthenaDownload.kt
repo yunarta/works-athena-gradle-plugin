@@ -1,7 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import com.mobilesolutionworks.gradle.swift.athena.AthenaPackageVersion
-import com.mobilesolutionworks.gradle.swift.model.athena
+import com.mobilesolutionworks.gradle.swift.model.extension.athena
 import org.gradle.api.DefaultTask
 import org.gradle.api.internal.file.IdentityFileResolver
 import org.gradle.api.tasks.TaskAction

@@ -1,10 +1,10 @@
-package com.mobilesolutionworks.gradle.swift.carthage
+package com.mobilesolutionworks.gradle.swift.model
 
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileTree
 import java.io.File
 
-object CarthageAssetLocator {
+internal object CarthageAssetLocator {
 
     fun resolved(project: Project): File = project.file("Cartfile.resolved")
 

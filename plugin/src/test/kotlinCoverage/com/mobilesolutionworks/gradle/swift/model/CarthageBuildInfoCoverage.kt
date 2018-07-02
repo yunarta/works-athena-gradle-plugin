@@ -1,5 +1,6 @@
-package com.mobilesolutionworks.gradle.swift.carthage
+package com.mobilesolutionworks.gradle.swift.model
 
+import com.mobilesolutionworks.gradle.swift.model.CarthageBuildInfo
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

@@ -1,6 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import com.mobilesolutionworks.gradle.swift.athena.AthenaPackageVersion
+import com.mobilesolutionworks.gradle.swift.model.AthenaPackageVersion
 
 internal object Athena {
 

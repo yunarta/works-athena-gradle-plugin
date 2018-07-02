@@ -1,6 +1,4 @@
-package com.mobilesolutionworks.gradle.swift.model
-
-import org.gradle.api.Project
+package com.mobilesolutionworks.gradle.swift.model.extension
 
 abstract class CarthageDependency(val repo: String) {
 
@@ -97,8 +95,3 @@ open class CarthageSchematic {
     }
 
 }
-
-val Project.carthage: CarthageSchematic
-    get() {
-        return extensions.getByType(CarthageSchematic::class.java)
-    }

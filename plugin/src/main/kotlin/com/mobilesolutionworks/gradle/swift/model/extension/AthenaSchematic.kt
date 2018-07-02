@@ -1,10 +1,9 @@
-package com.mobilesolutionworks.gradle.swift.model
+package com.mobilesolutionworks.gradle.swift.model.extension
 
-import com.mobilesolutionworks.gradle.swift.athena.AthenaPackage
-import com.mobilesolutionworks.gradle.swift.athena.AthenaPackageVersion
-import com.mobilesolutionworks.gradle.swift.athena.AthenaUploadInfo
+import com.mobilesolutionworks.gradle.swift.model.AthenaPackage
+import com.mobilesolutionworks.gradle.swift.model.AthenaPackageVersion
+import com.mobilesolutionworks.gradle.swift.model.AthenaUploadInfo
 import org.gradle.api.NamedDomainObjectContainer
-import org.gradle.api.Project
 
 open class AthenaSchematic(val resolutions: NamedDomainObjectContainer<PackageExtension>) {
 
@@ -22,8 +21,3 @@ open class AthenaSchematic(val resolutions: NamedDomainObjectContainer<PackageEx
 
     internal var packages: Map<String, AthenaPackageVersion> = emptyMap()
 }
-
-val Project.athena: AthenaSchematic
-    get() {
-        return extensions.getByType(AthenaSchematic::class.java)
-    }

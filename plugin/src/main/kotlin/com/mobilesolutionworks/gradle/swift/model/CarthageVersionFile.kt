@@ -1,12 +1,11 @@
-package com.mobilesolutionworks.gradle.swift.carthage
+package com.mobilesolutionworks.gradle.swift.model
 
-import com.mobilesolutionworks.gradle.swift.cocoa.Platform
 import org.gradle.internal.impldep.com.google.gson.annotations.SerializedName
 import javax.inject.Inject
 
-class CarthageBuildInfo @Inject constructor(val name: String, val hash: String)
+internal class CarthageBuildInfo @Inject constructor(val name: String, val hash: String)
 
-class CarthageBuildFile constructor(
+internal class CarthageBuildFile constructor(
         @SerializedName(value = "Mac")
         private val macOs: List<CarthageBuildInfo> = emptyList(),
 

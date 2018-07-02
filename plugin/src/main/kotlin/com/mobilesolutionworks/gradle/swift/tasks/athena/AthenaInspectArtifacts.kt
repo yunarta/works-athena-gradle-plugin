@@ -1,12 +1,12 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import com.google.gson.GsonBuilder
-import com.mobilesolutionworks.gradle.swift.athena.AthenaFramework
-import com.mobilesolutionworks.gradle.swift.athena.AthenaUploadInfo
-import com.mobilesolutionworks.gradle.swift.athena.NullAthenaPackageVersion
-import com.mobilesolutionworks.gradle.swift.carthage.CarthageAssetLocator
-import com.mobilesolutionworks.gradle.swift.carthage.CarthageBuildFile
-import com.mobilesolutionworks.gradle.swift.model.athena
+import com.mobilesolutionworks.gradle.swift.model.AthenaFramework
+import com.mobilesolutionworks.gradle.swift.model.AthenaUploadInfo
+import com.mobilesolutionworks.gradle.swift.model.NullAthenaPackageVersion
+import com.mobilesolutionworks.gradle.swift.model.CarthageAssetLocator
+import com.mobilesolutionworks.gradle.swift.model.CarthageBuildFile
+import com.mobilesolutionworks.gradle.swift.model.extension.athena
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction

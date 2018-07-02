@@ -1,7 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
-import com.mobilesolutionworks.gradle.swift.i18n.Strings
-import com.mobilesolutionworks.gradle.swift.model.carthage
+import com.mobilesolutionworks.gradle.swift.model.extension.carthage
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
@@ -19,7 +18,6 @@ internal open class CartfileCreate : DefaultTask() {
 
     init {
         group = Carthage.group
-        description = Strings["CartfileCreate_description"]
 
         with(project) {
 

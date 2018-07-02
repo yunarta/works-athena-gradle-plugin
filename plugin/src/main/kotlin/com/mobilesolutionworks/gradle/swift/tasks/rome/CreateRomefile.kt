@@ -1,6 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
-import com.mobilesolutionworks.gradle.swift.model.rome
+import com.mobilesolutionworks.gradle.swift.model.extension.rome
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 

@@ -1,6 +1,5 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
-import com.mobilesolutionworks.gradle.swift.i18n.Strings
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
@@ -14,7 +13,6 @@ internal open class CartfileReplace : DefaultTask() {
 
     init {
         group = Carthage.group
-        description = Strings["CartfileResolve_description"]
 
         with(project) {
 

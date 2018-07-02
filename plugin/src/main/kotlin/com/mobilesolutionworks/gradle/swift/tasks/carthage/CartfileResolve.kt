@@ -1,8 +1,7 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
-import com.mobilesolutionworks.gradle.swift.i18n.Strings
-import com.mobilesolutionworks.gradle.swift.model.carthage
-import com.mobilesolutionworks.gradle.swift.model.xcode
+import com.mobilesolutionworks.gradle.swift.model.extension.carthage
+import com.mobilesolutionworks.gradle.swift.model.extension.xcode
 import org.gradle.api.tasks.Exec
 
 /**
@@ -25,7 +24,6 @@ internal open class CartfileResolve : Exec() {
 
     init {
         group = Carthage.group
-        description = Strings["CartfileResolve_description"]
 
 
         with(project) {
