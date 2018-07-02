@@ -31,7 +31,7 @@ internal open class AthenaInspectArtifacts : DefaultTask() {
             val gson = GsonBuilder().create()
 
             val artifacts = CarthageAssetLocator.versions(project).map { file ->
-                val moduleName = FilenameUtils.getBaseName(file.name).removeRange(0..1)
+                val moduleName = FilenameUtils.getBaseName(file.name).removePrefix(".")
 
                 val `package` = packages.getOrDefault(moduleName, NullAthenaPackageVersion)
                 val buildFile = gson.fromJson(file.reader(), CarthageBuildFile::class.java)
