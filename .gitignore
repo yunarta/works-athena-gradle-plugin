@@ -21,3 +21,4 @@ fabric.properties
 .idea
 build/
 reports/
+gradle.properties
