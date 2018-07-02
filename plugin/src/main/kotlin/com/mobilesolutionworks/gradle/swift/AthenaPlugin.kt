@@ -33,9 +33,8 @@ import com.mobilesolutionworks.gradle.swift.tasks.xcode.XcodeBuildInfo
 import com.mobilesolutionworks.gradle.swift.tasks.xcode.XcodeTaskDef
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.Exec
 
-class SwiftPlugin : Plugin<Project> {
+class AthenaPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         project.extensions.create("carthage", CarthageSchematic::class.java)
@@ -78,7 +77,7 @@ class SwiftPlugin : Plugin<Project> {
 
                     arrayOf(bootstrap, update).forEach {
                         it.dependsOn(download, list)
-                        it.finalizedBy(upload)
+//                        it.finalizedBy(upload)
 
 //                        it.onlyIf {
 //                            list.outputs.files.singleFile.readText().isNotBlank()
@@ -117,18 +116,9 @@ class SwiftPlugin : Plugin<Project> {
                     download.dependsOn(inspectCarthage)
 
 
-                    val tree = tasks.create("tree", Exec::class.java) {
-                        it.executable = "tree"
-                        it.workingDir = file("${project.rootDir}/")
-                        it.args("-a")
-                    }
-
-                    download.finalizedBy(tree)
-                    create.finalizedBy(tree)
-
                     arrayOf(bootstrap, update).forEach {
                         it.dependsOn(download, list)
-                        it.finalizedBy(upload)
+//                        it.finalizedBy(upload)
 
                         inspectCarthage.shouldRunAfter(it)
 

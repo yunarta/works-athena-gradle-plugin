@@ -24,7 +24,7 @@ class CartfileCreateTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -54,7 +54,7 @@ class CartfileCreateTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -86,7 +86,7 @@ class CartfileCreateTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -109,7 +109,7 @@ class CartfileCreateTests {
 
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {

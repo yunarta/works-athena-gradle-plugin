@@ -1,6 +1,8 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -22,7 +24,7 @@ class AthenaDownloadTests {
             import java.net.URI
 
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             repositories {
@@ -46,7 +48,11 @@ class AthenaDownloadTests {
 
         runner.withArguments("athenaDownload")
                 .build().let {
-                    // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":athenaDownload")?.outcome)
+                }
+        runner.withArguments("athenaDownload")
+                .build().let {
+                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":athenaDownload")?.outcome)
                 }
     }
 }

@@ -26,7 +26,7 @@ class ListMissingTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -48,7 +48,7 @@ class ListMissingTests {
 
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             xcode {
@@ -82,7 +82,7 @@ class ListMissingTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -115,7 +115,7 @@ class ListMissingTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -135,7 +135,7 @@ class ListMissingTests {
 
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {

@@ -24,7 +24,7 @@ class RomeUploadTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             xcode {
@@ -56,7 +56,7 @@ class RomeUploadTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             xcode {
@@ -94,7 +94,7 @@ class RomeUploadTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             xcode {

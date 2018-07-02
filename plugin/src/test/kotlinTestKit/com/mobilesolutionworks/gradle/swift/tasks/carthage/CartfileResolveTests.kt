@@ -24,7 +24,7 @@ class CartfileResolveTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -51,7 +51,7 @@ class CartfileResolveTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -83,7 +83,7 @@ class CartfileResolveTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -102,7 +102,7 @@ class CartfileResolveTests {
 
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -131,7 +131,7 @@ class CartfileResolveTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -152,7 +152,7 @@ class CartfileResolveTests {
 
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -179,7 +179,7 @@ class CartfileResolveTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {

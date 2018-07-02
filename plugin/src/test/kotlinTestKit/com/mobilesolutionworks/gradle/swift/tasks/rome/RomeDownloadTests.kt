@@ -22,7 +22,7 @@ class RomeDownloadTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {
@@ -49,7 +49,7 @@ class RomeDownloadTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             rome {

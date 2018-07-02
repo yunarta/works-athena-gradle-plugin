@@ -22,7 +22,7 @@ class AthenaUploadTests {
             import com.mobilesolutionworks.gradle.swift.model.extension.AthenaUploadTarget
 
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             repositories {
@@ -66,7 +66,7 @@ class AthenaUploadTests {
             import com.mobilesolutionworks.gradle.swift.model.extension.AthenaUploadTarget
 
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             repositories {

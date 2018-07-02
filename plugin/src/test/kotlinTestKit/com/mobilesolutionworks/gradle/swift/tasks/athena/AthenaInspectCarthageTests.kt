@@ -27,7 +27,7 @@ class AthenaInspectCarthageTests {
             import java.net.URI
 
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             repositories {
@@ -79,7 +79,7 @@ class AthenaInspectCarthageTests {
             import java.net.URI
 
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             repositories {
@@ -132,7 +132,7 @@ class AthenaInspectCarthageTests {
             import java.net.URI
 
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             repositories {
@@ -186,7 +186,7 @@ class AthenaInspectCarthageTests {
             import java.net.URI
 
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             repositories {
@@ -228,7 +228,7 @@ class AthenaInspectCarthageTests {
             import java.net.URI
 
             plugins {
-                id("com.mobilesolutionworks.gradle.swift")
+                id("com.mobilesolutionworks.gradle.athena")
             }
 
             repositories {

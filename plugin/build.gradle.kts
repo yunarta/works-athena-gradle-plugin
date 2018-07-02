@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "com.mobilesolutionworks.gradle"
-version = "1.0.0"
+version = "1.0.2"
 
 repositories {
     mavenCentral()
@@ -63,22 +63,31 @@ dependencies {
 
 gradlePlugin {
     (plugins) {
-        "works-swift" {
-            id = "com.mobilesolutionworks.gradle.swift"
-            implementationClass = "com.mobilesolutionworks.gradle.swift.SwiftPlugin"
+        "swift-athena" {
+            id = "com.mobilesolutionworks.gradle.athena"
+            implementationClass = "com.mobilesolutionworks.gradle.swift.AthenaPlugin"
         }
     }
 }
 
 pluginBundle {
-    website = "https://github.com/yunarta/works-swift-gradle-plugin"
-    vcsUrl = "https://github.com/yunarta/works-swift-gradle-plugin"
-    description = ""
+    website = "https://github.com/yunarta/works-athena-gradle-plugin"
+    vcsUrl = "https://github.com/yunarta/works-athena-gradle-plugin"
+    description = """
+        Athena is a Gradle plugin for managing Carthage using Gradle.
+
+        This plugin would reduce the learning curve of using Carthage and its caching.
+        This plugin allow you to use Rome as the caching manager, or use Athena instead.
+
+        With Athena, the cache will be uploaded into Artifactory and Bintray
+    """.trimIndent()
 
     (plugins) {
-        "works-swift" {
-            id = "com.mobilesolutionworks.gradle.swift"
-            displayName = """""".trimIndent()
+        "swift-athena" {
+            id = "com.mobilesolutionworks.gradle.athena"
+            displayName = "Gradle plugin for managing Carthage and upload binary cache into Artifactory"
+            tags = listOf("swift", "carthage", "rome", "xcode", "ios")
+            version = "1.0.2"
         }
     }
 }

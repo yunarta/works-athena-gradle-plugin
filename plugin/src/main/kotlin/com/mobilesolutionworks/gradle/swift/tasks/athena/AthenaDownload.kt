@@ -3,6 +3,7 @@ package com.mobilesolutionworks.gradle.swift.tasks.athena
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.mobilesolutionworks.gradle.swift.model.AthenaPackageVersion
+import com.mobilesolutionworks.gradle.swift.model.CarthageAssetLocator
 import com.mobilesolutionworks.gradle.swift.model.extension.athena
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -18,6 +19,7 @@ internal open class AthenaDownload : DefaultTask() {
 
         with(project) {
             inputs.file(packages)
+            outputs.file(CarthageAssetLocator.resolved(project))
 
             tasks.withType(AthenaInspectCarthage::class.java) {
                 dependsOn(it)
