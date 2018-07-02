@@ -1,6 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
-import junit5.assert
+import junit5.assertMany
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.DisplayName
@@ -37,14 +37,14 @@ class CarthageBootstrapTests {
 
         runner.withArguments("carthageBootstrap")
                 .build().let {
-                    assert {
-                        it.task(":carthageBootstrap")?.outcome equalsTo TaskOutcome.SUCCESS
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageBootstrap")?.outcome
                     }
                 }
     }
 
     @Test
-    @DisplayName("test incremental build")
+    @DisplayName("verify carthageBootstrap incremental build")
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -66,21 +66,21 @@ class CarthageBootstrapTests {
 
         runner.withArguments("carthageBootstrap")
                 .build().let {
-                    assert {
-                        it.task(":carthageBootstrap")?.outcome equalsTo TaskOutcome.SUCCESS
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageBootstrap")?.outcome
                     }
                 }
 
         runner.withArguments("carthageBootstrap")
                 .build().let {
-                    assert {
-                        it.task(":carthageBootstrap")?.outcome equalsTo TaskOutcome.UP_TO_DATE
+                    assertMany {
+                        TaskOutcome.UP_TO_DATE expectedFrom it.task(":carthageBootstrap")?.outcome
                     }
                 }
     }
 
     @Test
-    @DisplayName("DSL change should always run bootstrap")
+    @DisplayName("verify carthageBootstrap incremental build after modification")
     fun test3(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -102,8 +102,8 @@ class CarthageBootstrapTests {
 
         runner.withArguments("carthageBootstrap")
                 .build().let {
-                    assert {
-                        it.task(":carthageBootstrap")?.outcome equalsTo TaskOutcome.SUCCESS
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageBootstrap")?.outcome
                     }
                 }
 
@@ -123,8 +123,8 @@ class CarthageBootstrapTests {
 
         runner.withArguments("carthageBootstrap")
                 .build().let {
-                    assert {
-                        it.task(":carthageBootstrap")?.outcome equalsTo TaskOutcome.SUCCESS
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageBootstrap")?.outcome
                     }
                 }
     }

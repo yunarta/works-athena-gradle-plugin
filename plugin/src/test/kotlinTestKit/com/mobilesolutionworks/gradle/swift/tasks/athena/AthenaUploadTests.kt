@@ -3,12 +3,14 @@ package com.mobilesolutionworks.gradle.swift.tasks.athena
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 import org.junit.jupiter.api.extension.ExtendWith
 import testKit.GradleRunnerProvider
 import testKit.newFile
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test AthenaUpload")
+@EnabledIfEnvironmentVariable(named = "NODE_NAME", matches = "works")
 class AthenaUploadTests {
 
     @Test

@@ -15,7 +15,6 @@ internal open class AthenaBintrayUpload : DefaultTask() {
     @Option(option = "upload-dry-run", description = "Test dry run for upload")
     var dryRun = false
 
-
     init {
         group = AthenaTaskDef.group
 

@@ -1,9 +1,9 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
 import junit5.assertAll
+import junit5.assertMany
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -36,40 +36,36 @@ class CarthageUpdateTests {
         runner.withArguments("carthageUpdate")
                 .build().let {
                     assertAll {
-                        assert {
-                            it.task(":carthageActivateUpdate")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageActivateUpdate"
-                        }
-                        assert {
-                            it.task(":carthageCartfileResolve")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageCartfileResolve"
-                        }
-                        assert {
-                            it.task(":carthageCartfileReplace")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageCartfileReplace"
-                        }
-                        assert {
-                            it.task(":carthagePrepareExecution")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthagePrepareExecution"
-                        }
-                        assert {
-                            it.task(":carthageUpdate")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageUpdate"
-                        }
+                        -":carthageActivateUpdate"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageActivateUpdate")?.outcome
+
+                        -":carthageCartfileResolve"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileResolve")?.outcome
+
+                        -":carthageCartfileReplace"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileReplace")?.outcome
+
+                        -":carthagePrepareExecution"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthagePrepareExecution")?.outcome
+
+                        -":carthageUpdate"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageUpdate")?.outcome
                     }
 
-                    assertTrue {
-                        it.tasks.map {
-                            it.path
-                        }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
-                            it.contains(":carthageActivateUpdate")
+                    assertMany {
+                        isTrue {
+                            it.tasks.map {
+                                it.path
+                            }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
+                                it.contains(":carthageActivateUpdate")
+                            }
                         }
                     }
                 }
     }
 
     @Test
-    @DisplayName("test incremental build")
+    @DisplayName("verify carthageUpdate incremental build")
     fun test2(runner: GradleRunner) {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
@@ -95,33 +91,29 @@ class CarthageUpdateTests {
                         +"""on second execution, while activate is running,
                         |update will be skipped as DSL is the same""".trimMargin()
 
-                        assert {
-                            it.task(":carthageActivateUpdate")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageActivateUpdate"
-                        }
-                        assert {
-                            it.task(":carthageCartfileResolve")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageCartfileResolve"
-                        }
-                        assert {
-                            it.task(":carthageCartfileReplace")?.outcome equalsTo TaskOutcome.UP_TO_DATE
-                            +":carthageCartfileReplace"
-                        }
-                        assert {
-                            it.task(":carthagePrepareExecution")?.outcome equalsTo TaskOutcome.UP_TO_DATE
-                            +":carthagePrepareExecution"
-                        }
-                        assert {
-                            it.task(":carthageUpdate")?.outcome equalsTo TaskOutcome.UP_TO_DATE
-                            +":carthageUpdate"
-                        }
+                        -":carthageActivateUpdate"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageActivateUpdate")?.outcome
+
+                        -":carthageCartfileResolve"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileResolve")?.outcome
+
+                        -":carthageCartfileReplace"
+                        TaskOutcome.UP_TO_DATE expectedFrom it.task(":carthageCartfileReplace")?.outcome
+
+                        -":carthagePrepareExecution"
+                        TaskOutcome.UP_TO_DATE expectedFrom it.task(":carthagePrepareExecution")?.outcome
+
+                        -":carthageUpdate"
+                        TaskOutcome.UP_TO_DATE expectedFrom it.task(":carthageUpdate")?.outcome
                     }
 
-                    assertTrue {
-                        it.tasks.map {
-                            it.path
-                        }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
-                            it.contains(":carthageActivateUpdate")
+                    assertMany {
+                        isTrue {
+                            it.tasks.map {
+                                it.path
+                            }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
+                                it.contains(":carthageActivateUpdate")
+                            }
                         }
                     }
                 }
@@ -129,7 +121,7 @@ class CarthageUpdateTests {
 
 
     @Test
-    @DisplayName("DSL change should always run update")
+    @DisplayName("verify carthageUpdate incremental build")
     fun test3(runner: GradleRunner) {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
@@ -166,33 +158,29 @@ class CarthageUpdateTests {
         runner.withArguments("carthageUpdate")
                 .build().let {
                     assertAll {
-                        assert {
-                            it.task(":carthageActivateUpdate")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageActivateUpdate"
-                        }
-                        assert {
-                            it.task(":carthageCartfileResolve")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageCartfileResolve"
-                        }
-                        assert {
-                            it.task(":carthageCartfileReplace")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageCartfileReplace"
-                        }
-                        assert {
-                            it.task(":carthagePrepareExecution")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthagePrepareExecution"
-                        }
-                        assert {
-                            it.task(":carthageUpdate")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageUpdate"
-                        }
+                        -":carthageActivateUpdate"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageActivateUpdate")?.outcome
+
+                        -":carthageCartfileResolve"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileResolve")?.outcome
+
+                        -":carthageCartfileReplace"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileReplace")?.outcome
+
+                        -":carthagePrepareExecution"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthagePrepareExecution")?.outcome
+
+                        -":carthageUpdate"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageUpdate")?.outcome
                     }
 
-                    assertTrue {
-                        it.tasks.map {
-                            it.path
-                        }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
-                            it.contains(":carthageActivateUpdate")
+                    assertMany {
+                        isTrue {
+                            it.tasks.map {
+                                it.path
+                            }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
+                                it.contains(":carthageActivateUpdate")
+                            }
                         }
                     }
                 }

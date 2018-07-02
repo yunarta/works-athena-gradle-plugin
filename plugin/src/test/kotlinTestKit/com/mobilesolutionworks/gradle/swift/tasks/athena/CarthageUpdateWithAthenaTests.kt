@@ -52,26 +52,20 @@ class CarthageUpdateWithAthenaTests {
         runner.withArguments("carthageUpdate")
                 .build().let {
                     assertAll {
-                        assert {
-                            it.task(":carthageActivateUpdate")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageActivateUpdate"
-                        }
-                        assert {
-                            it.task(":carthageCartfileResolve")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageCartfileResolve"
-                        }
-                        assert {
-                            it.task(":carthageCartfileReplace")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageCartfileReplace"
-                        }
-                        assert {
-                            it.task(":carthagePrepareExecution")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthagePrepareExecution"
-                        }
-                        assert {
-                            it.task(":carthageUpdate")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageUpdate"
-                        }
+                        -":carthageActivateUpdate"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageActivateUpdate")?.outcome
+
+                        -":carthageCartfileResolve"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileResolve")?.outcome
+
+                        -":carthageCartfileReplace"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileReplace")?.outcome
+
+                        -":carthagePrepareExecution"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthagePrepareExecution")?.outcome
+
+                        -":carthageUpdate"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageUpdate")?.outcome
                     }
 
                     Assertions.assertTrue {
@@ -128,26 +122,20 @@ class CarthageUpdateWithAthenaTests {
                         +"""on second execution, while activate is running,
                         |update will be skipped as DSL is the same""".trimMargin()
 
-                        assert {
-                            it.task(":carthageActivateUpdate")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageActivateUpdate"
-                        }
-                        assert {
-                            it.task(":carthageCartfileResolve")?.outcome equalsTo TaskOutcome.SUCCESS
-                            +":carthageCartfileResolve"
-                        }
-                        assert {
-                            it.task(":carthageCartfileReplace")?.outcome equalsTo TaskOutcome.UP_TO_DATE
-                            +":carthageCartfileReplace"
-                        }
-                        assert {
-                            it.task(":carthagePrepareExecution")?.outcome equalsTo TaskOutcome.UP_TO_DATE
-                            +":carthagePrepareExecution"
-                        }
-                        assert {
-                            it.task(":carthageUpdate")?.outcome equalsTo TaskOutcome.UP_TO_DATE
-                            +":carthageUpdate"
-                        }
+                        -":carthageActivateUpdate"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageActivateUpdate")?.outcome
+
+                        -":carthageCartfileResolve"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileResolve")?.outcome
+
+                        -":carthageCartfileReplace"
+                        TaskOutcome.UP_TO_DATE expectedFrom it.task(":carthageCartfileReplace")?.outcome
+
+                        -":carthagePrepareExecution"
+                        TaskOutcome.UP_TO_DATE expectedFrom it.task(":carthagePrepareExecution")?.outcome
+
+                        -":carthageUpdate"
+                        TaskOutcome.UP_TO_DATE expectedFrom it.task(":carthageUpdate")?.outcome
                     }
 
                     Assertions.assertTrue {

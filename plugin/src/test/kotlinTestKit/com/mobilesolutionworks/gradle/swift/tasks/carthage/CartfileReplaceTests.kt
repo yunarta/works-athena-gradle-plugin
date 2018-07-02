@@ -1,9 +1,8 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
+import junit5.assertMany
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -39,13 +38,17 @@ class CartfileReplaceTests {
 
         runner.withArguments("carthageCartfileReplace")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-                    assertEquals(true, File(runner.root, "Cartfile.resolved").exists())
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileReplace")?.outcome
+                        isTrue {
+                            File(runner.root, "Cartfile.resolved").exists()
+                        }
+                    }
                 }
     }
 
     @Test
-    @DisplayName("verify incremental build")
+    @DisplayName("verify carthageCartfileReplace incremental build")
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -66,18 +69,18 @@ class CartfileReplaceTests {
         """.trimIndent())
 
         runner.withArguments("carthageCartfileReplace")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-                }
+                .build()
 
         runner.withArguments("carthageCartfileReplace")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageCartfileReplace")?.outcome)
+                    assertMany {
+                        TaskOutcome.UP_TO_DATE expectedFrom it.task(":carthageCartfileReplace")?.outcome
+                    }
                 }
     }
 
     @Test
-    @DisplayName("DSL change always redo replace")
+    @DisplayName("verify carthageCartfileReplace incremental build after modification")
     fun test3(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -98,9 +101,7 @@ class CartfileReplaceTests {
         """.trimIndent())
 
         runner.withArguments("carthageCartfileReplace")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-                }
+                .build()
 
         build.writeText("""
             plugins {
@@ -114,12 +115,14 @@ class CartfileReplaceTests {
 
         runner.withArguments("carthageCartfileReplace")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileReplace")?.outcome
+                    }
                 }
     }
 
     @Test
-    @DisplayName("deleting Cartfile.resolved will redo replace")
+    @DisplayName("verify deleting Cartfile.resolved will redo carthageCartfileReplace")
     fun test4(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -141,9 +144,7 @@ class CartfileReplaceTests {
         """.trimIndent())
 
         runner.withArguments("carthageCartfileReplace")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-                }
+                .build()
 
         File(runner.root, "Cartfile.resolved").delete()
 
@@ -164,13 +165,14 @@ class CartfileReplaceTests {
 
         runner.withArguments("carthageCartfileReplace")
                 .build().let {
-                    // this task is up to date because this just check whether should it resolve
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileReplace")?.outcome
+                    }
                 }
     }
 
     @Test
-    @DisplayName("replace does not execute when no update found (updates = true, build = deleted)")
+    @DisplayName("verify carthageCartfileReplace does not execute when no update found (updates = true, build = deleted)")
     fun test5(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -192,20 +194,20 @@ class CartfileReplaceTests {
         """.trimIndent())
 
         runner.withArguments("carthageCartfileReplace")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-                }
+                .build()
 
         File(runner.root, "build").deleteRecursively()
 
         runner.withArguments("carthageCartfileReplace")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageCartfileReplace")?.outcome)
+                    assertMany {
+                        TaskOutcome.UP_TO_DATE expectedFrom it.task(":carthageCartfileReplace")?.outcome
+                    }
                 }
     }
 
     @Test
-    @DisplayName("replace executed when update found (update = true, build = deleted)")
+    @DisplayName("verify carthageCartfileReplace executed when update found (update = true, build = deleted)")
     fun test6(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -227,9 +229,7 @@ class CartfileReplaceTests {
         """.trimIndent())
 
         runner.withArguments("carthageCartfileReplace")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-                }
+                .build()
 
         File(runner.root, "build").deleteRecursively()
 
@@ -250,59 +250,9 @@ class CartfileReplaceTests {
 
         runner.withArguments("carthageCartfileReplace")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-                }
-    }
-
-    @Test
-    @Disabled
-    @DisplayName("replacing executed due to DSL changes, even if updates = false")
-    fun test7(runner: GradleRunner) {
-        runner.newFile("settings.gradle.kts").writeText("""
-        """.trimIndent())
-
-        val build = runner.newFile("build.gradle.kts")
-        build.writeText("""
-            plugins {
-                id("com.mobilesolutionworks.gradle.athena")
-            }
-
-            rome {
-                enabled = false
-            }
-
-            carthage {
-                updates = false
-                github("yunarta/NullFramework") version "1.0.0"
-            }
-        """.trimIndent())
-
-        runner.withArguments("carthageCartfileReplace")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-                }
-
-        File(runner.root, "build").deleteRecursively()
-
-        build.writeText("""
-            plugins {
-                id("com.mobilesolutionworks.gradle.athena")
-            }
-
-            rome {
-                enabled = false
-            }
-
-            carthage {
-                updates = false
-                github("yunarta/NullFramework") version "1.1.0"
-            }
-        """.trimIndent())
-
-        runner.withArguments("carthageCartfileReplace")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
-
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileReplace")?.outcome
+                    }
                 }
     }
 }
