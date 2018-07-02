@@ -24,8 +24,16 @@ class AthenaInspectCarthageTests {
 
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
+            import java.net.URI
+
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            repositories {
+                maven {
+                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
+                }
             }
 
             xcode {
@@ -68,8 +76,16 @@ class AthenaInspectCarthageTests {
 
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
+            import java.net.URI
+
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            repositories {
+                maven {
+                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
+                }
             }
 
             xcode {
@@ -113,8 +129,16 @@ class AthenaInspectCarthageTests {
 
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
+            import java.net.URI
+
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            repositories {
+                maven {
+                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
+                }
             }
 
             xcode {
@@ -159,8 +183,16 @@ class AthenaInspectCarthageTests {
 
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
+            import java.net.URI
+
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            repositories {
+                maven {
+                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
+                }
             }
 
             xcode {
