@@ -301,9 +301,6 @@ class CartfileReplaceTests {
 
         runner.withArguments("carthageCartfileReplace")
                 .build().let {
-                    File(runner.root, "Cartfile.resolved").readText().also {
-                        println(it)
-                    }
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageCartfileReplace")?.outcome)
 
                 }

@@ -10,6 +10,6 @@ internal open class AthenaPackageVersion(`package`: AthenaPackage, val version: 
 
 internal object NullAthenaPackageVersion : AthenaPackageVersion(AthenaPackage("", ""), "")
 
-internal open class AthenaFramework(val name: String, val hash: String) : Serializable
+internal open class AthenaFramework(val name: String/*, val hash: String*/) : Serializable
 
 internal open class AthenaUploadInfo(val version: AthenaPackageVersion, val swiftVersion: String, val frameworks: Map<Platform, List<AthenaFramework>>) : Serializable

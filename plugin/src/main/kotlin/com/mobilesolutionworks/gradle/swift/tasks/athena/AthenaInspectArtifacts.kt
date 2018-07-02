@@ -36,7 +36,7 @@ internal open class AthenaInspectArtifacts : DefaultTask() {
                 val `package` = packages.getOrDefault(moduleName, NullAthenaPackageVersion)
                 val buildFile = gson.fromJson(file.reader(), CarthageBuildFile::class.java)
                 AthenaUploadInfo(`package`, athena.swiftVersion, buildFile.platforms.mapValues { entry ->
-                    entry.value.map { AthenaFramework(it.name, it.hash) }
+                    entry.value.map { AthenaFramework(it.name/*, it.hash*/) }
                 })
             }
 

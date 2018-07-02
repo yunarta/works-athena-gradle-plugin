@@ -226,7 +226,6 @@ class AthenaInspectCarthageTests {
                 .let {
                     val project = ProjectBuilder().withProjectDir(runner.root).build()
                     val file = project.file("${project.buildDir}/works-swift/athena/packages.json")
-                    println(file.readText())
                     val element = JsonParser().parse(file.reader())
                     val packages = element.asJsonObject.getAsJsonObject("NullFramework")
                     assertAll(
