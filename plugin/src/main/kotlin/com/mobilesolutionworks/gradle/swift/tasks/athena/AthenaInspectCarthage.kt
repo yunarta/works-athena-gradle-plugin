@@ -14,7 +14,7 @@ internal open class AthenaInspectCarthage : DefaultTask() {
     private val target = project.file("${project.buildDir}/works-swift/athena/packages.json")
 
     init {
-        group = Athena.group
+        group = AthenaTaskDef.group
         description = "Inspect Cartfile.resolved to get modules information to download"
 
         with(project) {
@@ -59,9 +59,7 @@ internal open class AthenaInspectCarthage : DefaultTask() {
                 """.trimMargin())
             }
 
-            val json = GsonBuilder().create().toJson(packages)
-            target.writeText(json)
-
+            target.writeText(GsonBuilder().create().toJson(packages))
             athena.packages = packages
         }
     }

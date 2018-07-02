@@ -7,7 +7,7 @@ import org.gradle.api.tasks.TaskAction
 internal open class ActivateUpdate : DefaultTask() {
 
     init {
-        group = Carthage.group
+        group = CarthageTaskDef.group
 
         with(project) {
             tasks.withType(CartfileCreate::class.java) {

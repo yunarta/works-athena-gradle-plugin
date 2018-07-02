@@ -6,7 +6,7 @@ import org.gradle.api.tasks.Exec
 internal open class RomeDownload : Exec() {
 
     init {
-        group = Rome.group
+        group = RomeTaskDef.group
 
         with(project) {
             // inputs outputs

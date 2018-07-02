@@ -6,7 +6,7 @@ import org.gradle.api.tasks.Exec
 internal open class CarthageBootstrap : Exec() {
 
     init {
-        group = Carthage.group
+        group = CarthageTaskDef.group
 
         with(project) {
             // inputs outputs

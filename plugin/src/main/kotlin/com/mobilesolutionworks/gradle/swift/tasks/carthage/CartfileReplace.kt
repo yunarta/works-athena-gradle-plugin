@@ -12,7 +12,7 @@ internal open class CartfileReplace : DefaultTask() {
     private var cartfileResolved = project.file("${project.rootDir}/Cartfile.resolved")
 
     init {
-        group = Carthage.group
+        group = CarthageTaskDef.group
 
         with(project) {
 

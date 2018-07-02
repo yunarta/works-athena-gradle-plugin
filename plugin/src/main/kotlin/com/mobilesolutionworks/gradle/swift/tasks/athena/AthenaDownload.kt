@@ -1,17 +1,24 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+import com.mobilesolutionworks.gradle.swift.model.AthenaPackageVersion
 import com.mobilesolutionworks.gradle.swift.model.extension.athena
 import org.gradle.api.DefaultTask
-import org.gradle.api.internal.file.IdentityFileResolver
 import org.gradle.api.tasks.TaskAction
-import org.gradle.process.internal.DefaultExecActionFactory
+import org.gradle.maven.MavenModule
+import org.gradle.maven.MavenPomArtifact
 
 internal open class AthenaDownload : DefaultTask() {
 
+    private val packages = project.file("${project.buildDir}/works-swift/athena/packages.json")
+
     init {
-        group = Athena.group
+        group = AthenaTaskDef.group
 
         with(project) {
+            inputs.file(packages)
+
             tasks.withType(AthenaInspectCarthage::class.java) {
                 dependsOn(it)
             }
@@ -21,32 +28,26 @@ internal open class AthenaDownload : DefaultTask() {
     @TaskAction
     fun download() {
         with(project) {
-            val execActionFactory = DefaultExecActionFactory(IdentityFileResolver())
-            athena.packages.values.map { info ->
-                info.artifactory(athena.swiftVersion).let {
-                    val executor = execActionFactory.newExecAction()
-                    executor.executable = "jfrog"
-                    executor.workingDir = file("$buildDir/athena")
-                    executor.workingDir.mkdirs()
+            val gson = GsonBuilder().create()
+            val packages: Map<String, AthenaPackageVersion> = gson.fromJson(packages.reader(),
+                    object : TypeToken<Map<String, AthenaPackageVersion>>() {}.type)
 
-                    executor.args("rt")
-                    executor.args("dl")
-//                    executor.args("--explode")
-//                    executor.args("--dry-run")
-//                    executor.args("--flat=false")
-                    executor.args("athena/$it/*.zip")
-                    executor.execute()
 
-                    project.fileTree(mapOf(
-                            "dir" to file("$buildDir/athena/$it"),
-                            "include" to "*.zip"
-                    ))
-                }.map {
-                    val executor = execActionFactory.newExecAction()
-                    executor.executable = "unzip"
-                    executor.workingDir = projectDir
-                    executor.args(it)
-                    executor.execute()
+            packages.values.map {
+                project.dependencies.createArtifactResolutionQuery()
+                        .forModule(it.group, it.module, "${it.version}-Swift${athena.swiftVersion}")
+                        .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
+                        .execute()
+            }.flatMap {
+                it.resolvedComponents.map { it.id.displayName }
+            }.map {
+                dependencies.add("athena", it)
+            }
+
+            val configuration = project.configurations.getByName("athena")
+            configuration.resolve().forEach {
+                zipTree(it).visit {
+                    it.copyTo(project.file(it.relativePath))
                 }
             }
         }

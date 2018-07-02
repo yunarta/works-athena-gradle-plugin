@@ -10,7 +10,7 @@ internal open class CreateRomefile : DefaultTask() {
     private val romefile = project.file("${project.rootDir}/romefile")
 
     init {
-        group = Rome.group
+        group = RomeTaskDef.group
 
         with(project) {
             tasks.withType(CreateRepositoryMap::class.java) {

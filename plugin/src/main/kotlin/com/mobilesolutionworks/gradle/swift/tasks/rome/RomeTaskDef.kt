@@ -1,8 +1,8 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
-internal object Rome {
+internal object RomeTaskDef {
 
-    val group = "rome"
+    const val group = "rome"
 
     enum class Tasks(val value: String) {
         RomeCreateRepositoryMap("romeCreateRepositoryMap"),

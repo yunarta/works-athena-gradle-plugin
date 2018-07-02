@@ -17,7 +17,7 @@ internal open class CartfileCreate : DefaultTask() {
     private var content = ""
 
     init {
-        group = Carthage.group
+        group = CarthageTaskDef.group
 
         with(project) {
 

@@ -19,8 +19,16 @@ class AthenaCreatePackageTests {
 
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
+            import java.net.URI
+
             plugins {
                 id("com.mobilesolutionworks.gradle.swift")
+            }
+
+            repositories {
+                maven {
+                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
+                }
             }
 
             xcode {
@@ -36,7 +44,7 @@ class AthenaCreatePackageTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap")
+        runner.withArguments("carthageBootstrap", "-x", "athenaUpload", "--stacktrace")
                 .build().let {
                     // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }

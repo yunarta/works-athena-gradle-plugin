@@ -1,8 +1,8 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
-internal object Carthage {
+internal object CarthageTaskDef {
 
-    val group = "carthage"
+    const val group = "carthage"
 
     enum class Tasks(val value: String) {
         CarthageCartfileCreate("carthageCartfileCreate"),

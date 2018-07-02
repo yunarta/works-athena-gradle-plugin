@@ -9,7 +9,7 @@ import org.gradle.api.tasks.Exec
 internal open class CarthageUpdate : Exec() {
 
     init {
-        group = Carthage.group
+        group = CarthageTaskDef.group
 
         with(project) {
             // inputs outputs

@@ -23,7 +23,7 @@ internal open class CartfileResolve : Exec() {
 
 
     init {
-        group = Carthage.group
+        group = CarthageTaskDef.group
 
 
         with(project) {

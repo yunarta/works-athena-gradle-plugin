@@ -1,28 +1,25 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import com.google.gson.GsonBuilder
-import com.mobilesolutionworks.gradle.swift.model.Artifactory
+import com.google.gson.reflect.TypeToken
+import com.mobilesolutionworks.gradle.swift.model.AthenaPackageVersion
 import com.mobilesolutionworks.gradle.swift.model.extension.athena
-import org.gradle.api.tasks.Exec
-import java.io.ByteArrayOutputStream
-import java.io.File
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+import org.gradle.maven.MavenModule
+import org.gradle.maven.MavenPomArtifact
 
-internal open class AthenaListMissing : Exec() {
+internal open class AthenaListMissing : DefaultTask() {
 
+    private val packages = project.file("${project.buildDir}/works-swift/athena/packages.json")
     private val target = project.file("${project.buildDir}/works-swift/athena/missing.json")
 
     init {
-        group = Athena.group
+        group = AthenaTaskDef.group
 
         with(project) {
-            inputs.file("$buildDir/works-athena/packages.json")
+            inputs.file("$buildDir/works-swift/athena/packages.json")
             outputs.file(target)
-
-            executable = "jfrog"
-            workingDir = file("$buildDir/athena")
-            workingDir.mkdirs()
-
-            args("rt", "s")
 
             // dependencies
             tasks.withType(AthenaInspectCarthage::class.java) {
@@ -31,38 +28,24 @@ internal open class AthenaListMissing : Exec() {
         }
     }
 
-    override fun exec() {
+    @TaskAction
+    fun listMissing() {
         with(project) {
             val gson = GsonBuilder().create()
-            val file = File.createTempFile("search", ".spec").apply {
-                writeText(athena.packages.values.map { info ->
-                    info.artifactory(athena.swiftVersion)
-                }.map {
-                    Artifactory.FileSpecs.FileSpec("athena/$it/*.zip")
-                }.let {
-                    Artifactory.FileSpecs(it)
-                }.let {
-                    gson.toJson(it)
-                })
-                deleteOnExit()
+            val packages: Map<String, AthenaPackageVersion> = gson.fromJson(packages.reader(),
+                    object : TypeToken<Map<String, AthenaPackageVersion>>() {}.type)
+
+            val result = packages.values.map {
+                project.dependencies.createArtifactResolutionQuery()
+                        .forModule(it.group, it.module, "${it.version}-Swift${athena.swiftVersion}")
+                        .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
+                        .execute()
+            }.flatMap {
+                it.resolvedComponents.map { it.id.displayName }
             }
 
-            args("--spec", file.absolutePath)
-
-            val result = ByteArrayOutputStream().run {
-                standardOutput = this
-                super.exec()
-                toString()
-            }.let { json ->
-                gson.fromJson(json, Array<Artifactory.ResultSpec>::class.java)
-            }.map {
-                it.path
-            }
-
-            athena.packages.values.map { info ->
-                info.artifactoryFile(athena.swiftVersion)
-            }.map {
-                "athena/$it"
+            packages.values.map { info ->
+                info.component(athena.swiftVersion)
             }.toMutableList().apply {
                 removeAll(result)
             }.joinToString(System.lineSeparator()) {

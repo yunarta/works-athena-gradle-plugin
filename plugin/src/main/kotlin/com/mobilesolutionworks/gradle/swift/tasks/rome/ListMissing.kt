@@ -8,7 +8,7 @@ internal open class ListMissing : Exec() {
     private val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
 
     init {
-        group = Rome.group
+        group = RomeTaskDef.group
         with(project) {
             // inputs outputs
             inputs.file("${project.rootDir}/Cartfile.resolved")

@@ -191,12 +191,12 @@ carthage {
 //
 //        inputs.files(romeCreate.outputs.files)
 //        outputs.files(fileTree(
-//                mapOf("dir" to file("$projectDir/Works-Swift/Carthage/Build"),
+//                mapOf("dir" to file("$projectDir/Works-Swift/CarthageTaskDef/Build"),
 //                        "include" to "*.version")
 //        ))
 //
 //        doFirst {
-//            file("$projectDir/Works-Swift/Carthage/Build").mkdirs()
+//            file("$projectDir/Works-Swift/CarthageTaskDef/Build").mkdirs()
 //        }
 //    }
 //
@@ -251,7 +251,7 @@ carthage {
 //        })
 //
 //        outputs.files(fileTree(
-//                mapOf("dir" to file("$projectDir/Works-Swift/Carthage/Build"),
+//                mapOf("dir" to file("$projectDir/Works-Swift/CarthageTaskDef/Build"),
 //                        "include" to "*.version")
 //        ))
 //

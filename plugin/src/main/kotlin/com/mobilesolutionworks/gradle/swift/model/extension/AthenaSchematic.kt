@@ -4,12 +4,24 @@ import com.mobilesolutionworks.gradle.swift.model.AthenaPackage
 import com.mobilesolutionworks.gradle.swift.model.AthenaPackageVersion
 import com.mobilesolutionworks.gradle.swift.model.AthenaUploadInfo
 import org.gradle.api.NamedDomainObjectContainer
+import org.gradle.api.Project
 
-open class AthenaSchematic(val resolutions: NamedDomainObjectContainer<PackageExtension>) {
+enum class AthenaUploadTarget {
+    Bintray, Artifactory
+}
+
+open class AthenaSchematic(project: Project, val resolutions: NamedDomainObjectContainer<PackageExtension>) {
+
+    var upload = AthenaUploadTarget.Artifactory
+
+    var organization = ""
+    var repository = "athena"
 
     var enabled = false
 
     var swiftVersion = "4.1.2"
+
+    var workDir = project.file("Athena")
 
     internal fun resolve(it: String): AthenaPackage? {
         return resolutions.findByName(it)?.let {

@@ -116,7 +116,7 @@ class RomeUploadTests {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
 
-        File(runner.root, "Carthage").deleteRecursively()
+        File(runner.root, "CarthageTaskDef").deleteRecursively()
         File(runner.root, "build").deleteRecursively()
 
         runner.withArguments("carthageBootstrap")

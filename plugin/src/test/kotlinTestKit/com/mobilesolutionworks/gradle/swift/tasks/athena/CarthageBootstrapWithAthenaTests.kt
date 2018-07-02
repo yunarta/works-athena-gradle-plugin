@@ -10,7 +10,7 @@ import testKit.GradleRunnerProvider
 import testKit.newFile
 
 @ExtendWith(GradleRunnerProvider::class)
-@DisplayName("Test CarthageBootstrap with Athena")
+@DisplayName("Test CarthageBootstrap with AthenaTaskDef")
 class CarthageBootstrapWithAthenaTests {
 
     @Test

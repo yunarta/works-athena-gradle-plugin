@@ -1,5 +1,8 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+import com.mobilesolutionworks.gradle.swift.model.AthenaPackageVersion
 import com.mobilesolutionworks.gradle.swift.model.AthenaUploadInfo
 import com.mobilesolutionworks.gradle.swift.model.extension.athena
 import org.gradle.api.DefaultTask
@@ -15,10 +18,14 @@ import javax.inject.Inject
 
 internal open class AthenaCreatePackage @Inject constructor(private val workerExecutor: WorkerExecutor) : DefaultTask() {
 
+    private val source = project.file("${project.buildDir}/works-swift/athena/artifacts.json")
+
     init {
-        group = Athena.group
+        group = AthenaTaskDef.group
 
         with(project) {
+            outputs.dir(project.file("Athena"))
+
             tasks.withType(AthenaInspectArtifacts::class.java) {
                 dependsOn(it)
             }
@@ -28,10 +35,14 @@ internal open class AthenaCreatePackage @Inject constructor(private val workerEx
     @TaskAction
     fun run() {
         with(project) {
-            athena.artifacts.forEach { info ->
+            val gson = GsonBuilder().create()
+            val artifacts: List<AthenaUploadInfo> = gson.fromJson(source.reader(),
+                    object : TypeToken<List<AthenaUploadInfo>>() {}.type)
+
+            artifacts.forEach { info ->
                 workerExecutor.submit(ArchiveWorker::class.java) {
                     it.isolationMode = IsolationMode.NONE
-                    it.params(info, project.rootDir, project.file("${project.buildDir}/athena/"))
+                    it.params(info, project.rootDir, project.file("Athena"))
                 }
             }
         }
