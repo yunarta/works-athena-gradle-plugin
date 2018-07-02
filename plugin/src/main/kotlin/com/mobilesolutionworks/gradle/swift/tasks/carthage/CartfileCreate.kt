@@ -20,7 +20,6 @@ internal open class CartfileCreate : DefaultTask() {
         group = CarthageTaskDef.group
 
         with(project) {
-
             content = carthage.dependencies.joinToString(System.lineSeparator()) {
                 it.semantic
             }

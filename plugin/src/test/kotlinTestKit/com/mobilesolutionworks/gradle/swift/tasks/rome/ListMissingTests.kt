@@ -1,9 +1,9 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
+import junit5.assertMany
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -41,9 +41,12 @@ class ListMissingTests {
 
         runner.withArguments("romeListMissing")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
-                    val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
-                    assertEquals("NullFramework 1.0.0 : -iOS -Mac -tvOS -watchOS", missing.readText().trimMargin())
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":romeListMissing")?.outcome
+
+                        val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
+                        "NullFramework 1.0.0 : -iOS -Mac -tvOS -watchOS" expectedFrom missing.readText().trimMargin()
+                    }
                 }
 
         build.writeText("""
@@ -67,14 +70,17 @@ class ListMissingTests {
 
         runner.withArguments("romeListMissing")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
-                    val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
-                    assertEquals("NullFramework 1.0.0 : -iOS -Mac", missing.readText().trimMargin())
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":romeListMissing")?.outcome
+
+                        val missing = project.file("${project.buildDir}/works-swift/rome/romefile/missing.txt")
+                        "NullFramework 1.0.0 : -iOS -Mac" expectedFrom missing.readText().trimMargin()
+                    }
                 }
     }
 
     @Test
-    @DisplayName("verify incremental build")
+    @DisplayName("verify romeListMissing incremental build")
     fun incremental(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -96,18 +102,18 @@ class ListMissingTests {
         """.trimIndent())
 
         runner.withArguments("romeListMissing")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
-                }
+                .build()
 
         runner.withArguments("romeListMissing")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":romeListMissing")?.outcome)
+                    assertMany {
+                        TaskOutcome.UP_TO_DATE expectedFrom it.task(":romeListMissing")?.outcome
+                    }
                 }
     }
 
     @Test
-    @DisplayName("DSL modification will redo list missing")
+    @DisplayName("verify romeListMissing incremental build after modification")
     fun test3(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -129,9 +135,7 @@ class ListMissingTests {
         """.trimIndent())
 
         runner.withArguments("romeListMissing")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
-                }
+                .build()
 
         build.writeText("""
             plugins {
@@ -151,7 +155,9 @@ class ListMissingTests {
 
         runner.withArguments("romeListMissing")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeListMissing")?.outcome)
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":romeListMissing")?.outcome
+                    }
                 }
     }
 }

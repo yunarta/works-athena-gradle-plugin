@@ -1,6 +1,7 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import junit5.assertAll
+import junit5.assertMany
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.Assertions
@@ -68,11 +69,13 @@ class CarthageUpdateWithAthenaTests {
                         TaskOutcome.SUCCESS expectedFrom it.task(":carthageUpdate")?.outcome
                     }
 
-                    Assertions.assertTrue {
-                        it.tasks.map {
-                            it.path
-                        }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
-                            it.contains(":carthageActivateUpdate")
+                    assertMany {
+                        isTrue {
+                            it.tasks.map {
+                                it.path
+                            }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
+                                it.contains(":carthageActivateUpdate")
+                            }
                         }
                     }
 
@@ -138,14 +141,15 @@ class CarthageUpdateWithAthenaTests {
                         TaskOutcome.UP_TO_DATE expectedFrom it.task(":carthageUpdate")?.outcome
                     }
 
-                    Assertions.assertTrue {
-                        it.tasks.map {
-                            it.path
-                        }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
-                            it.contains(":carthageActivateUpdate")
+                    assertMany {
+                        isTrue {
+                            it.tasks.map {
+                                it.path
+                            }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
+                                it.contains(":carthageActivateUpdate")
+                            }
                         }
                     }
-
                 }
     }
 

@@ -17,7 +17,6 @@ internal open class CarthageUpdate : DefaultTask() {
             inputs.file(project.file("${project.rootDir}/Cartfile.resolved"))
             outputs.dir("$rootDir/Carthage")
 
-
             // dependencies
             tasks.withType(ActivateUpdate::class.java) {
                 this@CarthageUpdate.dependsOn(it)

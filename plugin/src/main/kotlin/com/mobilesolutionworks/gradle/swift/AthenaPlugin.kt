@@ -1,35 +1,9 @@
 package com.mobilesolutionworks.gradle.swift
 
-import com.mobilesolutionworks.gradle.swift.model.extension.AthenaSchematic
-import com.mobilesolutionworks.gradle.swift.model.extension.AthenaUploadTarget
-import com.mobilesolutionworks.gradle.swift.model.extension.CarthageSchematic
-import com.mobilesolutionworks.gradle.swift.model.extension.PackageExtension
-import com.mobilesolutionworks.gradle.swift.model.extension.RomeSchematic
-import com.mobilesolutionworks.gradle.swift.model.extension.XcodeSchematic
-import com.mobilesolutionworks.gradle.swift.model.extension.athena
-import com.mobilesolutionworks.gradle.swift.model.extension.carthage
-import com.mobilesolutionworks.gradle.swift.model.extension.rome
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaArtifactoryUpload
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaBintrayUpload
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaCreatePackage
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaDownload
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaInspectArtifacts
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaInspectCarthage
-import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaListMissing
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.ActivateUpdate
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileCreate
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileReplace
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileResolve
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageBootstrap
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageUpdate
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.PreExecute
-import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRepositoryMap
-import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRomefile
-import com.mobilesolutionworks.gradle.swift.tasks.rome.ListMissing
-import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeDownload
-import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeUpload
-import com.mobilesolutionworks.gradle.swift.tasks.xcode.XcodeBuildInfo
-import com.mobilesolutionworks.gradle.swift.tasks.xcode.XcodeTaskDef
+import com.mobilesolutionworks.gradle.swift.model.extension.*
+import com.mobilesolutionworks.gradle.swift.tasks.athena.*
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.*
+import com.mobilesolutionworks.gradle.swift.tasks.rome.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -49,8 +23,6 @@ class AthenaPlugin : Plugin<Project> {
         project.afterEvaluate {
             with(project) {
                 file("$buildDir/works-swift/rome/cache").mkdirs()
-
-                tasks.create(XcodeTaskDef.Tasks.XcodeBuildInfo.value, XcodeBuildInfo::class.java)
 
                 tasks.create("carthageCartfileCreate", CartfileCreate::class.java)
                 tasks.create("carthageActivateUpdate", ActivateUpdate::class.java)

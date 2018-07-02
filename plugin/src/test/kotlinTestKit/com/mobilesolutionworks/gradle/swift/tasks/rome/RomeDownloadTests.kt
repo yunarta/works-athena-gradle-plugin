@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
+import junit5.assertMany
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
@@ -36,12 +37,14 @@ class RomeDownloadTests {
 
         runner.withArguments("romeDownload")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeDownload")?.outcome)
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":romeDownload")?.outcome
+                    }
                 }
     }
 
     @Test
-    @DisplayName("verify incremental build")
+    @DisplayName("verify romeDownload incremental build")
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -62,13 +65,13 @@ class RomeDownloadTests {
         """.trimIndent())
 
         runner.withArguments("romeDownload")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeDownload")?.outcome)
-                }
+                .build()
 
         runner.withArguments("romeDownload")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":romeDownload")?.outcome)
+                    assertMany {
+                        TaskOutcome.UP_TO_DATE expectedFrom it.task(":romeDownload")?.outcome
+                    }
                 }
     }
 }

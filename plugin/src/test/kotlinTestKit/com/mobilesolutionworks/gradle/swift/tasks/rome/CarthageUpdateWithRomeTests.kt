@@ -1,22 +1,25 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
+import junit5.assertMany
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import testKit.GradleRunnerProvider
 import testKit.newFile
+import testKit.range
 import testKit.root
 import java.io.File
 
 @ExtendWith(GradleRunnerProvider::class)
-@DisplayName("Test RomeUpload")
-class RomeUploadTests {
+@DisplayName("Test carthageUpdate with Rome")
+class CarthageUpdateWithRomeTests {
 
     @Test
-    @DisplayName("verify romeUpload")
+    @DisplayName("verify carthageUpdate")
     fun execution(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -41,14 +44,17 @@ class RomeUploadTests {
             }
         """.trimIndent())
 
-        runner.withArguments("romeUpload")
+        runner.withArguments("carthageUpdate")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom  it.task(":romeDownload")?.outcome
+                        TaskOutcome.SUCCESS expectedFrom  it.task(":carthageUpdate")?.outcome
+                    }
                 }
     }
 
     @Test
-    @DisplayName("verify romeUpload incremental build")
+    @DisplayName("verify carthageUpdate incremental build")
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -73,20 +79,30 @@ class RomeUploadTests {
             }
         """.trimIndent())
 
-        runner.withArguments("romeUpload")
+        runner.withArguments("carthageUpdate", "romeUpload")
+                .build()
+
+        runner.withArguments("carthageUpdate", "-i")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom  it.task(":romeListMissing")?.outcome
+                        TaskOutcome.UP_TO_DATE expectedFrom  it.task(":romeDownload")?.outcome
+                        TaskOutcome.UP_TO_DATE expectedFrom  it.task(":carthageUpdate")?.outcome
+                    }
                 }
 
-        runner.withArguments("romeUpload")
+        runner.withArguments("carthageUpdate")
                 .build().let {
-                    assertEquals("Previous upload success, so no missing binaries",
-                            TaskOutcome.SKIPPED, it.task(":romeUpload")?.outcome)
+                    assertMany {
+                        TaskOutcome.UP_TO_DATE expectedFrom  it.task(":romeListMissing")?.outcome
+                        TaskOutcome.UP_TO_DATE expectedFrom  it.task(":romeDownload")?.outcome
+                        TaskOutcome.UP_TO_DATE expectedFrom  it.task(":carthageUpdate")?.outcome
+                    }
                 }
     }
 
     @Test
-    @DisplayName("test simulate clean")
+    @DisplayName("verify after romeUpload, clean, carthageUpdate runs again")
     fun test3(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -111,18 +127,17 @@ class RomeUploadTests {
             }
         """.trimIndent())
 
-        runner.withArguments("romeUpload")
-                .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
-                }
+        runner.withArguments("carthageUpdate", "romeUpload")
+                .build()
 
         File(runner.root, "Carthage").deleteRecursively()
         File(runner.root, "build").deleteRecursively()
 
-        runner.withArguments("romeUpload")
+        runner.withArguments("carthageUpdate")
                 .build().let {
-                    assertEquals("Previous upload success, so no missing binaries",
-                            TaskOutcome.SKIPPED, it.task(":romeUpload")?.outcome)
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom  it.task(":carthageUpdate")?.outcome
+                    }
                 }
     }
 }

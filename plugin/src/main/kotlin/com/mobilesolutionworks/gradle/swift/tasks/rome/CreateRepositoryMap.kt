@@ -17,7 +17,7 @@ internal open class CreateRepositoryMap : DefaultTask() {
                 if (it.frameworks.isNotEmpty()) {
                     RomeMap(it.module, "${it.module} = ${it.frameworks.joinToString(", ")}")
                 } else {
-                    null
+                    RomeMap(it.module, "${it.module} = ${it.module}")
                 }
             }
 
