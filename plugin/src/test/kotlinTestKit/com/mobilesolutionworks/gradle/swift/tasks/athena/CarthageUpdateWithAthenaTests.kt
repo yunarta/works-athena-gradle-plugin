@@ -1,13 +1,16 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
+import junit5.assertAll
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import testKit.GradleRunnerProvider
 import testKit.newFile
+import testKit.range
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test carthageUpdate with Athena")
@@ -46,19 +49,121 @@ class CarthageUpdateWithAthenaTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageUpdate", "-x", "athenaUpload", "--dry-run")
+        runner.withArguments("carthageUpdate")
                 .build().let {
-//                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageUpdate")?.outcome)
+                    assertAll {
+                        assert {
+                            it.task(":carthageActivateUpdate")?.outcome equalsTo TaskOutcome.SUCCESS
+                            +":carthageActivateUpdate"
+                        }
+                        assert {
+                            it.task(":carthageCartfileResolve")?.outcome equalsTo TaskOutcome.SUCCESS
+                            +":carthageCartfileResolve"
+                        }
+                        assert {
+                            it.task(":carthageCartfileReplace")?.outcome equalsTo TaskOutcome.SUCCESS
+                            +":carthageCartfileReplace"
+                        }
+                        assert {
+                            it.task(":carthagePrepareExecution")?.outcome equalsTo TaskOutcome.SUCCESS
+                            +":carthagePrepareExecution"
+                        }
+                        assert {
+                            it.task(":carthageUpdate")?.outcome equalsTo TaskOutcome.SUCCESS
+                            +":carthageUpdate"
+                        }
+                    }
+
+                    Assertions.assertTrue {
+                        it.tasks.map {
+                            it.path
+                        }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
+                            it.contains(":carthageActivateUpdate")
+                        }
+                    }
+
                 }
-        runner.withArguments("carthageUpdate", "-x", "athenaUpload", "--dry-run")
+    }
+
+    @Test
+    @DisplayName("test incremental build")
+    fun test2(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            import java.net.URI
+
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            repositories {
+                maven {
+                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
+                }
+            }
+
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
+                enabled = true
+            }
+
+            carthage {
+                github("yunarta/NullFramework")
+            }
+        """.trimIndent())
+
+
+        runner.withArguments("carthageUpdate")
+                .build()
+
+        runner.withArguments("carthageUpdate")
                 .build().let {
-//                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageUpdate")?.outcome)
+                    assertAll {
+                        +"""on second execution, while activate is running,
+                        |update will be skipped as DSL is the same""".trimMargin()
+
+                        assert {
+                            it.task(":carthageActivateUpdate")?.outcome equalsTo TaskOutcome.SUCCESS
+                            +":carthageActivateUpdate"
+                        }
+                        assert {
+                            it.task(":carthageCartfileResolve")?.outcome equalsTo TaskOutcome.SUCCESS
+                            +":carthageCartfileResolve"
+                        }
+                        assert {
+                            it.task(":carthageCartfileReplace")?.outcome equalsTo TaskOutcome.UP_TO_DATE
+                            +":carthageCartfileReplace"
+                        }
+                        assert {
+                            it.task(":carthagePrepareExecution")?.outcome equalsTo TaskOutcome.UP_TO_DATE
+                            +":carthagePrepareExecution"
+                        }
+                        assert {
+                            it.task(":carthageUpdate")?.outcome equalsTo TaskOutcome.UP_TO_DATE
+                            +":carthageUpdate"
+                        }
+                    }
+
+                    Assertions.assertTrue {
+                        it.tasks.map {
+                            it.path
+                        }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
+                            it.contains(":carthageActivateUpdate")
+                        }
+                    }
+
                 }
     }
 
     @Test
     @DisplayName("verify athenaDownload with missing artifact")
-    fun test2(runner: GradleRunner) {
+    fun test3(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
 
