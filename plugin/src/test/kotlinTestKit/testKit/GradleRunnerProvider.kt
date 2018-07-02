@@ -34,7 +34,7 @@ class GradleRunnerProvider : ParameterResolver {
     }
 
     class GradleConstructor : ExtensionContext.Store.CloseableResource {
-        val temporaryFolder = createTemporaryFolder()
+        private val temporaryFolder = createTemporaryFolder()
 
         override fun close() {
             temporaryFolder.deleteRecursively()

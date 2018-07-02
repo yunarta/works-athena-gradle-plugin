@@ -2,9 +2,7 @@ package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.mobilesolutionworks.gradle.swift.model.AthenaPackageVersion
 import com.mobilesolutionworks.gradle.swift.model.AthenaUploadInfo
-import com.mobilesolutionworks.gradle.swift.model.extension.athena
 import org.gradle.api.DefaultTask
 import org.gradle.api.internal.file.IdentityFileResolver
 import org.gradle.api.tasks.TaskAction
@@ -62,7 +60,7 @@ internal open class AthenaCreatePackage @Inject constructor(private val workerEx
                 val platformOutputDir = "Carthage/Build/$platform"
 
                 entry.value.flatMap { it ->
-                    var executor = execActionFactory.newExecAction()
+                    val executor = execActionFactory.newExecAction()
                     executor.executable = "xcrun"
                     executor.workingDir = workingDir
                     executor.args("dwarfdump", "--uuid",

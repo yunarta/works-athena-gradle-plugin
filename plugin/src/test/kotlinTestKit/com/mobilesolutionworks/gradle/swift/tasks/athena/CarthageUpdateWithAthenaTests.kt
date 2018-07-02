@@ -1,6 +1,8 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -8,11 +10,11 @@ import testKit.GradleRunnerProvider
 import testKit.newFile
 
 @ExtendWith(GradleRunnerProvider::class)
-@DisplayName("Test AthenaUpload")
-class AthenaUploadTests {
+@DisplayName("Test carthageUpdate with Athena")
+class CarthageUpdateWithAthenaTests {
 
     @Test
-    @DisplayName("verify athenaUpload to artifactory")
+    @DisplayName("verify athenaDownload")
     fun test1(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -20,7 +22,6 @@ class AthenaUploadTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             import java.net.URI
-            import com.mobilesolutionworks.gradle.swift.model.extension.AthenaUploadTarget
 
             plugins {
                 id("com.mobilesolutionworks.gradle.athena")
@@ -37,26 +38,26 @@ class AthenaUploadTests {
             }
 
             athena {
-                upload = AthenaUploadTarget.Artifactory
-                repository = "athena"
-
                 enabled = true
             }
 
             carthage {
-                github("yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework")
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap",
-                "athenaUpload", "--upload-dry-run", "--stacktrace")
+        runner.withArguments("carthageUpdate", "-x", "athenaUpload", "--dry-run")
                 .build().let {
-                    // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
+//                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageUpdate")?.outcome)
+                }
+        runner.withArguments("carthageUpdate", "-x", "athenaUpload", "--dry-run")
+                .build().let {
+//                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageUpdate")?.outcome)
                 }
     }
 
     @Test
-    @DisplayName("verify athenaUpload to bintray")
+    @DisplayName("verify athenaDownload with missing artifact")
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -64,7 +65,6 @@ class AthenaUploadTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             import java.net.URI
-            import com.mobilesolutionworks.gradle.swift.model.extension.AthenaUploadTarget
 
             plugins {
                 id("com.mobilesolutionworks.gradle.athena")
@@ -81,24 +81,18 @@ class AthenaUploadTests {
             }
 
             athena {
-                upload = AthenaUploadTarget.Bintray
-
-                organization = "mobilesolutionworks"
-                repository = "athena"
-
                 enabled = true
             }
 
             carthage {
-                github("yunarta/NullFramework") version "1.0.0"
+                github("yunarta/NullFramework")
+                github("ReactiveX/RxSwift")
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap",
-                "athenaUpload", "--upload-dry-run", "--stacktrace")
+        runner.withArguments("carthageUpdate", "-x", "athenaUpload")
                 .build().let {
-                    // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageUpdate")?.outcome)
                 }
     }
-
 }

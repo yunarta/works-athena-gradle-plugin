@@ -12,7 +12,7 @@ import testKit.newFile
 import testKit.root
 
 @ExtendWith(GradleRunnerProvider::class)
-@DisplayName("Test CreateRepositoryMap")
+@DisplayName("Test ListMissing")
 class ListMissingTests {
 
     @Test

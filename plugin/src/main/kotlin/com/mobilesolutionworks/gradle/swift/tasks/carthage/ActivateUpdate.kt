@@ -11,6 +11,8 @@ internal open class ActivateUpdate : DefaultTask() {
 
         with(project) {
             tasks.withType(CartfileCreate::class.java) {
+                println("create = $it")
+                this@ActivateUpdate.dependsOn(it)
                 this@ActivateUpdate.shouldRunAfter(it)
             }
         }

@@ -1,12 +1,13 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
 import com.mobilesolutionworks.gradle.swift.model.extension.xcode
-import org.gradle.api.tasks.Exec
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
 /**
  * This task activates updating for Cartfile.resolved even though the updates = false
  */
-internal open class CarthageUpdate : Exec() {
+internal open class CarthageUpdate : DefaultTask() {
 
     init {
         group = CarthageTaskDef.group
@@ -16,26 +17,33 @@ internal open class CarthageUpdate : Exec() {
             inputs.file(project.file("${project.rootDir}/Cartfile.resolved"))
             outputs.dir("$rootDir/Carthage")
 
-            // task properties
-            executable = "carthage"
-            workingDir = file(rootDir)
 
-            args(kotlin.collections.mutableListOf<Any?>().apply {
+            // dependencies
+            tasks.withType(ActivateUpdate::class.java) {
+                println("activate = $it")
+                this@CarthageUpdate.dependsOn(it)
+            }
+
+            tasks.withType(PreExecute::class.java) {
+                this@CarthageUpdate.dependsOn(it)
+            }
+        }
+    }
+
+    @TaskAction
+    fun update() {
+        project.exec {
+            // task properties
+            it.executable = "carthage"
+            it.workingDir = project.rootDir
+
+            it.args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("update")
                 add("--cache-builds")
 
                 add("--platform")
-                add(xcode.platformsAsText)
+                add(project.xcode.platformsAsText)
             })
-
-            // dependencies
-            tasks.withType(ActivateUpdate::class.java) {
-                this@CarthageUpdate.dependsOn(it)
-            }
-
-            tasks.withType(CartfileResolve::class.java) {
-                this@CarthageUpdate.dependsOn(it)
-            }
         }
     }
 }

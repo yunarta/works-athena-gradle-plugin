@@ -21,8 +21,8 @@ import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileCreate
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileReplace
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileResolve
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageBootstrap
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageTaskDef
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageUpdate
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.PreExecute
 import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRepositoryMap
 import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRomefile
 import com.mobilesolutionworks.gradle.swift.tasks.rome.ListMissing
@@ -48,41 +48,41 @@ class AthenaPlugin : Plugin<Project> {
 
         project.afterEvaluate {
             with(project) {
-                file("${buildDir}/works-swift/rome/cache").mkdirs()
+                file("$buildDir/works-swift/rome/cache").mkdirs()
 
                 tasks.create(XcodeTaskDef.Tasks.XcodeBuildInfo.value, XcodeBuildInfo::class.java)
-                tasks.create(CarthageTaskDef.Tasks.CarthageCartfileCreate.value, CartfileCreate::class.java)
-                tasks.create(CarthageTaskDef.Tasks.CarthageCartfileResolve.value, CartfileResolve::class.java)
 
-                val replace = tasks.create(CarthageTaskDef.Tasks.CarthageCartfileReplace.value, CartfileReplace::class.java)
+                tasks.create("carthageCartfileCreate", CartfileCreate::class.java)
+                tasks.create("carthageActivateUpdate", ActivateUpdate::class.java)
+                tasks.create("carthageCartfileResolve", CartfileResolve::class.java)
 
-                tasks.create(CarthageTaskDef.Tasks.CarthageActivateUpdate.value, ActivateUpdate::class.java)
-                val bootstrap = tasks.create(CarthageTaskDef.Tasks.CarthageBootstrap.value, CarthageBootstrap::class.java)
-                val update = tasks.create(CarthageTaskDef.Tasks.CarthageUpdate.value, CarthageUpdate::class.java)
+                val replace = tasks.create("carthageCartfileReplace", CartfileReplace::class.java)
 
+                val preExecute = tasks.create("carthagePrepareExecution", PreExecute::class.java)
+
+                val bootstrap = tasks.create("carthageBootstrap", CarthageBootstrap::class.java)
+                val update = tasks.create("carthageUpdate", CarthageUpdate::class.java)
 
 
                 if (rome.enabled) {
                     tasks.create(RomeTaskDef.Tasks.RomeCreateRepositoryMap.value, CreateRepositoryMap::class.java)
                     tasks.create(RomeTaskDef.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
 
-                    val list = tasks.create(RomeTaskDef.Tasks.RomeListMissing.value, ListMissing::class.java)
                     val download = tasks.create(RomeTaskDef.Tasks.RomeDownload.value, RomeDownload::class.java)
+                    val list = tasks.create(RomeTaskDef.Tasks.RomeListMissing.value, ListMissing::class.java)
                     val upload = tasks.create(RomeTaskDef.Tasks.RomeUpload.value, RomeUpload::class.java)
 
+                    list.dependsOn(replace)
                     download.dependsOn(replace)
 
-                    list.dependsOn(replace)
-                    list.shouldRunAfter(download)
-
+                    preExecute.dependsOn(list, download)
                     arrayOf(bootstrap, update).forEach {
-                        it.dependsOn(download, list)
-//                        it.finalizedBy(upload)
-
 //                        it.onlyIf {
 //                            list.outputs.files.singleFile.readText().isNotBlank()
 //                        }
                     }
+
+                    upload.dependsOn(bootstrap)
                 }
 
                 if (athena.enabled) {
@@ -94,38 +94,28 @@ class AthenaPlugin : Plugin<Project> {
                     }
 
                     val inspectCarthage = tasks.create("athenaInspectCarthage", AthenaInspectCarthage::class.java)
-
                     val download = tasks.create("athenaDownload", AthenaDownload::class.java)
-                    val generate = tasks.create("athenaInspectArtifacts", AthenaInspectArtifacts::class.java)
-                    val create = tasks.create("athenaCreatePackage", AthenaCreatePackage::class.java)
 
+                    val list = tasks.create("athenaListMissing", AthenaListMissing::class.java)
+
+                    tasks.create("athenaInspectArtifacts", AthenaInspectArtifacts::class.java)
+                    tasks.create("athenaCreatePackage", AthenaCreatePackage::class.java)
                     val upload = if (athena.upload.ordinal == AthenaUploadTarget.Bintray.ordinal) {
                         tasks.create("athenaUpload", AthenaBintrayUpload::class.java)
                     } else {
                         tasks.create("athenaUpload", AthenaArtifactoryUpload::class.java)
                     }
 
-                    tasks.create(RomeTaskDef.Tasks.RomeCreateRepositoryMap.value, CreateRepositoryMap::class.java)
-                    tasks.create(RomeTaskDef.Tasks.RomeCreateRomefile.value, CreateRomefile::class.java)
-
-                    val list = tasks.create("athenaListMissing", AthenaListMissing::class.java)
-//                    val download = tasks.create(RomeTaskDef.Tasks.RomeDownload.value, RomeDownload::class.java)
-//                    val upload = tasks.create(RomeTaskDef.Tasks.RomeUpload.value, RomeUpload::class.java)
-
                     inspectCarthage.dependsOn(replace)
-                    download.dependsOn(inspectCarthage)
-
+                    preExecute.dependsOn(list, download)
 
                     arrayOf(bootstrap, update).forEach {
-                        it.dependsOn(download, list)
-//                        it.finalizedBy(upload)
-
-                        inspectCarthage.shouldRunAfter(it)
-
-                        it.onlyIf {
-                            list.outputs.files.singleFile.readText().isNotBlank()
-                        }
+//                        it.onlyIf {
+//                            list.outputs.files.singleFile.readText().isNotBlank()
+//                        }
                     }
+
+                    upload.dependsOn(bootstrap)
                 }
             }
         }

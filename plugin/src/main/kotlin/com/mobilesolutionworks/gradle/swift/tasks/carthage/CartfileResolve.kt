@@ -2,7 +2,8 @@ package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
 import com.mobilesolutionworks.gradle.swift.model.extension.carthage
 import com.mobilesolutionworks.gradle.swift.model.extension.xcode
-import org.gradle.api.tasks.Exec
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
 /**
  * Execute separate carthage update w/o build and checkout in build directory.
@@ -11,7 +12,7 @@ import org.gradle.api.tasks.Exec
  * - When Cartfile.resolved in root dir is not created
  * - When carthageUpdate is in task queue
  */
-internal open class CartfileResolve : Exec() {
+internal open class CartfileResolve : DefaultTask() {
 
     private val workPath = project.file("${project.buildDir}/works-swift/carthage/latest")
 
@@ -25,7 +26,6 @@ internal open class CartfileResolve : Exec() {
     init {
         group = CarthageTaskDef.group
 
-
         with(project) {
             // inputs outputs
             inputs.files(cartfile)
@@ -38,18 +38,7 @@ internal open class CartfileResolve : Exec() {
                 }
             }
 
-            executable = "carthage"
-            workingDir = file(workPath)
 
-            // task properties
-            args(mutableListOf<Any?>().apply {
-                add("update")
-                add("--no-build")
-                add("--no-checkout")
-
-                add("--platform")
-                add(xcode.platformsAsText)
-            })
 
             // dependencies
             tasks.withType(CartfileCreate::class.java) {
@@ -58,8 +47,22 @@ internal open class CartfileResolve : Exec() {
         }
     }
 
-    override fun exec() {
+    @TaskAction
+    fun resolve() {
         cartfile.copyTo(workCartfile, overwrite = true)
-        super.exec()
+        project.exec {
+            it.executable = "carthage"
+            it.workingDir = project.file(workPath)
+
+            // task properties
+            it.args(mutableListOf<Any?>().apply {
+                add("update")
+                add("--no-build")
+                add("--no-checkout")
+
+                add("--platform")
+                add(project.xcode.platformsAsText)
+            })
+        }
     }
 }

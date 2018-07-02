@@ -26,7 +26,7 @@ internal open class CarthageBootstrap : Exec() {
             })
 
             // dependencies
-            tasks.withType(CartfileReplace::class.java) {
+            tasks.withType(PreExecute::class.java) {
                 this@CarthageBootstrap.dependsOn(it)
             }
         }

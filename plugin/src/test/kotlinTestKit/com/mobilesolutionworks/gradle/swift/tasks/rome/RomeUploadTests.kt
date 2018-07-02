@@ -41,7 +41,7 @@ class RomeUploadTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap")
+        runner.withArguments("romeUpload")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
@@ -73,15 +73,15 @@ class RomeUploadTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap")
+        runner.withArguments("romeUpload")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
 
-        runner.withArguments("carthageBootstrap")
+        runner.withArguments("romeUpload")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageBootstrap")?.outcome)
-                    assertEquals(TaskOutcome.SKIPPED, it.task(":romeUpload")?.outcome)
+                    assertEquals("Previous upload success, so no missing binaries",
+                            TaskOutcome.SKIPPED, it.task(":romeUpload")?.outcome)
                 }
     }
 
@@ -111,18 +111,18 @@ class RomeUploadTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap")
+        runner.withArguments("romeUpload")
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
 
-        File(runner.root, "CarthageTaskDef").deleteRecursively()
+        File(runner.root, "Carthage").deleteRecursively()
         File(runner.root, "build").deleteRecursively()
 
-        runner.withArguments("carthageBootstrap")
+        runner.withArguments("romeUpload")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageBootstrap")?.outcome)
-                    assertEquals(TaskOutcome.SKIPPED, it.task(":romeUpload")?.outcome)
+                    assertEquals("Previous upload success, so no missing binaries",
+                            TaskOutcome.SKIPPED, it.task(":romeUpload")?.outcome)
                 }
     }
 }

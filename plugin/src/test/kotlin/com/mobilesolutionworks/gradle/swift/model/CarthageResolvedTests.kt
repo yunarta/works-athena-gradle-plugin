@@ -28,12 +28,12 @@ class CarthageResolvedTests {
             null
         }
         assertAll(
-                { assertEquals("Alamofire", from.get(0).group) },
-                { assertEquals("Alamofire", from.get(0).module) }
+                { assertEquals("Alamofire", from[0].group) },
+                { assertEquals("Alamofire", from[0].module) }
         )
         assertAll(
-                { assertEquals("ReactiveCocoa", from.get(1).group) },
-                { assertEquals("ReactiveSwift", from.get(1).module) }
+                { assertEquals("ReactiveCocoa", from[1].group) },
+                { assertEquals("ReactiveSwift", from[1].module) }
         )
     }
 

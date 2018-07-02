@@ -38,12 +38,12 @@ internal open class AthenaInspectCarthage : DefaultTask() {
             }.associateBy { it.module }
 
             if (unresolved.isNotEmpty()) {
-                val resolutions = unresolved.map {
+                val resolutions = unresolved.joinToString(System.lineSeparator()) {
                     """|    "$it" {
-                    |        group = "…"
-                    |        module = "…"
-                    |    }"""
-                }.joinToString(System.lineSeparator()).let {
+                            |        group = "…"
+                            |        module = "…"
+                            |    }"""
+                }.let {
                     """|resolutions {
                        $it
                        |}"""

@@ -40,6 +40,10 @@ class CarthageUpdateTests {
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":carthageUpdate")?.outcome)
                 }
+        runner.withArguments("carthageUpdate")
+                .build().let {
+                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":carthageUpdate")?.outcome)
+                }
     }
 
     @Test

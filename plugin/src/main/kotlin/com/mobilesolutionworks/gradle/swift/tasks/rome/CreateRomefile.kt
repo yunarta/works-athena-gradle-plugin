@@ -23,9 +23,9 @@ internal open class CreateRomefile : DefaultTask() {
 
     @TaskAction
     fun run() {
-        val repositoryMap = inputs.files.map {
+        val repositoryMap = inputs.files.joinToString(System.lineSeparator()) {
             it.readText()
-        }.joinToString(System.lineSeparator())
+        }
 
 
         val s3Line = project.rome.s3Bucket.let {
@@ -35,7 +35,7 @@ internal open class CreateRomefile : DefaultTask() {
         val romeText = """
 [Cache]
 local = ${project.rome.cachePath}
-${s3Line}
+$s3Line
 
 [RepositoryMap]
 $repositoryMap

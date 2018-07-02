@@ -10,7 +10,7 @@ import testKit.GradleRunnerProvider
 import testKit.newFile
 
 @ExtendWith(GradleRunnerProvider::class)
-@DisplayName("Test CarthageBootstrap with AthenaTaskDef")
+@DisplayName("Test carthageBootstrap with Athena")
 class CarthageBootstrapWithAthenaTests {
 
     @Test
@@ -48,7 +48,7 @@ class CarthageBootstrapWithAthenaTests {
 
         runner.withArguments("carthageBootstrap", "-x", "athenaUpload")
                 .build().let {
-                    assertEquals(TaskOutcome.SKIPPED, it.task(":carthageBootstrap")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":carthageBootstrap")?.outcome)
                 }
     }
 

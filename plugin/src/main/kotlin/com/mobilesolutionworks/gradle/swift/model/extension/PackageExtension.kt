@@ -1,4 +1,4 @@
-package com.mobilesolutionworks.gradle.swift.model.extension;
+package com.mobilesolutionworks.gradle.swift.model.extension
 
 open class PackageExtension(val name: String) {
 
