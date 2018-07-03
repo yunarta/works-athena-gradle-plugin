@@ -5,7 +5,6 @@ import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.parallel.ResourceLock
 import testKit.GradleRunnerProvider
@@ -216,7 +215,7 @@ class AthenaUploadTests {
             setExecutable(true)
         }
 
-        runner.newFile("gradle.properties").writeText("""
+        runner.newFile("gradle.properties").appendText("""
                 jfrogExecutable=./jfrog
             """.trimIndent())
     }
