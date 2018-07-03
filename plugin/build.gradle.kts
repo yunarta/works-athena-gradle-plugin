@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.mobilesolutionworks.gradle"
-version = "1.0.3"
+version = "1.0.4"
 
 repositories {
     mavenCentral()
@@ -87,7 +87,7 @@ pluginBundle {
             id = "com.mobilesolutionworks.gradle.athena"
             displayName = "Gradle plugin for managing Carthage and upload binary cache into Artifactory"
             tags = listOf("swift", "carthage", "rome", "xcode", "ios")
-            version = "1.0.3"
+            version = project.version
         }
     }
 }
