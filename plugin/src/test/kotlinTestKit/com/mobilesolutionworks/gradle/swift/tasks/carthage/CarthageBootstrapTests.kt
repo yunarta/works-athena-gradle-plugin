@@ -5,6 +5,7 @@ import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.EnabledIf
 import org.junit.jupiter.api.extension.ExtendWith
 import testKit.GradleRunnerProvider
 import testKit.newFile
@@ -122,6 +123,47 @@ class CarthageBootstrapTests {
         """.trimIndent())
 
         runner.withArguments("carthageBootstrap")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageBootstrap")?.outcome
+                    }
+                }
+    }
+
+    @Test
+    @DisplayName("verify carthageBootstrap with different toolchain")
+    @EnabledIf(value = arrayOf(
+            "def out = new StringBuilder(), err = new StringBuilder()",
+            "def proc = 'swift -version'.execute(['TOOLCHAINS=org.swift.4020170919'], new File('.'))",
+            "proc.consumeProcessOutput(out, err)",
+            "proc.waitForOrKill(1000)",
+            "def token = out.toString() =~ /Apple Swift version (.*) \\((.*)\\)/",
+            "token[0][1] == '4.0'"
+    ), engine = "groovy")
+    fun test4(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            xcode {
+                swiftToolchain = "org.swift.4020170919"
+            }
+
+            rome {
+                enabled = false
+            }
+
+            carthage {
+                github("yunarta/NullFramework") version "1.0.0"
+            }
+        """.trimIndent())
+
+        runner.withArguments("carthageBootstrap", "-i")
                 .build().let {
                     assertMany {
                         TaskOutcome.SUCCESS expectedFrom it.task(":carthageBootstrap")?.outcome

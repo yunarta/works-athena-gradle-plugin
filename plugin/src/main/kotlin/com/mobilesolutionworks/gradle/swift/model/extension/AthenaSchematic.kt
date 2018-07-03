@@ -19,7 +19,7 @@ open class AthenaSchematic(project: Project, val resolutions: NamedDomainObjectC
 
     var enabled = false
 
-    var swiftVersion = "4.1.2"
+    internal var swiftVersion = "4.1.2"
 
     var workDir = project.file("Athena")
 

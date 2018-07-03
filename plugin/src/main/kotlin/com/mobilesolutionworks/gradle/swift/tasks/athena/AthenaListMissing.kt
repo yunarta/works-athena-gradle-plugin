@@ -12,7 +12,7 @@ import org.gradle.maven.MavenPomArtifact
 internal open class AthenaListMissing : DefaultTask() {
 
     private val packages = project.file("${project.buildDir}/works-swift/athena/packages.json")
-    private val target = project.file("${project.buildDir}/works-swift/athena/missing.json")
+    private val target = project.file("${project.buildDir}/works-swift/athena/missing.txt")
 
     init {
         group = AthenaTaskDef.group

@@ -30,18 +30,22 @@ internal open class CarthageUpdate : DefaultTask() {
 
     @TaskAction
     fun update() {
-        project.exec {
+        project.exec { exec ->
             // task properties
-            it.executable = "carthage"
-            it.workingDir = project.rootDir
+            exec.executable = "carthage"
+            exec.workingDir = project.rootDir
 
-            it.args(kotlin.collections.mutableListOf<Any?>().apply {
+            exec.args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("update")
                 add("--cache-builds")
 
                 add("--platform")
                 add(project.xcode.platformsAsText)
             })
+
+            project.xcode.swiftToolchain?.let {
+                exec.environment("TOOLCHAINS", it)
+            }
         }
     }
 }

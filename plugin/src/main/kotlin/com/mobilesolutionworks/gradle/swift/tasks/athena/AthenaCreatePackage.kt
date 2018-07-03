@@ -3,6 +3,7 @@ package com.mobilesolutionworks.gradle.swift.tasks.athena
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.mobilesolutionworks.gradle.swift.model.AthenaUploadInfo
+import com.mobilesolutionworks.gradle.swift.model.extension.athena
 import org.gradle.api.DefaultTask
 import org.gradle.api.internal.file.IdentityFileResolver
 import org.gradle.api.tasks.TaskAction
@@ -22,7 +23,7 @@ internal open class AthenaCreatePackage @Inject constructor(private val workerEx
         group = AthenaTaskDef.group
 
         with(project) {
-            outputs.dir(project.file("Athena"))
+            outputs.dir(project.athena.workDir)
 
             tasks.withType(AthenaInspectArtifacts::class.java) {
                 dependsOn(it)
@@ -40,7 +41,7 @@ internal open class AthenaCreatePackage @Inject constructor(private val workerEx
             artifacts.forEach { info ->
                 workerExecutor.submit(ArchiveWorker::class.java) {
                     it.isolationMode = IsolationMode.NONE
-                    it.params(info, project.rootDir, project.file("Athena"))
+                    it.params(info, project.rootDir, project.athena.workDir)
                 }
             }
         }

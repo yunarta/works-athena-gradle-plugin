@@ -50,6 +50,7 @@ class AthenaDownloadTests {
                 .build().let {
                     assertEquals(TaskOutcome.SUCCESS, it.task(":athenaDownload")?.outcome)
                 }
+
         runner.withArguments("athenaDownload")
                 .build().let {
                     assertEquals(TaskOutcome.UP_TO_DATE, it.task(":athenaDownload")?.outcome)

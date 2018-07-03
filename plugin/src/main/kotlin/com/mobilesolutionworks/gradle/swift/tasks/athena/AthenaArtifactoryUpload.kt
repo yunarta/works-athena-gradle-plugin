@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
+import com.mobilesolutionworks.gradle.swift.model.extension.athena
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
@@ -24,7 +25,7 @@ internal open class AthenaArtifactoryUpload : DefaultTask() {
     fun upload() {
         project.exec {
             it.executable = "jfrog"
-            it.workingDir = project.file("Athena")
+            it.workingDir = project.athena.workDir
             it.args("rt")
             it.args("u")
 

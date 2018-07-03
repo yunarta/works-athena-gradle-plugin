@@ -36,7 +36,7 @@ internal open class AthenaBintrayUpload : DefaultTask() {
         packages.values.map { version ->
             project.exec {
                 it.executable = "jfrog"
-                it.workingDir = project.file("Athena")
+                it.workingDir = project.athena.workDir
 
                 it.args("bt")
                 it.args("u")

@@ -1,9 +1,10 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
 import com.mobilesolutionworks.gradle.swift.model.extension.xcode
-import org.gradle.api.tasks.Exec
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
-internal open class CarthageBootstrap : Exec() {
+internal open class CarthageBootstrap : DefaultTask() {
 
     init {
         group = CarthageTaskDef.group
@@ -13,21 +14,31 @@ internal open class CarthageBootstrap : Exec() {
             inputs.file(project.file("${project.rootDir}/Cartfile.resolved"))
             outputs.dir("$rootDir/Carthage")
 
-            // task properties
-            executable = "carthage"
-            workingDir = file(rootDir)
+            // dependencies
+            tasks.withType(PreExecute::class.java) {
+                this@CarthageBootstrap.dependsOn(it)
+            }
+        }
+    }
 
-            args(kotlin.collections.mutableListOf<Any?>().apply {
+    @TaskAction
+    fun bootStrap() {
+        project.exec { exec ->
+            // task properties
+            exec.executable = "carthage"
+            exec.workingDir = project.rootDir
+
+            exec.args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("bootstrap")
                 add("--cache-builds")
 
                 add("--platform")
-                add(xcode.platformsAsText)
+                add(project.xcode.platformsAsText)
             })
 
-            // dependencies
-            tasks.withType(PreExecute::class.java) {
-                this@CarthageBootstrap.dependsOn(it)
+            println("toolchain = ${project.xcode.swiftToolchain}")
+            project.xcode.swiftToolchain?.let {
+                exec.environment("TOOLCHAINS", it)
             }
         }
     }

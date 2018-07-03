@@ -1,5 +1,7 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
+import junit5.assertAll
+import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import testKit.GradleRunnerProvider
 import testKit.newFile
+import testKit.root
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test AthenaListMissing")
@@ -27,12 +30,6 @@ class AthenaListMissingTests {
                 id("com.mobilesolutionworks.gradle.athena")
             }
 
-            repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
-            }
-
             xcode {
                 platforms = setOf("iOS")
             }
@@ -43,13 +40,22 @@ class AthenaListMissingTests {
 
             carthage {
                 github("yunarta/NullFramework")
-                github("ReactiveX/RxSwift")
             }
         """.trimIndent())
 
         runner.withArguments("athenaListMissing")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":athenaListMissing")?.outcome)
+                    val project = ProjectBuilder().withProjectDir(runner.root).build()
+                    val readText = project.file("${project.buildDir}/works-swift/athena/missing.txt").readText()
+                    println(readText)
+
+                    assertAll {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaListMissing")?.outcome
+
+                        isTrue {
+                            readText.contains("yunarta:NullFramework")
+                        }
+                    }
                 }
     }
 

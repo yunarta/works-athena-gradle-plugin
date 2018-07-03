@@ -1,11 +1,38 @@
 package com.mobilesolutionworks.gradle.swift
 
-import com.mobilesolutionworks.gradle.swift.model.extension.*
-import com.mobilesolutionworks.gradle.swift.tasks.athena.*
-import com.mobilesolutionworks.gradle.swift.tasks.carthage.*
-import com.mobilesolutionworks.gradle.swift.tasks.rome.*
+import com.mobilesolutionworks.gradle.swift.model.extension.AthenaSchematic
+import com.mobilesolutionworks.gradle.swift.model.extension.AthenaUploadTarget
+import com.mobilesolutionworks.gradle.swift.model.extension.CarthageSchematic
+import com.mobilesolutionworks.gradle.swift.model.extension.PackageExtension
+import com.mobilesolutionworks.gradle.swift.model.extension.RomeSchematic
+import com.mobilesolutionworks.gradle.swift.model.extension.XcodeSchematic
+import com.mobilesolutionworks.gradle.swift.model.extension.athena
+import com.mobilesolutionworks.gradle.swift.model.extension.carthage
+import com.mobilesolutionworks.gradle.swift.model.extension.rome
+import com.mobilesolutionworks.gradle.swift.model.extension.xcode
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaArtifactoryUpload
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaBintrayUpload
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaCheck
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaCreatePackage
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaDownload
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaInspectArtifacts
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaInspectCarthage
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaListMissing
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.ActivateUpdate
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileCreate
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileReplace
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileResolve
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageBootstrap
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.CarthageUpdate
+import com.mobilesolutionworks.gradle.swift.tasks.carthage.PreExecute
+import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRepositoryMap
+import com.mobilesolutionworks.gradle.swift.tasks.rome.CreateRomefile
+import com.mobilesolutionworks.gradle.swift.tasks.rome.ListMissing
+import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeDownload
+import com.mobilesolutionworks.gradle.swift.tasks.rome.RomeUpload
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import java.io.ByteArrayOutputStream
 
 @Suppress("unused")
 class AthenaPlugin : Plugin<Project> {
@@ -23,6 +50,22 @@ class AthenaPlugin : Plugin<Project> {
         project.afterEvaluate {
             with(project) {
                 file("$buildDir/works-swift/rome/cache").mkdirs()
+
+                ByteArrayOutputStream().let { output ->
+                    project.exec { exec ->
+                        exec.executable = "swift"
+                        exec.args("-version")
+                        exec.environment("TOOLCHAINS", xcode.swiftToolchain)
+                        exec.standardOutput = output
+                    }
+                    output.toString()
+                }.let {
+                    val regex = "Apple Swift version (.*) \\((.*)\\)".toRegex()
+                    regex.findAll(it).forEach {
+                        athena.swiftVersion = it.groupValues[1]
+                    }
+                }
+
 
                 tasks.create("carthageCartfileCreate", CartfileCreate::class.java)
                 tasks.create("carthageActivateUpdate", ActivateUpdate::class.java)
@@ -51,6 +94,7 @@ class AthenaPlugin : Plugin<Project> {
                     upload.dependsOn(bootstrap)
                 }
 
+                tasks.create("athenaCheck", AthenaCheck::class.java)
                 if (athena.enabled) {
                     carthage.dependencies.filter { it.group.isNotBlank() }.map { dependency ->
                         athena.resolutions.create(dependency.repo) {
@@ -64,7 +108,7 @@ class AthenaPlugin : Plugin<Project> {
 
                     val list = tasks.create("athenaListMissing", AthenaListMissing::class.java)
 
-                    tasks.create("athenaInspectArtifacts", AthenaInspectArtifacts::class.java)
+                    val inspectArtifacts = tasks.create("athenaInspectArtifacts", AthenaInspectArtifacts::class.java)
                     tasks.create("athenaCreatePackage", AthenaCreatePackage::class.java)
                     val upload = if (athena.upload.ordinal == AthenaUploadTarget.Bintray.ordinal) {
                         tasks.create("athenaUpload", AthenaBintrayUpload::class.java)
@@ -75,7 +119,7 @@ class AthenaPlugin : Plugin<Project> {
                     inspectCarthage.dependsOn(replace)
 
                     preExecute.dependsOn(list, download)
-                    upload.dependsOn(bootstrap)
+                    inspectArtifacts.dependsOn(bootstrap)
                 }
             }
         }

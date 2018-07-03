@@ -1,12 +1,11 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import com.google.gson.JsonParser
+import junit5.assertAll
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.extension.ExtendWith
 import testKit.GradleRunnerProvider
 import testKit.newFile
@@ -60,16 +59,17 @@ class AthenaInspectCarthageTests {
                     val file = project.file("${project.buildDir}/works-swift/athena/packages.json")
                     val element = JsonParser().parse(file.reader())
                     val packages = element.asJsonObject.getAsJsonObject("NullFramework")
-                    assertAll(
-                            { assertEquals("yunarta", packages["group"].asString) },
-                            { assertEquals("NullFramework", packages["module"].asString) },
-                            { assertEquals("1.0.0", packages["version"].asString) }
-                    )
+
+                    assertAll {
+                        "yunarta" expectedFrom packages["group"].asString
+                        "NullFramework" expectedFrom packages["module"].asString
+                        "1.0.0" expectedFrom packages["version"].asString
+                    }
                 }
     }
 
     @Test
-    @DisplayName("test unresolved github")
+    @DisplayName("verify athenaInspectCarthage with github as git source")
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -113,16 +113,17 @@ class AthenaInspectCarthageTests {
                     val file = project.file("${project.buildDir}/works-swift/athena/packages.json")
                     val element = JsonParser().parse(file.reader())
                     val packages = element.asJsonObject.getAsJsonObject("NullFramework")
-                    assertAll(
-                            { assertEquals("yunarta", packages["group"].asString) },
-                            { assertEquals("NullFramework", packages["module"].asString) },
-                            { assertEquals("1.0.0", packages["version"].asString) }
-                    )
+
+                    assertAll {
+                        "yunarta" expectedFrom packages["group"].asString
+                        "NullFramework" expectedFrom packages["module"].asString
+                        "1.0.0" expectedFrom packages["version"].asString
+                    }
                 }
     }
 
     @Test
-    @DisplayName("test resolved github")
+    @DisplayName("verify athenaInspectCarthage with git source with component info")
     fun test3(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -167,16 +168,17 @@ class AthenaInspectCarthageTests {
                     val file = project.file("${project.buildDir}/works-swift/athena/packages.json")
                     val element = JsonParser().parse(file.reader())
                     val packages = element.asJsonObject.getAsJsonObject("NullFramework")
-                    assertAll(
-                            { assertEquals("yunarta", packages["group"].asString) },
-                            { assertEquals("NullFramework", packages["module"].asString) },
-                            { assertEquals("1.0.0", packages["version"].asString) }
-                    )
+
+                    assertAll {
+                        "yunarta" expectedFrom packages["group"].asString
+                        "NullFramework" expectedFrom packages["module"].asString
+                        "1.0.0" expectedFrom packages["version"].asString
+                    }
                 }
     }
 
     @Test
-    @DisplayName("test unresolved source")
+    @DisplayName("verify athenaInspectCarthage with git source without component info")
     fun test4(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -218,7 +220,7 @@ class AthenaInspectCarthageTests {
     }
 
     @Test
-    @DisplayName("test athena resolutions")
+    @DisplayName("verify athenaInspectCarthage with git source with athena resolutions")
     fun test5(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -268,11 +270,12 @@ class AthenaInspectCarthageTests {
                     val file = project.file("${project.buildDir}/works-swift/athena/packages.json")
                     val element = JsonParser().parse(file.reader())
                     val packages = element.asJsonObject.getAsJsonObject("NullFramework")
-                    assertAll(
-                            { assertEquals("yunarta", packages["group"].asString) },
-                            { assertEquals("NullFramework", packages["module"].asString) },
-                            { assertEquals("1.0.0", packages["version"].asString) }
-                    )
+
+                    assertAll {
+                        "yunarta" expectedFrom packages["group"].asString
+                        "NullFramework" expectedFrom packages["module"].asString
+                        "1.0.0" expectedFrom packages["version"].asString
+                    }
                 }
     }
 }

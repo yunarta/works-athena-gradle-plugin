@@ -7,6 +7,8 @@ open class XcodeSchematic {
 
     private var declaredPlatforms: Set<Platform> = Platform.values().toSet()
 
+    var swiftToolchain: String? = null
+
     var platforms: Set<String> = setOf("iOS", "macOS", "tvOS", "watchOS")
         set(value) {
             declaredPlatforms = PlatformParser.matches(value)

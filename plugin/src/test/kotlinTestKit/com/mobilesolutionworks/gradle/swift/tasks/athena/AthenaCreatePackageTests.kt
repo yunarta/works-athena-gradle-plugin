@@ -1,11 +1,15 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
+import junit5.assertMany
+import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import testKit.GradleRunnerProvider
 import testKit.newFile
+import testKit.root
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test AthenaCreatePackage")
@@ -44,9 +48,22 @@ class AthenaCreatePackageTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap", "-x", "athenaUpload", "--stacktrace")
+        runner.withArguments("athenaCreatePackage")
                 .build().let {
-                    // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaCreatePackage")?.outcome
+
+                        val project = ProjectBuilder().withProjectDir(runner.root).build()
+                        val path = "Athena/yunarta/NullFramework/1.1.0-Swift4.1.2"
+
+                        isTrue {
+                            project.file("$path/NullFramework-1.1.0-Swift4.1.2.zip").exists()
+                        }
+
+                        isTrue {
+                            project.file("$path/NullFramework-1.1.0-Swift4.1.2.pom").exists()
+                        }
+                    }
                 }
     }
 }
