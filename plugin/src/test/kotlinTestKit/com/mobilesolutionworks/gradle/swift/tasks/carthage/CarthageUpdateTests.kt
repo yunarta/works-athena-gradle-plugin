@@ -185,4 +185,38 @@ class CarthageUpdateTests {
                     }
                 }
     }
+
+    @Test
+    @DisplayName("verify carthageUpdate with different toolchain")
+    fun test4(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            xcode {
+                swiftToolchains = "com.apple.dt.toolchain.XcodeDefault"
+            }
+
+            rome {
+                enabled = false
+            }
+
+            carthage {
+                github("yunarta/NullFramework") version "1.0.0"
+            }
+        """.trimIndent())
+
+        runner.withArguments("carthageUpdate", "-i")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageUpdate")?.outcome
+                    }
+                }
+    }
+
 }

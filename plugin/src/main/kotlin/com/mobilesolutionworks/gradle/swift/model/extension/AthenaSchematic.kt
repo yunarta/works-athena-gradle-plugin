@@ -28,8 +28,4 @@ open class AthenaSchematic(project: Project, val resolutions: NamedDomainObjectC
             AthenaPackage(it.group, it.module)
         }
     }
-
-    internal var artifacts: List<AthenaUploadInfo> = emptyList()
-
-    internal var packages: Map<String, AthenaPackageVersion> = emptyMap()
 }

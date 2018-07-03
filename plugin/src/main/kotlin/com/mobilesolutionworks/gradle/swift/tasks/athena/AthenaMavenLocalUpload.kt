@@ -7,9 +7,6 @@ import org.gradle.api.tasks.options.Option
 
 internal open class AthenaMavenLocalUpload : DefaultTask() {
 
-    @Option(option = "upload-dry-run", description = "Test dry run for upload")
-    var dryRun = false
-
     @Option(option = "force-upload", description = "Force upload")
     var forceUpload = false
 
@@ -35,6 +32,7 @@ internal open class AthenaMavenLocalUpload : DefaultTask() {
 
     @TaskAction
     fun upload() {
+        project.repositories
         val path = project.repositories.mavenLocal().url.path
         project.copy {
             it.from(project.athena.workDir)

@@ -1,6 +1,5 @@
 package com.mobilesolutionworks.gradle.swift
 
-import com.mobilesolutionworks.gradle.swift.model.Artifactory
 import com.mobilesolutionworks.gradle.swift.model.extension.AthenaSchematic
 import com.mobilesolutionworks.gradle.swift.model.extension.AthenaUploadTarget
 import com.mobilesolutionworks.gradle.swift.model.extension.CarthageSchematic
@@ -68,9 +67,9 @@ class AthenaPlugin : Plugin<Project> {
                     }
                 }
 
-                if (athena.upload.ordinal == AthenaUploadTarget.MavenLocal.ordinal) {
-                    project.repositories.add(project.repositories.mavenLocal())
-                }
+//                if (athena.upload.ordinal == AthenaUploadTarget.MavenLocal.ordinal) {
+//                    project.repositories.add(project.repositories.mavenLocal())
+//                }
 
                 tasks.create("carthageCartfileCreate", CartfileCreate::class.java)
                 tasks.create("carthageActivateUpdate", ActivateUpdate::class.java)
@@ -126,9 +125,6 @@ class AthenaPlugin : Plugin<Project> {
                     inspectCarthage.dependsOn(replace)
 
                     download.dependsOn(list)
-                    download.onlyIf {
-                        list.outputs.files.singleFile.readText().isNotBlank()
-                    }
 
                     preExecute.dependsOn(download)
                     inspectArtifacts.dependsOn(bootstrap)

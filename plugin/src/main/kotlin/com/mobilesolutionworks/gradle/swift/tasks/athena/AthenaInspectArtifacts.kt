@@ -47,7 +47,6 @@ internal open class AthenaInspectArtifacts : DefaultTask() {
             }
 
             target.writeText(gson.toJson(artifacts))
-            athena.artifacts = artifacts
         }
     }
 }
