@@ -1,11 +1,15 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
+import junit5.assertMany
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.parallel.ResourceLock
 import testKit.GradleRunnerProvider
+import testKit.cleanMavenLocalForTest
 import testKit.newFile
 
 @ExtendWith(GradleRunnerProvider::class)
@@ -16,9 +20,6 @@ class AthenaUploadTests {
     @DisplayName("verify athenaUpload to artifactory")
     @EnabledIfEnvironmentVariable(named = "NODE_NAME", matches = "works|aux")
     fun test1(runner: GradleRunner) {
-        runner.newFile("settings.gradle.kts").writeText("""
-        """.trimIndent())
-
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             import java.net.URI
@@ -28,8 +29,13 @@ class AthenaUploadTests {
                 id("com.mobilesolutionworks.gradle.athena")
             }
 
-            repositories {
-                mavenLocal()
+            val enableRepository: String? by project.extra
+            enableRepository?.let {
+                repositories {
+                    maven {
+                        url = URI("https://raw.githubusercontent.com/yunarta/works-athena-gradle-plugin/mock-repo")
+                    }
+                }
             }
 
             xcode {
@@ -49,18 +55,33 @@ class AthenaUploadTests {
         """.trimIndent())
 
         runner.withArguments("carthageBootstrap",
-                "athenaUpload", "--force-upload", "--upload-dry-run")
+                "athenaUpload", "--upload-dry-run",
+                "--server-id=athena")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaUpload")?.outcome
+                    }
+                }
         runner.withArguments("carthageBootstrap",
-                "athenaUpload", "--upload-dry-run")
+                "athenaUpload", "--upload-dry-run", "-PenableRepository")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SKIPPED expectedFrom it.task(":athenaUpload")?.outcome
+                    }
+                }
+        runner.withArguments("carthageBootstrap",
+                "athenaUpload", "--upload-dry-run", "--force-upload", "-PenableRepository")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaUpload")?.outcome
+                    }
+                }
     }
 
     @Test
     @DisplayName("verify athenaUpload to bintray")
     @EnabledIfEnvironmentVariable(named = "NODE_NAME", matches = "works|aux")
     fun test2(runner: GradleRunner) {
-        runner.newFile("settings.gradle.kts").writeText("""
-        """.trimIndent())
-
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             import java.net.URI
@@ -70,8 +91,13 @@ class AthenaUploadTests {
                 id("com.mobilesolutionworks.gradle.athena")
             }
 
-            repositories {
-                mavenLocal()
+            val enableRepository: String? by project.extra
+            enableRepository?.let {
+                repositories {
+                    maven {
+                        url = URI("https://raw.githubusercontent.com/yunarta/works-athena-gradle-plugin/mock-repo")
+                    }
+                }
             }
 
             xcode {
@@ -92,19 +118,35 @@ class AthenaUploadTests {
             }
         """.trimIndent())
 
-        runner.withArguments("carthageBootstrap",
-                "athenaUpload", "--force-upload", "--upload-dry-run")
-                .build()
+
         runner.withArguments("carthageBootstrap",
                 "athenaUpload", "--upload-dry-run")
-                .build()
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaUpload")?.outcome
+                    }
+                }
+        runner.withArguments("carthageBootstrap",
+                "athenaUpload", "--upload-dry-run", "-PenableRepository")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SKIPPED expectedFrom it.task(":athenaUpload")?.outcome
+                    }
+                }
+        runner.withArguments("carthageBootstrap",
+                "athenaUpload", "--upload-dry-run", "--force-upload", "-PenableRepository")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaUpload")?.outcome
+                    }
+                }
     }
 
     @Test
     @DisplayName("verify athenaUpload to mavenLocal")
+    @ResourceLock(value = "mavenLocal")
     fun test3(runner: GradleRunner) {
-        runner.newFile("settings.gradle.kts").writeText("""
-        """.trimIndent())
+        cleanMavenLocalForTest()
 
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
@@ -113,6 +155,10 @@ class AthenaUploadTests {
 
             plugins {
                 id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            repositories {
+                mavenLocal()
             }
 
             xcode {
@@ -134,10 +180,25 @@ class AthenaUploadTests {
         """.trimIndent())
 
         runner.withArguments("carthageBootstrap",
-                "athenaUpload", "--force-upload")
-                .build()
+                "athenaUpload")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaUpload")?.outcome
+                    }
+                }
         runner.withArguments("carthageBootstrap",
                 "athenaUpload")
-                .build()
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SKIPPED expectedFrom it.task(":athenaUpload")?.outcome
+                    }
+                }
+        runner.withArguments("carthageBootstrap",
+                "athenaUpload", "--force-upload")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaUpload")?.outcome
+                    }
+                }
     }
 }

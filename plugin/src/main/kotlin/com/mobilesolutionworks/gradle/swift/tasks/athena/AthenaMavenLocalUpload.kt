@@ -32,6 +32,7 @@ internal open class AthenaMavenLocalUpload : DefaultTask() {
 
     @TaskAction
     fun upload() {
+        project.repositories
         val path = project.repositories.mavenLocal().url.path
         project.copy {
             it.from(project.athena.workDir)

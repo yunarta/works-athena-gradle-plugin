@@ -67,9 +67,9 @@ class AthenaPlugin : Plugin<Project> {
                     }
                 }
 
-                if (athena.upload.ordinal == AthenaUploadTarget.MavenLocal.ordinal) {
-                    project.repositories.add(project.repositories.mavenLocal())
-                }
+//                if (athena.upload.ordinal == AthenaUploadTarget.MavenLocal.ordinal) {
+//                    project.repositories.add(project.repositories.mavenLocal())
+//                }
 
                 tasks.create("carthageCartfileCreate", CartfileCreate::class.java)
                 tasks.create("carthageActivateUpdate", ActivateUpdate::class.java)

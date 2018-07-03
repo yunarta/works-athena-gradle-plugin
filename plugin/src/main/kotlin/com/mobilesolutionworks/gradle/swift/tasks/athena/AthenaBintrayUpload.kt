@@ -45,6 +45,12 @@ internal open class AthenaBintrayUpload : DefaultTask() {
 
         val athena = project.athena
 
+        project.logger.quiet("""
+            Uploading to Bintray
+            --------------------
+            Dry run = $dryRun
+            Force upload = $forceUpload
+        """.trimIndent())
         packages.values.map { version ->
             project.exec {
                 it.executable = "jfrog"
