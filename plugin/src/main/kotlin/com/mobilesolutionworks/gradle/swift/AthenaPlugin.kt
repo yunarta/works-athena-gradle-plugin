@@ -126,9 +126,6 @@ class AthenaPlugin : Plugin<Project> {
                     inspectCarthage.dependsOn(replace)
 
                     download.dependsOn(list)
-                    download.onlyIf {
-                        list.outputs.files.singleFile.readText().isNotBlank()
-                    }
 
                     preExecute.dependsOn(download)
                     inspectArtifacts.dependsOn(bootstrap)

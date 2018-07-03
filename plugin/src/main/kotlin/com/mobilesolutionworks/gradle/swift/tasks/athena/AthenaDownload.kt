@@ -13,12 +13,13 @@ import org.gradle.maven.MavenPomArtifact
 internal open class AthenaDownload : DefaultTask() {
 
     private val packages = project.file("${project.buildDir}/works-swift/athena/packages.json")
+    private val missing = project.file("${project.buildDir}/works-swift/athena/missing.txt")
 
     init {
         group = AthenaTaskDef.group
 
         with(project) {
-            inputs.file(packages)
+            inputs.files(packages, missing)
             outputs.file(CarthageAssetLocator.resolved(project))
 
             tasks.withType(AthenaInspectCarthage::class.java) {

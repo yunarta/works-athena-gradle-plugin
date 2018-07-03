@@ -54,4 +54,41 @@ class AthenaDownloadTests {
                     assertEquals(TaskOutcome.UP_TO_DATE, it.task(":athenaDownload")?.outcome)
                 }
     }
+
+    @Test
+    @DisplayName("verify athenaDownload from cache")
+    fun test2(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            import java.net.URI
+
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            repositories {
+                mavenLocal()
+            }
+
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
+                enabled = true
+            }
+
+            carthage {
+                github("yunarta/NullFramework")
+            }
+        """.trimIndent())
+
+        runner.withArguments("carthageBootstrap", "athenaUpload")
+                .build()
+        runner.withArguments("athenaDownload")
+                .build()
+    }
 }
