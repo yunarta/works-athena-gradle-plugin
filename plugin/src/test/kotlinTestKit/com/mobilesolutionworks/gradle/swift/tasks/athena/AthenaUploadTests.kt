@@ -5,6 +5,8 @@ import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.DisabledIf
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.parallel.ResourceLock
@@ -81,6 +83,7 @@ class AthenaUploadTests {
     @Test
     @DisplayName("verify athenaUpload to bintray")
     @EnabledIfEnvironmentVariable(named = "NODE_NAME", matches = "works|aux")
+    @DisabledIfEnvironmentVariable(named = "BINTRAY", matches = "down")
     fun test2(runner: GradleRunner) {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
