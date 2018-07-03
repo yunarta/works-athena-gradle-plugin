@@ -17,10 +17,13 @@ internal open class AthenaMavenLocalUpload : DefaultTask() {
         group = AthenaTaskDef.group
 
         with(project) {
-            if (!forceUpload) {
-                onlyIf {
+
+            onlyIf {
+                if (!forceUpload) {
                     val listMissing = tasks.withType(AthenaListMissing::class.java).single()
                     listMissing.outputs.files.singleFile.readText().isNotBlank()
+                } else {
+                    true
                 }
             }
 
