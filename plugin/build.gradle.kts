@@ -87,7 +87,7 @@ pluginBundle {
             id = "com.mobilesolutionworks.gradle.athena"
             displayName = "Gradle plugin for managing Carthage and upload binary cache into Artifactory"
             tags = listOf("swift", "carthage", "rome", "xcode", "ios")
-            version = project.version
+            version = project.version.toString()
         }
     }
 }
