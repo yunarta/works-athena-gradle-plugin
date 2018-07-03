@@ -50,9 +50,8 @@ class AthenaUploadTests {
 
         runner.withArguments("carthageBootstrap",
                 "athenaUpload", "--force-upload", "--upload-dry-run")
-                .build().let {
-                    // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
-                }
+        runner.withArguments("carthageBootstrap",
+                "athenaUpload", "--upload-dry-run")
     }
 
     @Test
@@ -95,9 +94,10 @@ class AthenaUploadTests {
 
         runner.withArguments("carthageBootstrap",
                 "athenaUpload", "--force-upload", "--upload-dry-run")
-                .build().let {
-                    // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
-                }
+                .build()
+        runner.withArguments("carthageBootstrap",
+                "athenaUpload", "--upload-dry-run")
+                .build()
     }
 
     @Test
@@ -135,6 +135,9 @@ class AthenaUploadTests {
 
         runner.withArguments("carthageBootstrap",
                 "athenaUpload", "--force-upload")
+                .build()
+        runner.withArguments("carthageBootstrap",
+                "athenaUpload")
                 .build()
     }
 }
