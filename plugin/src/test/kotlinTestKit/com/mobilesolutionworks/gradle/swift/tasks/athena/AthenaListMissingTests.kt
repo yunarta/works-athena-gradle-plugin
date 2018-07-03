@@ -1,10 +1,10 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import junit5.assertAll
+import junit5.assertMany
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -25,6 +25,7 @@ class AthenaListMissingTests {
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
             import java.net.URI
+            import com.mobilesolutionworks.gradle.swift.model.extension.AthenaUploadTarget
 
             plugins {
                 id("com.mobilesolutionworks.gradle.athena")
@@ -36,6 +37,7 @@ class AthenaListMissingTests {
 
             athena {
                 enabled = true
+                upload = AthenaUploadTarget.Artifactory
             }
 
             carthage {
@@ -60,7 +62,7 @@ class AthenaListMissingTests {
     }
 
     @Test
-    @DisplayName("test incremental build")
+    @DisplayName("verify athenaListMissing incremental build")
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -92,10 +94,15 @@ class AthenaListMissingTests {
 
         runner.withArguments("athenaListMissing")
                 .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaListMissing")?.outcome
+                    }
                 }
         runner.withArguments("athenaListMissing")
                 .build().let {
-                    assertEquals(TaskOutcome.SUCCESS, it.task(":athenaListMissing")?.outcome)
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaListMissing")?.outcome
+                    }
                 }
     }
 }
