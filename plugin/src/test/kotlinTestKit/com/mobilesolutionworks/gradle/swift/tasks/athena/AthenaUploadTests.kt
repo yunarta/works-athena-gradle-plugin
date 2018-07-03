@@ -1,8 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
-import junit5.assertMany
 import org.gradle.testkit.runner.GradleRunner
-import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
@@ -51,7 +49,7 @@ class AthenaUploadTests {
         """.trimIndent())
 
         runner.withArguments("carthageBootstrap",
-                "athenaUpload")
+                "athenaUpload", "--force-upload", "--upload-dry-run")
                 .build().let {
                     // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
@@ -96,7 +94,7 @@ class AthenaUploadTests {
         """.trimIndent())
 
         runner.withArguments("carthageBootstrap",
-                "athenaUpload", "--upload-dry-run", "--stacktrace")
+                "athenaUpload", "--force-upload", "--upload-dry-run")
                 .build().let {
                     // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
                 }
@@ -136,7 +134,7 @@ class AthenaUploadTests {
         """.trimIndent())
 
         runner.withArguments("carthageBootstrap",
-                "athenaUpload")
+                "athenaUpload", "--force-upload")
                 .build()
     }
 }
