@@ -137,18 +137,6 @@ class AthenaUploadTests {
 
         runner.withArguments("carthageBootstrap",
                 "athenaUpload")
-                .build().let {
-                    assertMany {
-                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaUpload")?.outcome
-                    }
-                }
-
-        runner.withArguments("carthageBootstrap",
-                "athenaUpload")
-                .build().let {
-                    assertMany {
-                        TaskOutcome.SKIPPED expectedFrom it.task(":athenaUpload")?.outcome
-                    }
-                }
+                .build()
     }
 }
