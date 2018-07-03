@@ -43,7 +43,7 @@ internal open class CarthageUpdate : DefaultTask() {
                 add(project.xcode.platformsAsText)
             })
 
-            project.xcode.swiftToolchain?.let {
+            project.xcode.swiftToolchains?.let {
                 exec.environment("TOOLCHAINS", it)
             }
         }

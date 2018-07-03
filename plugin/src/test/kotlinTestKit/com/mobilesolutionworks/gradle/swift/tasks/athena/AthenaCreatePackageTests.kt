@@ -23,8 +23,6 @@ class AthenaCreatePackageTests {
 
         val build = runner.newFile("build.gradle.kts")
         build.writeText("""
-            import java.net.URI
-
             plugins {
                 id("com.mobilesolutionworks.gradle.athena")
             }

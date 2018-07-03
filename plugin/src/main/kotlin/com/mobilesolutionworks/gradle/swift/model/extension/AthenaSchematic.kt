@@ -12,7 +12,7 @@ enum class AthenaUploadTarget {
 
 open class AthenaSchematic(project: Project, val resolutions: NamedDomainObjectContainer<PackageExtension>) {
 
-    var upload = AthenaUploadTarget.Artifactory
+    var upload = AthenaUploadTarget.MavenLocal
 
     var organization = ""
     var repository = "athena"

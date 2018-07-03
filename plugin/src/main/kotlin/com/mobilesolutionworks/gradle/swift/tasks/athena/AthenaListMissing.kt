@@ -20,6 +20,7 @@ internal open class AthenaListMissing : DefaultTask() {
         with(project) {
             inputs.file("$buildDir/works-swift/athena/packages.json")
             outputs.file(target)
+            outputs.upToDateWhen { false }
 
             // dependencies
             tasks.withType(AthenaInspectCarthage::class.java) {

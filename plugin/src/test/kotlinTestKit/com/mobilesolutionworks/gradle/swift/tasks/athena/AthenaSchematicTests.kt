@@ -37,7 +37,7 @@ class AthenaSchematicTests {
 
             xcode {
                 platforms = setOf("iOS")
-                swiftToolchain = "org.swift.4020170919a"
+                swiftToolchains = "org.swift.4020170919a"
             }
 
             athena {
@@ -83,7 +83,7 @@ class AthenaSchematicTests {
 
             xcode {
                 platforms = setOf("iOS")
-                swiftToolchain = "org.swift.4020170919"
+                swiftToolchains = "org.swift.4020170919"
             }
 
             athena {

@@ -10,11 +10,20 @@ internal open class AthenaMavenLocalUpload : DefaultTask() {
     @Option(option = "upload-dry-run", description = "Test dry run for upload")
     var dryRun = false
 
+    @Option(option = "force-upload", description = "Force upload")
+    var forceUpload = false
 
     init {
         group = AthenaTaskDef.group
 
         with(project) {
+            if (!forceUpload) {
+                onlyIf {
+                    val listMissing = tasks.withType(AthenaListMissing::class.java).single()
+                    listMissing.outputs.files.singleFile.readText().isNotBlank()
+                }
+            }
+
             tasks.withType(AthenaCreatePackage::class.java) {
                 dependsOn(it)
             }
