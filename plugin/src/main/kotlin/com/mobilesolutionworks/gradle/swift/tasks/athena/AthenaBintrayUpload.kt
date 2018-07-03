@@ -51,9 +51,11 @@ internal open class AthenaBintrayUpload : DefaultTask() {
             Dry run = $dryRun
             Force upload = $forceUpload
         """.trimIndent())
+
+        val jfrogExecutable: String? = project.extensions.extraProperties["jfrogExecutable"]?.toString()
         packages.values.map { version ->
             project.exec {
-                it.executable = "jfrog"
+                it.executable = jfrogExecutable ?:"jfrog"
                 it.workingDir = project.athena.workDir
 
                 it.args("bt")

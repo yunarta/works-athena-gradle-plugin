@@ -38,8 +38,9 @@ internal open class AthenaArtifactoryUpload : DefaultTask() {
 
     @TaskAction
     fun upload() {
+        val jfrogExecutable: String? = project.extensions.extraProperties["jfrogExecutable"]?.toString()
         project.exec {
-            it.executable = "jfrog"
+            it.executable = jfrogExecutable ?: "jfrog"
             it.workingDir = project.athena.workDir
             it.args("rt")
             it.args("u")
