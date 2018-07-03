@@ -1,6 +1,5 @@
 package com.mobilesolutionworks.gradle.swift
 
-import com.mobilesolutionworks.gradle.swift.model.Artifactory
 import com.mobilesolutionworks.gradle.swift.model.extension.AthenaSchematic
 import com.mobilesolutionworks.gradle.swift.model.extension.AthenaUploadTarget
 import com.mobilesolutionworks.gradle.swift.model.extension.CarthageSchematic
