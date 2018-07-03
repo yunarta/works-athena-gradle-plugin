@@ -143,7 +143,7 @@ class AthenaUploadTests {
                 "athenaUpload")
                 .build().let {
                     assertMany {
-                        TaskOutcome.SUCCESS expectedFrom it.task(":romeUpload")?.outcome
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaUpload")?.outcome
                     }
                 }
     }
