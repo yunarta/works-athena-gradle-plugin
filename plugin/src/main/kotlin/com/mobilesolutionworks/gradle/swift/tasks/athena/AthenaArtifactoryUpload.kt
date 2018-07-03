@@ -7,6 +7,9 @@ import org.gradle.api.tasks.options.Option
 
 internal open class AthenaArtifactoryUpload : DefaultTask() {
 
+    @Option(option = "server-id", description = "Artifactory Server ID")
+    var serverId = ""
+
     @Option(option = "upload-dry-run", description = "Test dry run for upload")
     var dryRun = false
 
@@ -35,14 +38,28 @@ internal open class AthenaArtifactoryUpload : DefaultTask() {
 
     @TaskAction
     fun upload() {
+        val jfrogExecutable: String? = project.extensions.extraProperties["jfrogExecutable"]?.toString()
         project.exec {
-            it.executable = "jfrog"
+            it.executable = jfrogExecutable ?: "jfrog"
             it.workingDir = project.athena.workDir
             it.args("rt")
             it.args("u")
 
+
+            project.logger.quiet("""
+            Uploading to Artifactory
+            --------------------
+            Dry run = $dryRun
+            Force upload = $forceUpload
+            Server ID = $serverId
+        """.trimIndent())
+
             if (dryRun) {
                 it.args("--dry-run")
+            }
+
+            if (serverId.isNotBlank()) {
+                it.args("--server-id=${serverId}")
             }
 
             it.args("--flat=false")

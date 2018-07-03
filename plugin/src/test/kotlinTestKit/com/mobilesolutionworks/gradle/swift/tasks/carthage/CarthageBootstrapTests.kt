@@ -132,14 +132,6 @@ class CarthageBootstrapTests {
 
     @Test
     @DisplayName("verify carthageBootstrap with different toolchain")
-    @EnabledIf(value = arrayOf(
-            "def out = new StringBuilder(), err = new StringBuilder()",
-            "def proc = 'swift -version'.execute(['TOOLCHAINS=org.swift.4020170919'], new File('.'))",
-            "proc.consumeProcessOutput(out, err)",
-            "proc.waitForOrKill(1000)",
-            "def token = out.toString() =~ /Apple Swift version (.*) \\((.*)\\)/",
-            "token[0][1] == '4.0'"
-    ), engine = "groovy")
     fun test4(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -151,7 +143,7 @@ class CarthageBootstrapTests {
             }
 
             xcode {
-                swiftToolchains = "org.swift.4020170919"
+                swiftToolchains = "com.apple.dt.toolchain.XcodeDefault"
             }
 
             rome {

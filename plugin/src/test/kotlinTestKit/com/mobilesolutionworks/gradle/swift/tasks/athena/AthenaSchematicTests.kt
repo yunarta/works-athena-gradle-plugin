@@ -121,6 +121,7 @@ class AthenaSchematicTests {
 
             xcode {
                 platforms = setOf("iOS")
+                swiftToolchains = "com.apple.dt.toolchain.XcodeDefault"
             }
 
             athena {
