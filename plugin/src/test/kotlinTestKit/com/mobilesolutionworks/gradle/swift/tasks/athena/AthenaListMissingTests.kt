@@ -96,7 +96,7 @@ class AthenaListMissingTests {
                 }
         runner.withArguments("athenaListMissing")
                 .build().let {
-                    assertEquals(TaskOutcome.UP_TO_DATE, it.task(":athenaListMissing")?.outcome)
+                    assertEquals(TaskOutcome.SUCCESS, it.task(":athenaListMissing")?.outcome)
                 }
     }
 }
