@@ -1,7 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.athena
 
 import junit5.assertMany
-import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -9,8 +8,6 @@ import org.junit.jupiter.api.condition.EnabledIf
 import org.junit.jupiter.api.extension.ExtendWith
 import testKit.GradleRunnerProvider
 import testKit.newFile
-import testKit.root
-import java.io.ByteArrayOutputStream
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test Athena schematic")
@@ -137,24 +134,7 @@ class AthenaSchematicTests {
 
         runner.withArguments("athenaCheck")
                 .build().let { result ->
-                    val project = ProjectBuilder().withProjectDir(runner.root).build()
-                    ByteArrayOutputStream().let { output ->
-                        project.exec { exec ->
-                            exec.executable = "swift"
-                            exec.args("-version")
-                            exec.standardOutput = output
-                        }
-                        output.toString()
-                    }.let {
-                        val regex = "Apple Swift version (.*) \\((.*)\\)".toRegex()
-                        regex.findAll(it).forEach {
-                            assertMany {
-                                isTrue {
-                                    result.output.contains(it.groupValues[1])
-                                }
-                            }
-                        }
-                    }
+                    result.output.contains(swiftVersion())
                 }
     }
 }

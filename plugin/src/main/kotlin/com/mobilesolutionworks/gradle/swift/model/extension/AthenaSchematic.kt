@@ -7,7 +7,7 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 
 enum class AthenaUploadTarget {
-    Bintray, Artifactory
+    Bintray, Artifactory, MavenLocal
 }
 
 open class AthenaSchematic(project: Project, val resolutions: NamedDomainObjectContainer<PackageExtension>) {

@@ -44,7 +44,7 @@ class AthenaCreatePackageTests {
             }
 
             carthage {
-                github("yunarta/NullFramework")
+                github("yunarta/NullFramework") version "1.1.0"
             }
         """.trimIndent())
 
@@ -53,15 +53,16 @@ class AthenaCreatePackageTests {
                     assertMany {
                         TaskOutcome.SUCCESS expectedFrom it.task(":athenaCreatePackage")?.outcome
 
+                        val version = swiftVersion()
                         val project = ProjectBuilder().withProjectDir(runner.root).build()
-                        val path = "Athena/yunarta/NullFramework/1.1.0-Swift4.1.2"
+                        val path = "Athena/yunarta/NullFramework/1.1.0-Swift${version}"
 
                         isTrue {
-                            project.file("$path/NullFramework-1.1.0-Swift4.1.2.zip").exists()
+                            project.file("$path/NullFramework-1.1.0-Swift${version}.zip").exists()
                         }
 
                         isTrue {
-                            project.file("$path/NullFramework-1.1.0-Swift4.1.2.pom").exists()
+                            project.file("$path/NullFramework-1.1.0-Swift${version}.pom").exists()
                         }
                     }
                 }
