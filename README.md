@@ -2,6 +2,7 @@
 
 [![Build Status](http://jenkins.mobilesolutionworks.com:8080/job/github/job/yunarta/job/works-athena-gradle-plugin/job/master/badge/icon)](http://jenkins.mobilesolutionworks.com:8080/job/github/job/yunarta/job/works-athena-gradle-plugin/job/master/)
 [![codecov](https://codecov.io/gh/yunarta/works-athena-gradle-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/yunarta/works-athena-gradle-plugin)
+[![gradle plugin](https://img.shields.io/badge/gradle_plugin-1.0.5-blue.svg?style=flat-square)](https://plugins.gradle.org/plugin/com.mobilesolutionworks.gradle.athena)
 
 ## Preface
 
@@ -50,7 +51,7 @@ Typical ```build.gradle.kts``` structure will be like this
 ```groovy
 // Use athena in the build script
 plugins {
-    id("com.mobilesolutionworks.gradle.athena") version "1.0.3"
+    id("com.mobilesolutionworks.gradle.athena") version "1.0.5"
 }
 
 xcode {
