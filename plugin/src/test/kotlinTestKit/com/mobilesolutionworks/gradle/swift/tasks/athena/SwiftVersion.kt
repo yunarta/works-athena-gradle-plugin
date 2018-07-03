@@ -7,8 +7,8 @@ import java.nio.file.Files
 fun swiftVersion(): String {
     val createTempFile = Files.createTempDirectory("gradle").toFile()
     createTempFile.mkdirs()
-    val project = ProjectBuilder().withProjectDir(createTempFile).build()
 
+    val project = ProjectBuilder().withProjectDir(createTempFile).build()
     return ByteArrayOutputStream().let { output ->
         project.exec { exec ->
             exec.executable = "swift"

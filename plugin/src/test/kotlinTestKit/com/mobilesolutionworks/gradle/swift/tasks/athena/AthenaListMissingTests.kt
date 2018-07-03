@@ -74,9 +74,6 @@ class AthenaListMissingTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
             }
 
             xcode {

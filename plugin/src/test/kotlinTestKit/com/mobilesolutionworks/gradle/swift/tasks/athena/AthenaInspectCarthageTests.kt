@@ -30,9 +30,7 @@ class AthenaInspectCarthageTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {
@@ -83,9 +81,7 @@ class AthenaInspectCarthageTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {
@@ -137,9 +133,7 @@ class AthenaInspectCarthageTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {
@@ -192,9 +186,7 @@ class AthenaInspectCarthageTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {
@@ -234,9 +226,7 @@ class AthenaInspectCarthageTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {

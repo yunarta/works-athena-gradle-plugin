@@ -18,6 +18,7 @@ import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaDownload
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaInspectArtifacts
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaInspectCarthage
 import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaListMissing
+import com.mobilesolutionworks.gradle.swift.tasks.athena.AthenaMavenLocalUpload
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.ActivateUpdate
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileCreate
 import com.mobilesolutionworks.gradle.swift.tasks.carthage.CartfileReplace
@@ -112,8 +113,10 @@ class AthenaPlugin : Plugin<Project> {
                     tasks.create("athenaCreatePackage", AthenaCreatePackage::class.java)
                     val upload = if (athena.upload.ordinal == AthenaUploadTarget.Bintray.ordinal) {
                         tasks.create("athenaUpload", AthenaBintrayUpload::class.java)
-                    } else {
+                    } else if (athena.upload.ordinal == AthenaUploadTarget.Artifactory.ordinal) {
                         tasks.create("athenaUpload", AthenaArtifactoryUpload::class.java)
+                    } else {
+                        tasks.create("athenaUpload", AthenaMavenLocalUpload::class.java)
                     }
 
                     inspectCarthage.dependsOn(replace)

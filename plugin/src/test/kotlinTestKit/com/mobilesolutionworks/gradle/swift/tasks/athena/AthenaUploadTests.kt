@@ -10,11 +10,11 @@ import testKit.newFile
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test AthenaUpload")
-@EnabledIfEnvironmentVariable(named = "NODE_NAME", matches = "works|aux")
 class AthenaUploadTests {
 
     @Test
     @DisplayName("verify athenaUpload to artifactory")
+    @EnabledIfEnvironmentVariable(named = "NODE_NAME", matches = "works|aux")
     fun test1(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -29,9 +29,7 @@ class AthenaUploadTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {
@@ -59,6 +57,7 @@ class AthenaUploadTests {
 
     @Test
     @DisplayName("verify athenaUpload to bintray")
+    @EnabledIfEnvironmentVariable(named = "NODE_NAME", matches = "works|aux")
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""
         """.trimIndent())
@@ -73,9 +72,7 @@ class AthenaUploadTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {
@@ -84,6 +81,50 @@ class AthenaUploadTests {
 
             athena {
                 upload = AthenaUploadTarget.Bintray
+
+                organization = "mobilesolutionworks"
+                repository = "athena"
+
+                enabled = true
+            }
+
+            carthage {
+                github("yunarta/NullFramework") version "1.0.0"
+            }
+        """.trimIndent())
+
+        runner.withArguments("carthageBootstrap",
+                "athenaUpload", "--upload-dry-run", "--stacktrace")
+                .build().let {
+                    // Assert.assertEquals(TaskOutcome.SUCCESS, it.task(":romeUpload")?.outcome)
+                }
+    }
+
+    @Test
+    @DisplayName("verify athenaUpload to mavenLocal")
+    fun test3(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            import java.net.URI
+            import com.mobilesolutionworks.gradle.swift.model.extension.AthenaUploadTarget
+
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            repositories {
+                mavenLocal()
+            }
+
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
+                upload = AthenaUploadTarget.MavenLocal
 
                 organization = "mobilesolutionworks"
                 repository = "athena"

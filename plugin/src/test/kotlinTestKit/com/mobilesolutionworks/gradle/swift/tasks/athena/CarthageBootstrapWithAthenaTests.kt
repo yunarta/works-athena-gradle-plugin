@@ -28,9 +28,7 @@ class CarthageBootstrapWithAthenaTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {
@@ -67,9 +65,7 @@ class CarthageBootstrapWithAthenaTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {

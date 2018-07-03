@@ -4,7 +4,6 @@ import junit5.assertAll
 import junit5.assertMany
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -32,9 +31,7 @@ class CarthageUpdateWithAthenaTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {
@@ -97,9 +94,7 @@ class CarthageUpdateWithAthenaTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {
@@ -168,9 +163,7 @@ class CarthageUpdateWithAthenaTests {
             }
 
             repositories {
-                maven {
-                    url = URI("http://repo.dogeza.club:18090/artifactory/list/athena")
-                }
+                mavenLocal()
             }
 
             xcode {

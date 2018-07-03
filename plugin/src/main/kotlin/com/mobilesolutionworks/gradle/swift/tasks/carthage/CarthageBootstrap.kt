@@ -36,7 +36,6 @@ internal open class CarthageBootstrap : DefaultTask() {
                 add(project.xcode.platformsAsText)
             })
 
-            println("toolchain = ${project.xcode.swiftToolchain}")
             project.xcode.swiftToolchain?.let {
                 exec.environment("TOOLCHAINS", it)
             }
