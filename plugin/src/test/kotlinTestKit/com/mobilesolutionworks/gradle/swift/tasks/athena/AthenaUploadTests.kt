@@ -10,7 +10,7 @@ import testKit.newFile
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test AthenaUpload")
-@EnabledIfEnvironmentVariable(named = "NODE_NAME", matches = "works")
+@EnabledIfEnvironmentVariable(named = "NODE_NAME", matches = "works|aux")
 class AthenaUploadTests {
 
     @Test

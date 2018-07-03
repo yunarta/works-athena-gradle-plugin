@@ -3,7 +3,7 @@ buildCount = env.DEFAULT_HISTORY_COUNT ?: "5"
 pipeline {
     agent {
         node {
-            label 'mac && java'
+            label 'mac && java && jfrog'
         }
     }
 
