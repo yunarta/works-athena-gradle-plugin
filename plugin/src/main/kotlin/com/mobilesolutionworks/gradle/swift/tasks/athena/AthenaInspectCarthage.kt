@@ -60,7 +60,6 @@ internal open class AthenaInspectCarthage : DefaultTask() {
             }
 
             target.writeText(GsonBuilder().create().toJson(packages))
-            athena.packages = packages
         }
     }
 }
