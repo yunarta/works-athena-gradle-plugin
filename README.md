@@ -1,6 +1,6 @@
 # Works presents Athena
 
-[![Build Status](http://jenkins.mobilesolutionworks.com:8080/job/github/job/yunarta/job/works-athena-gradle-plugin/job/feature%252Ftesting-tasks/badge/icon)](http://jenkins.mobilesolutionworks.com:8080/job/github/job/yunarta/job/works-athena-gradle-plugin/job/feature%252Ftesting-tasks/)
+[![Build Status](http://jenkins.mobilesolutionworks.com:8080/job/github/job/yunarta/job/works-athena-gradle-plugin/job/master/badge/icon)](http://jenkins.mobilesolutionworks.com:8080/job/github/job/yunarta/job/works-athena-gradle-plugin/job/master/)
 [![codecov](https://codecov.io/gh/yunarta/works-athena-gradle-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/yunarta/works-athena-gradle-plugin)
 
 ## Preface
