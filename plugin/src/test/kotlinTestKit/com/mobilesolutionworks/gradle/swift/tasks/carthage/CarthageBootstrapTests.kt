@@ -151,7 +151,7 @@ class CarthageBootstrapTests {
             }
 
             xcode {
-                swiftToolchain = "org.swift.4020170919"
+                swiftToolchains = "org.swift.4020170919"
             }
 
             rome {
