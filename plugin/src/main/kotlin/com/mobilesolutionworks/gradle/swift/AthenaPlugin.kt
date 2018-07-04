@@ -39,7 +39,7 @@ import java.io.ByteArrayOutputStream
 class AthenaPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        project.extensions.create("carthage", CarthageSchematic::class.java)
+        project.extensions.create("carthage", CarthageSchematic::class.java, project)
         project.extensions.create("rome", RomeSchematic::class.java)
         project.extensions.create("xcode", XcodeSchematic::class.java)
 
@@ -66,10 +66,6 @@ class AthenaPlugin : Plugin<Project> {
                         athena.swiftVersion = it.groupValues[1]
                     }
                 }
-
-//                if (athena.upload.ordinal == AthenaUploadTarget.MavenLocal.ordinal) {
-//                    project.repositories.add(project.repositories.mavenLocal())
-//                }
 
                 tasks.create("carthageCartfileCreate", CartfileCreate::class.java)
                 tasks.create("carthageActivateUpdate", ActivateUpdate::class.java)

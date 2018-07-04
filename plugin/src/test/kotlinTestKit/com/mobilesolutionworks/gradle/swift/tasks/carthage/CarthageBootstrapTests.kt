@@ -9,6 +9,8 @@ import org.junit.jupiter.api.condition.EnabledIf
 import org.junit.jupiter.api.extension.ExtendWith
 import testKit.GradleRunnerProvider
 import testKit.newFile
+import testKit.root
+import java.io.File
 
 
 @ExtendWith(GradleRunnerProvider::class)
@@ -40,6 +42,40 @@ class CarthageBootstrapTests {
                 .build().let {
                     assertMany {
                         TaskOutcome.SUCCESS expectedFrom it.task(":carthageBootstrap")?.outcome
+                    }
+                }
+    }
+
+    @Test
+    @DisplayName("verify carthageBootstrap with alternate directory")
+    fun test5(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            rome {
+                enabled = false
+            }
+
+            carthage {
+                github("yunarta/NullFramework") version "1.0.0"
+                destination = project.file("Olympus")
+            }
+        """.trimIndent())
+
+        runner.withArguments("carthageBootstrap")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageBootstrap")?.outcome
+
+                        isTrue {
+                            File(runner.root, "Olympus/Carthage/Build/iOS/NullFramework.framework").exists()
+                        }
                     }
                 }
     }

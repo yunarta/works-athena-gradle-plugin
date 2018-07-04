@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken
 import com.mobilesolutionworks.gradle.swift.model.AthenaPackageVersion
 import com.mobilesolutionworks.gradle.swift.model.CarthageAssetLocator
 import com.mobilesolutionworks.gradle.swift.model.extension.athena
+import com.mobilesolutionworks.gradle.swift.model.extension.carthage
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.maven.MavenModule
@@ -35,7 +36,6 @@ internal open class AthenaDownload : DefaultTask() {
             val packages: Map<String, AthenaPackageVersion> = gson.fromJson(packages.reader(),
                     object : TypeToken<Map<String, AthenaPackageVersion>>() {}.type)
 
-
             packages.values.map {
                 project.dependencies.createArtifactResolutionQuery()
                         .forModule(it.group, it.module, "${it.version}-Swift${athena.swiftVersion}")
@@ -50,7 +50,7 @@ internal open class AthenaDownload : DefaultTask() {
             val configuration = project.configurations.getByName("athena")
             configuration.resolve().forEach {
                 zipTree(it).visit {
-                    it.copyTo(project.file(it.relativePath))
+                    it.copyTo(project.file("${project.carthage.destination}/${it.relativePath}"))
                 }
             }
         }

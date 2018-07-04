@@ -63,4 +63,56 @@ class AthenaCreatePackageTests {
                     }
                 }
     }
+
+    @Test
+    @DisplayName("verify athenaCreatePackage with alternate directory")
+    fun test2(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            repositories {
+                mavenLocal()
+            }
+
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
+                enabled = true
+            }
+
+            carthage {
+                destination = project.file("Olympus")
+
+                github("yunarta/NullFramework") version "1.1.0"
+            }
+        """.trimIndent())
+
+        runner.withArguments("athenaCreatePackage")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaCreatePackage")?.outcome
+
+                        val version = swiftVersion()
+                        val project = ProjectBuilder().withProjectDir(runner.root).build()
+                        val path = "Athena/yunarta/NullFramework/1.1.0-Swift${version}"
+
+                        isTrue {
+                            project.file("$path/NullFramework-1.1.0-Swift${version}.zip").exists()
+                        }
+
+                        isTrue {
+                            project.file("$path/NullFramework-1.1.0-Swift${version}.pom").exists()
+                        }
+                    }
+                }
+    }
+
 }

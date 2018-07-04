@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
+import com.mobilesolutionworks.gradle.swift.model.extension.carthage
 import com.mobilesolutionworks.gradle.swift.model.extension.xcode
 import org.gradle.api.tasks.Exec
 
@@ -11,12 +12,12 @@ internal open class ListMissing : Exec() {
         group = RomeTaskDef.group
         with(project) {
             // inputs outputs
-            inputs.file("${project.rootDir}/Cartfile.resolved")
+            inputs.file("${project.carthage.destination}/Cartfile.resolved")
             outputs.file(missing)
 
             // task properties
             executable = "rome"
-            workingDir = file(rootDir)
+            workingDir = file(project.carthage.destination)
             args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("list")
                 add("--missing")

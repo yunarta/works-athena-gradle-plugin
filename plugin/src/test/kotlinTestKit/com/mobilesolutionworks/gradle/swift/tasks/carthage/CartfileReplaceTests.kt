@@ -46,6 +46,38 @@ class CartfileReplaceTests {
                     }
                 }
     }
+    @Test
+    @DisplayName("verify carthageCartfileReplace with alternate directory")
+    fun test7(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            rome {
+                enabled = false
+            }
+
+            carthage {
+                github("yunarta/NullFramework") version "1.0.0"
+                destination = project.file("Olympus")
+            }
+        """.trimIndent())
+
+        runner.withArguments("carthageCartfileReplace")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileReplace")?.outcome
+                        isTrue {
+                            File(runner.root, "Olympus/Cartfile.resolved").exists()
+                        }
+                    }
+                }
+    }
 
     @Test
     @DisplayName("verify carthageCartfileReplace incremental build")

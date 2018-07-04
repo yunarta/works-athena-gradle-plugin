@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
+import com.mobilesolutionworks.gradle.swift.model.extension.carthage
 import com.mobilesolutionworks.gradle.swift.model.extension.xcode
 import org.gradle.api.tasks.Exec
 
@@ -12,7 +13,7 @@ internal open class RomeUpload : Exec() {
 
             // task properties
             executable = "rome"
-            workingDir = file(rootDir)
+            workingDir = file(project.carthage.destination)
             args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("upload")
 

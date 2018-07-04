@@ -19,8 +19,8 @@ internal open class CartfileResolve : DefaultTask() {
     private val workCartfile = project.file("$workPath/Cartfile")
     private val workCartfileResolved = project.file("$workPath/Cartfile.resolved")
 
-    private var cartfile = project.file("${project.rootDir}/Cartfile")
-    private var cartfileResolved = project.file("${project.rootDir}/Cartfile.resolved")
+    private var cartfile = project.file("${project.carthage.destination}/Cartfile")
+    private var cartfileResolved = project.file("${project.carthage.destination}/Cartfile.resolved")
 
 
     init {

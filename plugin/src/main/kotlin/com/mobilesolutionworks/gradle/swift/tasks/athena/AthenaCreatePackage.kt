@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.mobilesolutionworks.gradle.swift.model.AthenaUploadInfo
 import com.mobilesolutionworks.gradle.swift.model.extension.athena
+import com.mobilesolutionworks.gradle.swift.model.extension.carthage
 import org.gradle.api.DefaultTask
 import org.gradle.api.internal.file.IdentityFileResolver
 import org.gradle.api.tasks.TaskAction
@@ -41,7 +42,7 @@ internal open class AthenaCreatePackage @Inject constructor(private val workerEx
             artifacts.forEach { info ->
                 workerExecutor.submit(ArchiveWorker::class.java) {
                     it.isolationMode = IsolationMode.NONE
-                    it.params(info, project.rootDir, project.athena.workDir)
+                    it.params(info, project.carthage.destination, project.athena.workDir)
                 }
             }
         }
@@ -65,7 +66,7 @@ internal open class AthenaCreatePackage @Inject constructor(private val workerEx
                     executor.executable = "xcrun"
                     executor.workingDir = workingDir
                     executor.args("dwarfdump", "--uuid",
-                            "$platformOutputDir/${it.name}.framework/${it.name}")
+                            File(workingDir, "$platformOutputDir/${it.name}.framework/${it.name}"))
 
                     val mutableList = mutableListOf(
                             "${it.name}.framework",

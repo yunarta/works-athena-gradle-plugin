@@ -64,6 +64,52 @@ class AthenaListMissingTests {
     }
 
     @Test
+    @DisplayName("verify athenaListMissing with alternate directory")
+    @ResourceLock(value = "mavenLocal")
+    fun test3(runner: GradleRunner) {
+        cleanMavenLocalForTest()
+
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            import java.net.URI
+            import com.mobilesolutionworks.gradle.swift.model.extension.AthenaUploadTarget
+
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
+                enabled = true
+                upload = AthenaUploadTarget.Artifactory
+            }
+
+            carthage {
+                destination = project.file("Olympus")
+
+                github("yunarta/NullFramework")
+            }
+        """.trimIndent())
+
+        runner.withArguments("athenaListMissing")
+                .build().let {
+                    val project = ProjectBuilder().withProjectDir(runner.root).build()
+                    val readText = project.file("${project.buildDir}/works-swift/athena/missing.txt").readText()
+
+                    assertAll {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":athenaListMissing")?.outcome
+
+                        isTrue {
+                            readText.contains("yunarta:NullFramework")
+                        }
+                    }
+                }
+    }
+
+    @Test
     @DisplayName("verify athenaListMissing incremental build")
     @ResourceLock(value = "mavenLocal")
     fun test2(runner: GradleRunner) {

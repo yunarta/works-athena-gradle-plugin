@@ -12,7 +12,7 @@ import java.io.File
 internal open class CartfileCreate : DefaultTask() {
 
     @OutputFile
-    val cartfile: File = project.file("${project.projectDir}/Cartfile")
+    val cartfile: File = project.file("${project.carthage.destination}/Cartfile")
 
     private var content = ""
 

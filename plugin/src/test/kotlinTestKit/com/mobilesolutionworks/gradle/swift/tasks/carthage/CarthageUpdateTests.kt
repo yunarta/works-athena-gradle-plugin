@@ -10,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith
 import testKit.GradleRunnerProvider
 import testKit.newFile
 import testKit.range
+import testKit.root
+import java.io.File
 
 @ExtendWith(GradleRunnerProvider::class)
 @DisplayName("Test CarthageUpdate")
@@ -63,6 +65,44 @@ class CarthageUpdateTests {
                     }
                 }
     }
+
+    @Test
+    @DisplayName("verify carthageUpdate with alternate directory")
+    fun test5(runner: GradleRunner) {
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            rome {
+                enabled = false
+            }
+
+            carthage {
+                github("yunarta/NullFramework") version "1.0.0"
+                destination = project.file("Olympus")
+            }
+        """.trimIndent())
+
+        runner.withArguments("carthageUpdate")
+                .build().let {
+                    assertMany {
+                        isTrue {
+                            it.tasks.map {
+                                it.path
+                            }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
+                                it.contains(":carthageActivateUpdate")
+                            }
+                        }
+
+                        isTrue {
+                            File(runner.root, "Olympus/Carthage/Build/iOS/NullFramework.framework").exists()
+                        }
+                    }
+                }
+    }
+
 
     @Test
     @DisplayName("verify carthageUpdate incremental build")

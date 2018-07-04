@@ -44,6 +44,34 @@ class CartfileCreateTests {
     }
 
     @Test
+    @DisplayName("verify carthageCartfileCreate with alternate directory")
+    fun test4(runner: GradleRunner) {
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            rome {
+                enabled = false
+            }
+
+            carthage {
+                github("yunarta/NullFramework") version "1.0.0"
+                destination = project.file("Olympus")
+            }
+        """.trimIndent())
+
+        runner.withArguments("carthageCartfileCreate")
+                .build().let {
+                    assertMany {
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileCreate")?.outcome
+                        "github \"yunarta/NullFramework\" == 1.0.0" expectedFrom File(runner.root, "Olympus/Cartfile").readText()
+                    }
+                }
+    }
+
+    @Test
     @DisplayName("verify carthageCartfileCreate incremental build")
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""

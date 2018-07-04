@@ -80,6 +80,71 @@ class CarthageUpdateWithAthenaTests {
     }
 
     @Test
+    @DisplayName("verify athenaDownload with alternate directory")
+    fun test4(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            import java.net.URI
+
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            repositories {
+                mavenLocal()
+            }
+
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
+                enabled = true
+            }
+
+            carthage {
+                destination = project.file("Olympus")
+
+                github("yunarta/NullFramework")
+            }
+        """.trimIndent())
+
+        runner.withArguments("carthageUpdate")
+                .build().let {
+                    assertAll {
+                        -":carthageActivateUpdate"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageActivateUpdate")?.outcome
+
+                        -":carthageCartfileResolve"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileResolve")?.outcome
+
+                        -":carthageCartfileReplace"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageCartfileReplace")?.outcome
+
+                        -":carthagePrepareExecution"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthagePrepareExecution")?.outcome
+
+                        -":carthageUpdate"
+                        TaskOutcome.SUCCESS expectedFrom it.task(":carthageUpdate")?.outcome
+                    }
+
+                    assertMany {
+                        isTrue {
+                            it.tasks.map {
+                                it.path
+                            }.range(":carthageCartfileCreate", ":carthageCartfileResolve") {
+                                it.contains(":carthageActivateUpdate")
+                            }
+                        }
+                    }
+
+                }
+    }
+
+    @Test
     @DisplayName("test incremental build")
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""

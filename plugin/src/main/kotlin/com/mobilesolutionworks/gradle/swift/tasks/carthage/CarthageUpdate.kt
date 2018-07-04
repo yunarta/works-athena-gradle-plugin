@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.carthage
 
+import com.mobilesolutionworks.gradle.swift.model.extension.carthage
 import com.mobilesolutionworks.gradle.swift.model.extension.xcode
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -14,8 +15,8 @@ internal open class CarthageUpdate : DefaultTask() {
 
         with(project) {
             // inputs outputs
-            inputs.file(project.file("${project.rootDir}/Cartfile.resolved"))
-            outputs.dir("$rootDir/Carthage")
+            inputs.file(project.file("${project.carthage.destination}/Cartfile.resolved"))
+            outputs.dir("${project.carthage.destination}/Carthage")
 
             // dependencies
             tasks.withType(ActivateUpdate::class.java) {
@@ -33,7 +34,7 @@ internal open class CarthageUpdate : DefaultTask() {
         project.exec { exec ->
             // task properties
             exec.executable = "carthage"
-            exec.workingDir = project.rootDir
+            exec.workingDir = project.carthage.destination
 
             exec.args(kotlin.collections.mutableListOf<Any?>().apply {
                 add("update")

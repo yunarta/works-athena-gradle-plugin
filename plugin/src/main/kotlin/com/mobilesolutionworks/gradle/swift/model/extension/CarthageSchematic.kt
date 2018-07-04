@@ -1,5 +1,7 @@
 package com.mobilesolutionworks.gradle.swift.model.extension
 
+import org.gradle.api.Project
+
 abstract class CarthageDependency(val repo: String) {
 
     abstract val group: String
@@ -69,9 +71,11 @@ class CarthageGitHub(repo: String) : CarthageDependency(repo) {
         }
 }
 
-open class CarthageSchematic {
+open class CarthageSchematic(project: Project) {
 
     var updates = false
+
+    var destination = project.rootDir
 
     private val declaredDependencies = mutableListOf<CarthageDependency>()
 

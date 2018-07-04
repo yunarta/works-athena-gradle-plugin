@@ -1,3 +1,0 @@
-[default]
-region = us-east-1
-endpoint = http://minio.dogeza.club:18090/minio/ios-dev-bucket/

@@ -67,6 +67,59 @@ class AthenaInspectCarthageTests {
     }
 
     @Test
+    @DisplayName("verify athenaInspectCarthage with alternate directory")
+    fun test6(runner: GradleRunner) {
+        runner.newFile("settings.gradle.kts").writeText("""
+        """.trimIndent())
+
+        val build = runner.newFile("build.gradle.kts")
+        build.writeText("""
+            import java.net.URI
+
+            plugins {
+                id("com.mobilesolutionworks.gradle.athena")
+            }
+
+            repositories {
+                mavenLocal()
+            }
+
+            xcode {
+                platforms = setOf("iOS")
+            }
+
+            athena {
+                enabled = true
+            }
+
+            rome {
+                cachePath = file("${"$"}{project.rootDir}/romeCache")
+            }
+
+            carthage {
+                destination = project.file("Olympus")
+
+                github("yunarta/NullFramework") version "1.0.0"
+            }
+        """.trimIndent())
+
+        runner.withArguments("athenaInspectCarthage")
+                .build()
+                .let {
+                    val project = ProjectBuilder().withProjectDir(runner.root).build()
+                    val file = project.file("${project.buildDir}/works-swift/athena/packages.json")
+                    val element = JsonParser().parse(file.reader())
+                    val packages = element.asJsonObject.getAsJsonObject("NullFramework")
+
+                    assertAll {
+                        "yunarta" expectedFrom packages["group"].asString
+                        "NullFramework" expectedFrom packages["module"].asString
+                        "1.0.0" expectedFrom packages["version"].asString
+                    }
+                }
+    }
+
+    @Test
     @DisplayName("verify athenaInspectCarthage with github as git source")
     fun test2(runner: GradleRunner) {
         runner.newFile("settings.gradle.kts").writeText("""

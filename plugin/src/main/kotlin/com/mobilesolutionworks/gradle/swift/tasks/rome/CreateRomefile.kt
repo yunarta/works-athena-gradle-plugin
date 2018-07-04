@@ -1,5 +1,6 @@
 package com.mobilesolutionworks.gradle.swift.tasks.rome
 
+import com.mobilesolutionworks.gradle.swift.model.extension.carthage
 import com.mobilesolutionworks.gradle.swift.model.extension.rome
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -7,7 +8,7 @@ import org.gradle.api.tasks.TaskAction
 internal open class CreateRomefile : DefaultTask() {
 
     private val workPath = project.file("${project.buildDir}/works-swift/rome/romefile")
-    private val romefile = project.file("${project.rootDir}/romefile")
+    private val romefile = project.file("${project.carthage.destination}/romefile")
 
     init {
         group = RomeTaskDef.group
