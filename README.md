@@ -6,15 +6,22 @@
 
 ## Preface
 
-In Cocoa language development which now is dominated with development for iOS platform, there are two famous dependency tools that you probably used in your development or at least heard.
+As a mobile application engineer that develops iOS and Android applications, I found that in Android, dependencies can be downloaded and gets compiled to your application easier and faster with Gradle, compared to iOS dependencies when i'm using Carthage or Cocoapods.
 
-### Cocoapods
+And along with my recent experiments in working on Gradle plugins, I realized that with Gradle plugins, we can reduce the complexity of using Carthage and even make Carthage works better.
+
+### Dependency Manager
+
+Let me explain briefly about dependency manager that you probably had used from my point of view related to development process. You may skip to this section and go to on [how to use Athena](#Athena)
+
+
+#### Cocoapods
 
 https://cocoapods.org/
 
 Cocoapods is still my favorite dependency tools for iOS development, however as my projects is getting bigger, compiling and archiving for release now take more than 20 minutes to finish.
 
-### Carthage
+#### Carthage
 
 https://github.com/Carthage/Carthage
 
@@ -30,24 +37,59 @@ Rome is a caching tools for Carthage, basically this tools will upload outputs o
 
 For now I will exclude Cocoapods usage in this plugin for a while, and focus on how we can do with Carthage to make it even better.
 
-Below are point of view of Carthage and Rome with their current state
-- There are nothing much wrong with current version of Carthage. It can download precompiled frameworks if the library writer provides then in Github. The dependency discovery works as expected as well.
-- However when the Swift version that you are using is not the same with the precompiled frameworks, or the library writer does not upload the precompile framework in Github, then what Carthage do is basically the same like what you will do by downloading the source and compiles them with your Swift toolchains.
-- Then comes Rome to help you with this. What Rome offers is that it allows you to download the precompiled frameworks from different source; they even have a cache prefix for you to use in case you wanted Rome to download frameworks prefixed with Swift 4.1.2 for example.
-- While Rome works great, but Rome S3 repository is most likely to be private for each developer. And Rome stated that you need to write the framework mapping your self if one repository produces multiple frameworks.
-- Lastly, for both Carthage and Rome, I do find the learning curve on how to use them in CI/CD flow can be trivial as you need to know, should i do `carthage update` or `carthage bootstrap` instead.
-- Rome give you a CI workflow example which basically downloads the frameworks, and if everything is there, then skip the `carthage update` operation. This most likely will fail if the Swift toolchains in the CI machine is updated as it will skip `carthage update`
-- In nutshell, Carthage and Rome works well in developer machine with a bit of learning, but when you actually automating them on CI machine, you need to do more heavy works to make sure it works as expected
+Below are issues with Carthage and Rome with their current state
 
-## Athena
+**Carthage - Missing precompiled frameworks or different Swift version**
+
+When the dependency project does not have precompiled frameworks binaries or they were compiled with different Swift version, Carthage will downloads the source and compiles them again. With certain libraries this will takes very long.
+
+In CI/CD where your project gets compiled in clean environment, each iteration will redo the compilation.
+
+Of course then the recommended solution is to use Rome
+
+**Rome - Repository sharing**
+
+While Rome will solve the framework recompilation issues, there is no global Rome repository where you can get the binaries. It would be great is there a Maven like repository for Carthage precompiled frameworks.
+
+**Rome - CI/CD flow**
+
+Rome give you an example code that you can put in your CI/CD
+
+```
+rome download --platform iOS # download missing frameworks (or copy from local cache)
+rome list --missing --platform ios | awk '{print $1}' | xargs carthage update --platform ios --cache-builds # list what is missing and update/build if needed
+rome list --missing --platform ios | awk '{print $1}' | xargs rome upload --platform ios # upload what is missing
+```
+
+However I found that if the Swift toolchains is updated, this code will download an incompatible Swift version of dependency.
+
+**Conclusion**
+
+In nutshell, Carthage and Rome works well in developer machine with a bit of learning, but when you actually automating them on CI machine, you need to do more works to make sure it works as expected
+
+## <a name="Athena"></a>Athena
 
 First of all, Athena is a Gradle plugin. And yes! even you are iOS developer, Gradle can help you solve things.
 
 Athena helps you to solve at least two things
-1. Writes everything you need to configure how Carthage works in a structured platform
+1. Writes everything you need to configure how Carthage works in a structured platform (with auto completes if you are using IntelliJ IDEA)
 2. Download and upload the frameworks produced by Carthage into Maven repository
 
-Typical ```build.gradle.kts``` structure will be like this
+If you are new in Gradle, please take your time to read about it at [Gradle.org](https://gradle.org/)
+
+**Gradle Installation**
+
+In order to use Gradle, you need Java 1.8.
+You can use homebrew to get the latest Gradle
+```
+brew install gradle
+```
+Or you may download the [bootstrap kit](https://github.com/yunarta/works-athena-gradle-plugin/archive/bootstrap-kit.zip) here.
+
+If you are using the boostrap kit, instead of running the command with `gradle`, use `./gradlew` instead
+
+
+Your typical ```build.gradle.kts``` structure will be like this
 ```groovy
 // Use athena in the build script
 plugins {
