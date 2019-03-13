@@ -21,7 +21,7 @@ internal open class AthenaDownload : DefaultTask() {
 
         with(project) {
             inputs.files(packages, missing)
-            outputs.file(CarthageAssetLocator.resolved(project))
+            // outputs.file(CarthageAssetLocator.resolved(project))
 
             tasks.withType(AthenaInspectCarthage::class.java) {
                 dependsOn(it)
